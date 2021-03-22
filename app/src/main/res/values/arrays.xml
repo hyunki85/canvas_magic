@@ -1,0 +1,6 @@
+<resources>
+    <string-array name="menu_array">
+        <item>Edit name</item>
+        <item>Delete</item>
+    </string-array>
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">캔버스 트릭</string>
+    <string name="need_save">저장안한 데이터가 있습니다.\n그냥 종료하시겠습니까?</string>
+    <string name="how">사용방법</string>
+    <string name="edit">수정하기</string>
+    <string name="start_trick">마술시작</string>
+    <string name="select_color">색상을 선택해주세요.</string>
+    <string name="make_title">만들기</string>
+    <string name="add_new">새로 만들기</string>
+    <string name="insert_new_name">셋트 이름을 입력하세요</string>
+    <string name="share_title">공유</string>
+    <string name="upload_complete">업로드 완료</string>
+    <string name="shape_list_title">모양 세트를 선택해주세요</string>
+    <string name="share">공유</string>
+    <string name="save_complete">저장이 완료되었습니다..</string>
+    <string name="help">도움말</string>
+    <string name="whole">전체</string>
+    <string name="video_type">비디오 타입 :</string>
+    <string name="detail">상세</string>
+    <string name="rename">이름변경</string>
+    <string name="before">before</string>
+    <string name="sort_type">정렬</string>
+    <string name="recent">최신</string>
+    <string name="star">별점</string>
+    <string name="landscape">가로모드에서는 전체화면으로 볼 수 있습니다.</string>
+    <string name="long_press">화면이 꺼질때까지 길게 누르세요</string>
+    <string name="double_tap">원하는 숫자를 더블클릭해주세요.</string>
+    <string name="featured">featured</string>
+</resources>
