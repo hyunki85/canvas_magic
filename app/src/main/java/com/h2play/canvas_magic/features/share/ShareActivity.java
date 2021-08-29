@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -28,7 +27,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -71,12 +69,18 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
         mPokemonRecycler.setAdapter(shapeAdapter);
         mPokemonRecycler.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
 
-        menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.FEATURED);
+        menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.FEATURED, null);
+
+        shapeAdapter.getNextPage()
+                .subscribe(o -> {
+                    menuPresenter.getShapeOnline( SharePresenter.SORT_TYPE.values()[tabLayout.getSelectedTabPosition()], o );
+                });
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.values()[tab.getPosition()]);
+                menuPresenter.resetArray();
+                menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.values()[tab.getPosition()], null);
             }
 
             @Override
@@ -115,7 +119,7 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
     @Override
     public void showShapes(List<ShapeOnline> shapeOnlines) {
 
-        shapeAdapter.setShapes(shapeOnlines);
+        shapeAdapter.setShapeOnlines(shapeOnlines);
         shapeAdapter.notifyDataSetChanged();
 
     }
@@ -143,7 +147,9 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
     @Override
     public void onShareComplete() {
         Toast.makeText(this, getResources().getString(R.string.upload_complete), Toast.LENGTH_SHORT).show();
-        menuPresenter.getShapeOnline( SharePresenter.SORT_TYPE.RECENT );
+        menuPresenter.resetArray();
+        tabLayout.selectTab(tabLayout.getTabAt(2),true);
+        menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.RECENT,null);
     }
 
     @Override
@@ -170,7 +176,7 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
     @Override
     public void onShapeClick(ShapeOnline shapeOnline) {
 
-        startActivity(PreviewActivity.getStartIntent(this,shapeOnline.name,shapeOnline.json));
+        startActivity(PreviewActivity.getStartIntent(this,shapeOnline));
 
     }
 

@@ -4,19 +4,26 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
@@ -25,12 +32,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.h2play.canvas_magic.R;
 import com.h2play.canvas_magic.data.model.response.ShapeInfo;
+import com.h2play.canvas_magic.data.model.response.ShapeOnline;
 import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
 import com.h2play.canvas_magic.features.detail.DetailActivity;
+import com.h2play.canvas_magic.features.share.ShapeAdapter;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.FabricView;
 import com.h2play.canvas_magic.util.FileUtil;
+import com.h2play.canvas_magic.util.ViewUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +50,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.BindViews;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -52,12 +63,8 @@ import static com.h2play.canvas_magic.util.FabricView.LOCKED_MODE;
 
 public class PreviewActivity extends BaseActivity implements PreviewMvpView, ErrorView.ErrorListener {
 
-
     @InjectExtra
-    String title;
-
-    @InjectExtra
-    String jsonText;
+    ShapeOnline shapeOnline;
 
     @Inject
     PreviewPresenter listPresenter;
@@ -72,10 +79,8 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
     @BindView(R.id.progress)
     ProgressBar progressBar;
 
-    @BindViews({R.id.fabricView1,R.id.fabricView2,R.id.fabricView3,
-            R.id.fabricView4,R.id.fabricView5,R.id.fabricView6,
-            R.id.fabricView7,R.id.fabricView8,R.id.fabricView9})
-    FabricView[] fabricViews;
+    @BindView(R.id.rv_preview)
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +89,41 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
 
         Dart.inject(this);
 
-        titleTextView.setText(title);
-        showShape(title,jsonText);
+        titleTextView.setText(shapeOnline.name);
+        recyclerView.setLayoutManager(new GridLayoutManager(this,3));
+
+        int spacingInPixels = ViewUtil.dpToPx(16);
+        recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+        recyclerView.setAdapter(new RecyclerView.Adapter<PreviewHolder>() {
+            @NonNull
+            @Override
+            public PreviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+                View view = LayoutInflater
+                        .from(parent.getContext())
+                        .inflate(R.layout.item_preview, parent, false);
+                return new PreviewHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder( PreviewHolder holder, int position) {
+
+                holder.itemView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawShape(holder.fabricView, shapeOnline.json, position);
+                    }
+                });
+
+
+            }
+
+            @Override
+            public int getItemCount() {
+                return shapeOnline.count;
+            }
+        });
+
     }
 
     @Override
@@ -94,41 +132,9 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
         super.onResume();
     }
 
-    public void showShape(String name, String jsonText) {
-
-        Observable.timer(100, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Long>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Long aLong) {
-
-                        for (int i = 0; i < fabricViews.length; ++i) {
-                            drawShape(fabricViews[i], jsonText, i);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-
-    public static Intent getStartIntent(Context context, String title, String jsonText) {
+    public static Intent getStartIntent(Context context, ShapeOnline shapeOnline) {
         Intent intent = new Intent(context, PreviewActivity.class);
-        intent.putExtra("title", title);
-        intent.putExtra("jsonText", jsonText);
+        intent.putExtra("shapeOnline", shapeOnline);
         return intent;
     }
 
@@ -239,7 +245,7 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
                 (dialog, id) -> {
 
                     if (et.getText().length() > 0) {
-                        listPresenter.addNewItem(getBaseContext(),et.getText().toString(),jsonText);
+                        listPresenter.addNewItem(getBaseContext(),et.getText().toString(),shapeOnline.json);
                     }
 
 
@@ -282,4 +288,32 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
 
     }
 
+    class PreviewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.fabricView)
+        FabricView fabricView;
+
+        PreviewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view,
+                                   RecyclerView parent, RecyclerView.State state) {
+            outRect.left = space;
+            outRect.right = space;
+            outRect.bottom = space;
+
+            outRect.top = space;
+        }
+    }
 }

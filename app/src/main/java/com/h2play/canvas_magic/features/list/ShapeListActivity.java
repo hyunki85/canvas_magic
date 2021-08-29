@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,10 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -30,6 +36,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.BindViews;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -40,10 +47,12 @@ import com.h2play.canvas_magic.data.model.response.ShapeInfo;
 import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
 import com.h2play.canvas_magic.features.make.MakeActivity;
+import com.h2play.canvas_magic.features.preview.PreviewActivity;
 import com.h2play.canvas_magic.features.share.ShareActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.FabricView;
 import com.h2play.canvas_magic.util.FileUtil;
+import com.h2play.canvas_magic.util.ViewUtil;
 
 import timber.log.Timber;
 
@@ -65,12 +74,11 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
     @BindView(R.id.progress)
     ProgressBar progressBar;
 
-    @BindViews({R.id.fabricView1,R.id.fabricView2,R.id.fabricView3,
-            R.id.fabricView4,R.id.fabricView5,R.id.fabricView6,
-            R.id.fabricView7,R.id.fabricView8,R.id.fabricView9})
-    FabricView[] fabricViews;
+    @BindView(R.id.rv_preview)
+    RecyclerView recyclerView;
 
     private List<ShapeInfo> shapeInfos;
+    private RecyclerView.Adapter<PreviewHolder> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +86,49 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
         errorView.setErrorListener(this);
 
         listPresenter.getShapes();
+
+
+        recyclerView.setLayoutManager(new GridLayoutManager(this,3));
+
+        int spacingInPixels = ViewUtil.dpToPx(16);
+        recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+        adapter = new RecyclerView.Adapter<PreviewHolder>() {
+            @NonNull
+            @Override
+            public PreviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+                View view = LayoutInflater
+                        .from(parent.getContext())
+                        .inflate(R.layout.item_preview, parent, false);
+                return new PreviewHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(PreviewHolder holder, int position) {
+
+                holder.itemView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawShape(holder.fabricView, selectedShape.fileName, position);
+                    }
+                });
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = MakeActivity.getStartIntent(ShapeListActivity.this,position,selectedShape.fileName);
+                        startActivity(intent);
+                    }
+                });
+
+
+            }
+
+            @Override
+            public int getItemCount() {
+                return selectedShape.count;
+            }
+        };
+        recyclerView.setAdapter(adapter);
 
     }
 
@@ -87,51 +138,14 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
         super.onResume();
 
         if(selectedShape != null) {
-            showShape(selectedShape.name,selectedShape.fileName);
+            showShape(selectedShape.name,selectedShape.fileName, selectedShape.count);
         }
-
     }
 
     @Override
-    public void showShape(String name, String fileName) {
-        selectedShape = new ShapeInfo(fileName,name);
+    public void showShape(String name, String fileName, int count) {
+        selectedShape = new ShapeInfo(fileName,name,count);
         shapeButton.setText(selectedShape.name);
-        Observable.timer(100, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Long>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Long aLong) {
-
-                        for (int i = 0; i < fabricViews.length; ++i) {
-                            drawShape(fabricViews[i], fileName, i);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-    public int[] resources = {R.id.fabricView1,R.id.fabricView2,R.id.fabricView3,
-            R.id.fabricView4,R.id.fabricView5,R.id.fabricView6,
-            R.id.fabricView7,R.id.fabricView8,R.id.fabricView9};
-
-    public void onFabricClick(View view) {
-        int index = Arrays.binarySearch(resources, view.getId());
-        Intent intent = MakeActivity.getStartIntent(this,index,selectedShape.fileName);
-        startActivity(intent);
     }
 
     @OnClick(R.id.fab_add)
@@ -313,7 +327,7 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
                     builder.setTitle(R.string.shape_list_title)
                             .setItems(cs, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    showShape(shapeInfos.get(which).name, shapeInfos.get(which).fileName);
+                                    showShape(shapeInfos.get(which).name, shapeInfos.get(which).fileName,shapeInfos.get(which).count);
                                 }
                             });
                     builder.create().show();
@@ -358,17 +372,6 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
             }
         }
         fabricView.setInteractionMode(LOCKED_MODE);
-        fabricView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    onFabricClick(view);
-                }
-
-                return true;
-            }
-        });
     }
 
 
@@ -398,7 +401,7 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
         this.shapeInfos = shapeInfos;
         selectedShape = shapeInfos.get(0);
         shapeButton.setText(selectedShape.name);
-        showShape(selectedShape.name,selectedShape.fileName);
+        showShape(selectedShape.name,selectedShape.fileName,selectedShape.count);
     }
 
     @Override
@@ -425,5 +428,34 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
     @Override
     public void onReloadData() {
 
+    }
+
+    class PreviewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.fabricView)
+        FabricView fabricView;
+
+        PreviewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view,
+                                   RecyclerView parent, RecyclerView.State state) {
+            outRect.left = space;
+            outRect.right = space;
+            outRect.bottom = space;
+
+            outRect.top = space;
+        }
     }
 }

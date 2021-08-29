@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.h2play.canvas_magic.data.DataManager;
 import com.h2play.canvas_magic.data.model.response.ShapeInfo;
@@ -17,9 +18,11 @@ import com.h2play.canvas_magic.features.base.BasePresenter;
 import com.h2play.canvas_magic.injection.ConfigPersistent;
 import com.h2play.canvas_magic.util.FileUtil;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
 
 import javax.inject.Inject;
 
@@ -30,13 +33,11 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
 
     private final DataManager dataManager;
     private final FirebaseFirestore db;
+    private ArrayList<ShapeOnline> shapeOnlines = new ArrayList<>();
     public enum SORT_TYPE {
-
         FEATURED,
         STAR,
         RECENT
-
-
     }
 
     @Inject
@@ -46,18 +47,41 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
         db = FirebaseFirestore.getInstance();
     }
 
+    public void resetArray() {
+        shapeOnlines.clear();
+    }
+
     @Override
     public void attachView(ShareMvpView mvpView) {
         super.attachView(mvpView);
     }
 
-    public void getShapeOnline(SORT_TYPE sortType) {
+    public void getShapeOnline(SORT_TYPE sortType, ShapeOnline lastObj) {
         checkViewAttached();
         getView().showProgress(true);
 
-        CollectionReference ref = db.collection("shapes_v2");
-                ref.limit(5).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        CollectionReference ref = db.collection("shapes");
+            Query query = ref.limit(14);
+            if(sortType == SORT_TYPE.FEATURED) {
+                query = query.whereEqualTo("featured",Boolean.valueOf(true)).orderBy("star", Query.Direction.DESCENDING);
+            } else {
+                if(sortType == SORT_TYPE.RECENT) {
+                    query = query.orderBy("date", Query.Direction.DESCENDING);
+                } else {
+                    query = query.orderBy("star", Query.Direction.DESCENDING);
+                }
+            }
+            if(lastObj != null) {
+                if(sortType == SORT_TYPE.RECENT) {
+                    query = query.startAfter(lastObj.date);
+                } else if(sortType == SORT_TYPE.STAR) {
+                    query = query.startAfter(lastObj.star);
+                } else if(sortType == SORT_TYPE.FEATURED) {
+                    query = query.startAfter(lastObj.star);
+                }
+
+            }
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
@@ -71,22 +95,10 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
                                         return shape;
                                     });
 
-                                    if (sortType == SORT_TYPE.FEATURED) {
-                                        shapeOnlineObservable = shapeOnlineObservable.filter(shapeOnline -> shapeOnline.featured);
-                                    }
-
-                                    shapeOnlineObservable.toSortedList((o1, o2) -> {
-                                        switch (sortType) {
-                                            case STAR:
-                                                return o1.star > o2.star ? -1 : 1;
-                                            case RECENT:
-                                            default:
-                                                return o1.date.after(o2.date) ? -1 : 1;
-                                        }
-
-                                    }).subscribe(queryDocumentSnapshots -> {
-
-                                        getView().showShapes(queryDocumentSnapshots);
+                                    shapeOnlineObservable.toList()
+                                            .subscribe(queryDocumentSnapshots -> {
+                                        shapeOnlines.addAll(queryDocumentSnapshots);
+                                        getView().showShapes(shapeOnlines);
 
                             });
 

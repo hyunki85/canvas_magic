@@ -42,4 +42,11 @@ public class MenuPresenter extends BasePresenter<MenuMvpView> {
     public void getShapeList() {
         getView().showShapeList(dataManager.getShapeList());
     }
+
+    public void checkNeedGuidE() {
+        if(dataManager.needGuide()) {
+            getView().showTutorial();
+        }
+
+    }
 }

@@ -133,6 +133,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     @OnLongClick(R.id.btn_start)
     public boolean onStartLongClick() {
         fabricView.setColor(selectedColor);
+        guideTextView.setText(R.string.good_job);
 
         Intent intent = new Intent(this, PinActivity.class);
         startActivityForResult(intent, REQUEST_CODE);

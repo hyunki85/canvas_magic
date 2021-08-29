@@ -5,6 +5,7 @@
     <string name="how">사용방법</string>
     <string name="edit">수정하기</string>
     <string name="start_trick">마술시작</string>
+    <string name="start_tutorial">연습해보기</string>
     <string name="select_color">색상을 선택해주세요.</string>
     <string name="make_title">만들기</string>
     <string name="add_new">새로 만들기</string>
@@ -26,5 +27,6 @@
     <string name="landscape">가로모드에서는 전체화면으로 볼 수 있습니다.</string>
     <string name="long_press">화면이 꺼질때까지 길게 누르세요</string>
     <string name="double_tap">원하는 숫자를 더블클릭해주세요.</string>
-    <string name="featured">featured</string>
+    <string name="featured">선정</string>
+    <string name="good_job">잘하셨어요. 이제 마술을 시도해보세요</string>
 </resources>

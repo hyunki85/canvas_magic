@@ -14,4 +14,6 @@ public interface MenuMvpView extends MvpView {
     void showProgress(boolean show);
 
     void showError(Throwable error);
+
+    void showTutorial();
 }

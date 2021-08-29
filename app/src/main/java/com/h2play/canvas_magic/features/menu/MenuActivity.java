@@ -12,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -63,6 +65,10 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     @BindView(R.id.progress)
     ProgressBar progressBar;
 
+
+    @BindView(R.id.btn_start)
+    Button startButton;
+
     private FirebaseAuth mAuth;
 
 
@@ -106,6 +112,14 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
         mAuth = FirebaseAuth.getInstance();
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startButton.setText(R.string.start_trick);
+        menuPresenter.checkNeedGuidE();
     }
 
     @Override
@@ -220,6 +234,11 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     public void showError(Throwable error) {
         errorView.setVisibility(View.VISIBLE);
         Timber.e(error, "There was an error retrieving the pokemon");
+    }
+
+    @Override
+    public void showTutorial() {
+        startButton.setText(R.string.start_tutorial);
     }
 
     @Override

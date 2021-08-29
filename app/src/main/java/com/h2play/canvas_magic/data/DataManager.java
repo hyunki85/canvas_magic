@@ -71,9 +71,9 @@ public class DataManager {
         preferencesHelper.putString(SHAPE_LIST_JSON,jsonStr);
     }
 
-    public void addFileList(String name, String fileName) {
+    public void addFileList(String name, String fileName, int count) {
         List<ShapeInfo> shapeList = getShapeList();
-        shapeList.add(new ShapeInfo(fileName,name));
+        shapeList.add(new ShapeInfo(fileName,name,count));
         writeListToJson(shapeList);
     }
 

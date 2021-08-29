@@ -9,40 +9,52 @@
         android:id="@+id/txt_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/fabricView1"
+        android:layout_marginLeft="8dp"
+        android:layout_toStartOf="@+id/txt_date"
+        android:layout_toEndOf="@+id/fabricView1"
         android:textColor="@android:color/black"
-        tools:text="test"
-        android:gravity="left|center_vertical"
-        android:layout_toLeftOf="@id/txt_date"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="16dp"
-        android:textSize="24sp" />
+        android:textSize="20sp"
+        tools:text="test" />
 
 
     <TextView
         android:id="@+id/txt_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        tools:text="11/01/01"
+        android:layout_alignBottom="@+id/fabricView1"
+        android:layout_alignParentEnd="true"
         android:layout_toLeftOf="@+id/img_like"
-        android:layout_alignBaseline="@id/txt_name"
-        android:layout_marginRight="16dp"
-        android:textSize="14sp" />
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        tools:text="11/01/01" />
 
     <ImageView
         android:id="@+id/img_like"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/txt_star"
-        android:src="@drawable/btn_star"/>
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/fabricView1"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/btn_star" />
 
     <TextView
         android:id="@+id/txt_star"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00"
-        android:layout_alignParentRight="true" />
+        android:layout_below="@+id/img_like"
+        android:layout_alignStart="@+id/img_like"
+        android:layout_alignEnd="@+id/img_like"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:text="00" />
 
+    <com.h2play.canvas_magic.util.FabricView
+        android:id="@+id/fabricView1"
+        style="@style/small_fabric"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp" />
 
 </RelativeLayout>
 

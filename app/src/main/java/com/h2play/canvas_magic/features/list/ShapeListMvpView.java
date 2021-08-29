@@ -8,7 +8,7 @@ import com.h2play.canvas_magic.features.base.MvpView;
 public interface ShapeListMvpView extends MvpView {
 
 
-    void showShape(String name, String fileName);
+    void showShape(String name, String fileName, int count);
 
     void showShapeList(List<ShapeInfo> shapeInfos);
 

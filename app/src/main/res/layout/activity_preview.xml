@@ -24,156 +24,36 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/fabric_container"
-            android:layout_width="match_parent"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_title"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:background="@android:color/white"
+            android:layout_marginTop="24dp"
+            android:elevation="8dp"
+            android:minWidth="160dp"
+            android:paddingLeft="32dp"
+            android:paddingTop="8dp"
+            android:paddingRight="32dp"
+            android:paddingBottom="8dp"
+            android:stateListAnimator="@null"
+            android:text="숫자"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_preview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.32">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardview1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_title">
-
-                <com.h2play.canvas_magic.util.FabricView
-                    android:id="@+id/fabricView1"
-                    style="@style/small_fabric" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardview2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/cardview3"
-                app:layout_constraintStart_toEndOf="@+id/cardview1"
-                app:layout_constraintTop_toTopOf="@+id/cardview1">
-
-                <com.h2play.canvas_magic.util.FabricView
-                    android:id="@+id/fabricView2"
-                    style="@style/small_fabric" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardview3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/cardview1">
-
-                <com.h2play.canvas_magic.util.FabricView
-                    android:id="@+id/fabricView3"
-                    style="@style/small_fabric" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardview6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="@+id/cardview3"
-                app:layout_constraintTop_toTopOf="@+id/cardview4">
-
-                <com.h2play.canvas_magic.util.FabricView
-                    android:id="@+id/fabricView6"
-                    style="@style/small_fabric" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardview4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                app:layout_constraintStart_toStartOf="@+id/cardview1"
-                app:layout_constraintTop_toBottomOf="@+id/cardview1">
-
-                <com.h2play.canvas_magic.util.FabricView
-                    android:id="@+id/fabricView4"
-                    style="@style/small_fabric" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardview5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/cardview6"
-                app:layout_constraintStart_toEndOf="@+id/cardview4"
-                app:layout_constraintTop_toTopOf="@+id/cardview4">
-
-                <com.h2play.canvas_magic.util.FabricView
-                    android:id="@+id/fabricView5"
-                    style="@style/small_fabric" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardview9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="@+id/cardview6"
-                app:layout_constraintTop_toTopOf="@+id/cardview7">
-
-                <com.h2play.canvas_magic.util.FabricView
-                    android:id="@+id/fabricView9"
-                    style="@style/small_fabric" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardview7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/cardview4"
-                app:layout_constraintTop_toBottomOf="@+id/cardview4">
-
-                <com.h2play.canvas_magic.util.FabricView
-                    android:id="@+id/fabricView7"
-                    style="@style/small_fabric" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardview8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/cardview9"
-                app:layout_constraintStart_toEndOf="@+id/cardview7"
-                app:layout_constraintTop_toTopOf="@+id/cardview7">
-
-                <com.h2play.canvas_magic.util.FabricView
-                    android:id="@+id/fabricView8"
-                    style="@style/small_fabric" />
-            </com.google.android.material.card.MaterialCardView>
+            app:layout_constraintTop_toBottomOf="@+id/txt_title" />
 
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/txt_title"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:elevation="8dp"
-                android:minWidth="160dp"
-                android:paddingLeft="32dp"
-                android:paddingTop="8dp"
-                android:paddingRight="32dp"
-                android:paddingBottom="8dp"
-                android:stateListAnimator="@null"
-                android:text="숫자"
-                android:textSize="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_save"
