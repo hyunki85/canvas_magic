@@ -35,65 +35,8 @@ yo android-mvp-starter
 
 ## Building
 
-To build, install and run a debug version, run this from the root of the project:
-```sh
-./gradlew app:assembleDebug
-```
-    
-## Testing
 
-To run **unit** tests on your machine:
-
-```sh
-./gradlew test
-```
-
-To run **instrumentation** tests on connected devices:
-
-```sh
-./gradlew connectedAndroidTest
-```
-
-## Code Analysis tools
-
-The following code analysis tools are set up on this project:
-
-* [PMD](https://pmd.github.io/)
-
-```sh
-./gradlew pmd
-```
-
-* [Findbugs](http://findbugs.sourceforge.net/)
-
-```sh
-./gradlew findbugs
-```
-
-* [Checkstyle](http://checkstyle.sourceforge.net/)
-
-```sh
-./gradlew checkstyle
-```
-
-## The check task
-
-To ensure that your code is valid and stable use check:
-
-```sh
-./gradlew check
-```
-
-### Created & Maintained By
-[Ravindra Kumar](https://github.com/ravidsrk) ([@ravidsrk](https://www.twitter.com/ravidsrk))
-
-> If you found this repo helpful or you learned something from the source code and want to thank me, consider [buying me a cup of](https://www.paypal.me/ravidsrk) :coffee:
-
-## License
-```
-MIT License
-
-Copyright (c) 2016 Ravindra Kumar
+Copyright (c) 2016 Hyunki Hong
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
