@@ -46,16 +46,23 @@ public class ShapeListPresenter extends BasePresenter<ShapeListMvpView> {
                         });
     }
 
-    public void addNewItem(Context context, String name) {
+    public void addNewItem(Context context, String name, int count) {
 
-        String emptyString =  "{\"shapes\":[[],[],[],[],[],[],[],[],[]] }";
+        StringBuilder builder = new StringBuilder("{\"shapes\":[");
+        for (int i = 0; i < count; i++) {
+            if( i > 0) {
+                builder.append(",");   
+            }
+            builder.append("[]");
+        }
+        builder.append(" ] }");
 
         int index = dataManager.getNewFileIndex();
         String newFileName = String.format("file%d.txt",index);
-        FileUtil.writeFile(context,newFileName,emptyString);
-        dataManager.addFileList(name,newFileName);
+        FileUtil.writeFile(context,newFileName,builder.toString());
+        dataManager.addFileList(name,newFileName,count);
 
-        getView().showShape(name, newFileName);
+        getView().showShape(name, newFileName,count);
 
     }
 
@@ -71,7 +78,7 @@ public class ShapeListPresenter extends BasePresenter<ShapeListMvpView> {
     public void renameItem( String oldName, String newName ) {
         dataManager.renameFile(oldName,newName);
         ShapeInfo item = dataManager.getShapeFromName(newName);
-        getView().showShape(item.name,item.fileName);
+        getView().showShape(item.name,item.fileName,item.count);
         getView().setShapeList(dataManager.getShapeList());
 
     }

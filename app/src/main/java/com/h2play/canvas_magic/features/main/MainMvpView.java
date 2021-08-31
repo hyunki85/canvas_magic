@@ -9,8 +9,6 @@ public interface MainMvpView extends MvpView {
 
     void showLongPressGuide();
 
-    void showPokemon(List<String> pokemon);
-
     void showProgress(boolean show);
 
     void showError(Throwable error);

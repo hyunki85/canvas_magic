@@ -133,9 +133,11 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     @OnLongClick(R.id.btn_start)
     public boolean onStartLongClick() {
         fabricView.setColor(selectedColor);
-        guideTextView.setText(R.string.good_job);
+        if(guideTextView != null) {
+            guideTextView.setText(R.string.good_job);
+        }
 
-        Intent intent = new Intent(this, PinActivity.class);
+        Intent intent = PinActivity.getStartIntent(this,selectedShape.count);
         startActivityForResult(intent, REQUEST_CODE);
         return true;
     }
@@ -229,10 +231,6 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         mainPresenter.detachView();
     }
 
-    @Override
-    public void showPokemon(List<String> pokemon) {
-
-    }
 
     @Override
     public void showProgress(boolean show) {

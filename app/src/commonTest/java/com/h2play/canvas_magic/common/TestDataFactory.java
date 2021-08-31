@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.UUID;
 
 import com.h2play.canvas_magic.data.model.response.NamedResource;
-import com.h2play.canvas_magic.data.model.response.Pokemon;
 import com.h2play.canvas_magic.data.model.response.Sprites;
 import com.h2play.canvas_magic.data.model.response.Statistic;
 

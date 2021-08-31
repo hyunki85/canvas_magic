@@ -102,13 +102,10 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
         errorView.setErrorListener(this);
 
-
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("6EC902AB7F41DABAA64DD42BF1FF0711")
                 .build();
         mAdView.loadAd(adRequest);
-
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -142,11 +139,6 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         menuPresenter.detachView();
     }
 
-    @Override
-    public void showPokemon(List<String> pokemon) {
-
-    }
-
 
     @OnClick(R.id.btn_channel)
     public void onChannelClick() {
@@ -177,10 +169,10 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         try {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Canvas Trick");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name);
             String shareMessage = "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID ;
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-            startActivity(Intent.createChooser(shareIntent, "choose one"));
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.choose_share_app)));
         } catch(Exception e) {
             //e.toString();
         }
@@ -199,6 +191,11 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         startActivity(intent);
     }
 
+    @Override
+    public void startTutorial() {
+        Intent intent = MainActivity.getStartIntent(MenuActivity.this,0);
+        startActivity(intent);
+    }
 
     @Override
     public void showShapeList(List<ShapeInfo> shapeInfos) {

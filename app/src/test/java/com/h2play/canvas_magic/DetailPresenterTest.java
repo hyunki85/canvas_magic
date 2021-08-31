@@ -10,7 +10,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.h2play.canvas_magic.common.TestDataFactory;
 import com.h2play.canvas_magic.data.DataManager;
-import com.h2play.canvas_magic.data.model.response.Pokemon;
 import com.h2play.canvas_magic.features.detail.DetailMvpView;
 import com.h2play.canvas_magic.features.detail.DetailPresenter;
 import com.h2play.canvas_magic.util.RxSchedulersOverrideRule;

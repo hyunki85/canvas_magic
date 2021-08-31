@@ -25,12 +25,12 @@ public class PreviewPresenter extends BasePresenter<PreviewMvpView> {
         super.attachView(mvpView);
     }
 
-    public void addNewItem(Context context, String name, String json) {
+    public void addNewItem(Context context, String name, String json, int count) {
 
         int index = dataManager.getNewFileIndex();
         String newFileName = String.format("file%d.txt",index);
         FileUtil.writeFile(context,newFileName,json);
-        dataManager.addFileList(name,newFileName);
+        dataManager.addFileList(name,newFileName,count);
 
         getView().onSaveComplete();
 

@@ -1,5 +1,6 @@
 package com.h2play.canvas_magic.features.pincode;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -20,9 +21,13 @@ import javax.inject.Inject;
 
 import butterknife.OnTouch;
 
+import com.f2prateek.dart.Dart;
+import com.f2prateek.dart.InjectExtra;
 import com.h2play.canvas_magic.R;
+import com.h2play.canvas_magic.data.model.response.ShapeOnline;
 import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
+import com.h2play.canvas_magic.features.preview.PreviewActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.ViewUtil;
 
@@ -34,6 +39,8 @@ import static android.util.TypedValue.COMPLEX_UNIT_DIP;
 public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.ErrorListener {
 
     public static final String PIN = "pin";
+    @InjectExtra
+    Integer count;
     @Inject
     PinPresenter pinPresenter;
     private long lastTouchTime;
@@ -41,6 +48,12 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
     private int height;
     private int lastIndex;
 
+    public static Intent getStartIntent(Context context, int count) {
+        Intent intent = new Intent(context, PinActivity.class);
+        intent.putExtra("count", count);
+        return intent;
+    }
+    
 
     @OnTouch(R.id.fl_main)
     public boolean onMainClick(View view, MotionEvent motionEvent) {
@@ -52,7 +65,7 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
         int y = (int) motionEvent.getY();
 
         int indexX = x / (width/3);
-        int indexY = y / (height/3);
+        int indexY = y / (height/(count/3));
 
         int index = indexY*3 + indexX;
 
@@ -93,6 +106,7 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Dart.inject(this);
         Display display = getWindowManager().getDefaultDisplay();
 
         Point point = new Point();
@@ -128,11 +142,6 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
     @Override
     protected void detachPresenter() {
         pinPresenter.detachView();
-    }
-
-    @Override
-    public void showPokemon(List<String> pokemon) {
-
     }
 
     @Override

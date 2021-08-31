@@ -53,7 +53,7 @@ public class MvpStarterApplication extends Application {
                 name = "숫자";
             }
 
-            getComponent().dataManager().addFileList(name,"file.txt");
+            getComponent().dataManager().addFileList(name,"file.txt",9);
             File fl = new File(getFilesDir(), "file.txt");
 
             InputStream inputStream = getResources().openRawResource(R.raw.base_pattern);

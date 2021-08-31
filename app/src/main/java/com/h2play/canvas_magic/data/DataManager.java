@@ -9,11 +9,7 @@ import javax.inject.Singleton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.h2play.canvas_magic.data.local.PreferencesHelper;
-import com.h2play.canvas_magic.data.model.response.Pokemon;
 import com.h2play.canvas_magic.data.model.response.ShapeInfo;
-import com.h2play.canvas_magic.data.remote.PokemonService;
-
-import io.reactivex.Single;
 
 /**
  * Created by shivam on 29/5/17.
@@ -26,26 +22,10 @@ public class DataManager {
     public static final String FILE_INDEX = "FILE_INDEX";
     public static final String NEED_GUIDE = "need_guide";
     private PreferencesHelper preferencesHelper;
-    private PokemonService pokemonService;
 
     @Inject
-    public DataManager(PokemonService pokemonService,
-                       PreferencesHelper preferencesHelper) {
-        this.pokemonService = pokemonService;
+    public DataManager(PreferencesHelper preferencesHelper) {
         this.preferencesHelper = preferencesHelper;
-    }
-
-    public Single<List<String>> getPokemonList(int limit) {
-        return pokemonService
-                .getPokemonList(limit)
-                .toObservable()
-                .flatMapIterable(namedResources -> namedResources.results)
-                .map(namedResource -> namedResource.name)
-                .toList();
-    }
-
-    public Single<Pokemon> getPokemon(String name) {
-        return pokemonService.getPokemon(name);
     }
 
     public List<ShapeInfo> getShapeList() {

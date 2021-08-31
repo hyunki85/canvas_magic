@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.Inflater;
 
 import javax.inject.Inject;
 
@@ -125,7 +128,7 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
 
             @Override
             public int getItemCount() {
-                return selectedShape.count;
+                return selectedShape==null?0:selectedShape.count;
             }
         };
         recyclerView.setAdapter(adapter);
@@ -145,12 +148,12 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
     @Override
     public void showShape(String name, String fileName, int count) {
         selectedShape = new ShapeInfo(fileName,name,count);
+        adapter.notifyDataSetChanged();
         shapeButton.setText(selectedShape.name);
     }
 
     @OnClick(R.id.fab_add)
     public void onAddClick() {
-
 
         final EditText et = new EditText(this);
         FrameLayout container = new FrameLayout(this);
@@ -166,26 +169,28 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
 
         container.addView(et);
 
-        final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this,R.style.Theme_MaterialComponents_Light_Dialog_Alert);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.Theme_MaterialComponents_Light_Dialog_Alert);
 
-        alt_bld.setTitle(getResources().getString(R.string.add_new))
-                .setMessage(getResources().getString(R.string.insert_new_name))
-                .setIcon(R.drawable.ic_plus_24).setView(container).setPositiveButton(getResources().getString(android.R.string.ok),
+        View view = getLayoutInflater().inflate(R.layout.dialog_new,null);
+        String items[] = new String[]{"6", "9", "12", "15"};
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, R.layout.item_list, items);
+        final AutoCompleteTextView textview = view.findViewById(R.id.tv_count);
+        textview.setAdapter(adapter2);
+        EditText editText = view.findViewById(R.id.et_new_name);
 
-                (dialog, id) -> {
+        builder.setView(view);
 
-                    if (et.getText().length() > 0) {
-                        listPresenter.addNewItem(getBaseContext(),et.getText().toString());
-                    } else {
+        final AlertDialog alert = builder.create();
 
-                    }
-
-
-                });
-
-        AlertDialog alert = alt_bld.create();
-
-        et.addTextChangedListener(new TextWatcher() {
+        final Button button = view.findViewById(R.id.btn_create);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listPresenter.addNewItem(getBaseContext(),editText.getText().toString(),Integer.parseInt(textview.getText().toString()));
+                alert.dismiss();
+            }
+        });
+        editText.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
@@ -203,11 +208,10 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
                 // Check if edittext is empty
                 if (TextUtils.isEmpty(s)) {
                     // Disable ok button
-                    ((AlertDialog) alert).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
+                    button.setEnabled(false);
                 } else {
                     // Something into edit text. Enable the button.
-                    ((AlertDialog) alert).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                    button.setEnabled(true);
                 }
 
             }

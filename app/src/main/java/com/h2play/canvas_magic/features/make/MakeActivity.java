@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
@@ -118,6 +119,7 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
     public void onSaveClick() {
         needSave = false;
         saveJson();
+        Toast.makeText(this, R.string.save_complete, Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.ib_clear)
@@ -266,10 +268,6 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
         mainPresenter.detachView();
     }
 
-    @Override
-    public void showPokemon(List<String> pokemon) {
-
-    }
 
     @Override
     public void showProgress(boolean show) {

@@ -61,7 +61,7 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
         getView().showProgress(true);
 
         CollectionReference ref = db.collection("shapes");
-            Query query = ref.limit(14);
+            Query query = ref.limit(9);
             if(sortType == SORT_TYPE.FEATURED) {
                 query = query.whereEqualTo("featured",Boolean.valueOf(true)).orderBy("star", Query.Direction.DESCENDING);
             } else {
@@ -112,11 +112,11 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
     public void upload(Context context, int shapeIndex) {
         ShapeInfo shape = dataManager.getShapeList().get(shapeIndex);
 
-        upload(context, shape.name,shape.fileName);
+        upload(context, shape.name,shape.fileName,shape.count);
 
     }
 
-    public void upload(Context context, String name, String fileName) {
+    public void upload(Context context, String name, String fileName, int count) {
 
         String jsonText = FileUtil.getJsonFromFile(context, fileName);
         CollectionReference shapes = db.collection("shapes");
@@ -124,6 +124,7 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
         Map<String, Object> shapeOnline = new HashMap<>();
         shapeOnline.put("name", name);
         shapeOnline.put("star", 0);
+        shapeOnline.put("count", count);
         shapeOnline.put("date", new Date());
         shapeOnline.put("json", jsonText);
         shapes.document().set(shapeOnline).addOnCompleteListener(new OnCompleteListener<Void>() {

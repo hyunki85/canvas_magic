@@ -8,7 +8,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import com.h2play.canvas_magic.data.DataManager;
-import com.h2play.canvas_magic.data.remote.PokemonService;
 import com.h2play.canvas_magic.injection.ApplicationContext;
 
 import static org.mockito.Mockito.mock;

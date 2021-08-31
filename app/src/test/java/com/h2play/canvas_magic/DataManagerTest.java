@@ -12,9 +12,6 @@ import java.util.List;
 import com.h2play.canvas_magic.common.TestDataFactory;
 import com.h2play.canvas_magic.data.DataManager;
 import com.h2play.canvas_magic.data.model.response.NamedResource;
-import com.h2play.canvas_magic.data.model.response.Pokemon;
-import com.h2play.canvas_magic.data.model.response.PokemonListResponse;
-import com.h2play.canvas_magic.data.remote.PokemonService;
 import com.h2play.canvas_magic.util.RxSchedulersOverrideRule;
 import io.reactivex.Single;
 

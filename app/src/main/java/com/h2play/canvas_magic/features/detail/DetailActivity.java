@@ -16,7 +16,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import com.h2play.canvas_magic.R;
-import com.h2play.canvas_magic.data.model.response.Pokemon;
 import com.h2play.canvas_magic.data.model.response.Statistic;
 import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
@@ -73,7 +72,6 @@ public class DetailActivity extends BaseActivity implements DetailMvpView, Error
 
         errorView.setErrorListener(this);
 
-        detailPresenter.getPokemon(pokemonName);
     }
 
     @Override
@@ -94,14 +92,6 @@ public class DetailActivity extends BaseActivity implements DetailMvpView, Error
     @Override
     protected void detachPresenter() {
         detailPresenter.detachView();
-    }
-
-    @Override
-    public void showPokemon(Pokemon pokemon) {
-        if (pokemon.sprites != null && pokemon.sprites.frontDefault != null) {
-            Glide.with(this).load(pokemon.sprites.frontDefault).into(pokemonImage);
-        }
-        pokemonLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -126,6 +116,5 @@ public class DetailActivity extends BaseActivity implements DetailMvpView, Error
 
     @Override
     public void onReloadData() {
-        detailPresenter.getPokemon(pokemonName);
     }
 }

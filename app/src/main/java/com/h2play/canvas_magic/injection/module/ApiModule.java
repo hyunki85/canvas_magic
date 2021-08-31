@@ -4,7 +4,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import com.h2play.canvas_magic.data.remote.PokemonService;
 import retrofit2.Retrofit;
 
 /**
@@ -13,9 +12,4 @@ import retrofit2.Retrofit;
 @Module(includes = {NetworkModule.class})
 public class ApiModule {
 
-    @Provides
-    @Singleton
-    PokemonService providePokemonApi(Retrofit retrofit) {
-        return retrofit.create(PokemonService.class);
-    }
 }

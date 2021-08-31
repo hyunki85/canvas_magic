@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 
 import com.h2play.canvas_magic.common.TestComponentRule;
 import com.h2play.canvas_magic.common.TestDataFactory;
-import com.h2play.canvas_magic.data.model.response.Pokemon;
 import com.h2play.canvas_magic.data.model.response.Statistic;
 import com.h2play.canvas_magic.features.detail.DetailActivity;
 import com.h2play.canvas_magic.util.ErrorTestUtil;

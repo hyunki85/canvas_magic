@@ -7,7 +7,6 @@ import com.h2play.canvas_magic.features.base.MvpView;
 
 public interface MenuMvpView extends MvpView {
 
-    void showPokemon(List<String> pokemon);
 
     void showShapeList(List<ShapeInfo> shapeInfos);
 
@@ -16,4 +15,5 @@ public interface MenuMvpView extends MvpView {
     void showError(Throwable error);
 
     void showTutorial();
+    void startTutorial();
 }

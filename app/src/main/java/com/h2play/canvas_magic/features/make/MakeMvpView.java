@@ -6,7 +6,6 @@ import com.h2play.canvas_magic.features.base.MvpView;
 
 public interface MakeMvpView extends MvpView {
 
-    void showPokemon(List<String> pokemon);
 
     void showProgress(boolean show);
 

@@ -245,7 +245,7 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
                 (dialog, id) -> {
 
                     if (et.getText().length() > 0) {
-                        listPresenter.addNewItem(getBaseContext(),et.getText().toString(),shapeOnline.json);
+                        listPresenter.addNewItem(getBaseContext(),et.getText().toString(),shapeOnline.json,shapeOnline.count);
                     }
 
 
