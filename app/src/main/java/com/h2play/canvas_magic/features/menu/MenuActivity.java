@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatDialog;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;

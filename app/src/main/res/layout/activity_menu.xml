@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-9937617798998725/9565019082">
+        ads:adUnitId="ca-app-pub-9937617798998725/6628693119">
     </com.google.android.gms.ads.AdView>
 
     <com.h2play.canvas_magic.features.common.ErrorView
