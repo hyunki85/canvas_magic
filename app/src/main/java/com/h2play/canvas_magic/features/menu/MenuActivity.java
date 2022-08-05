@@ -66,7 +66,6 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     @BindView(R.id.progress)
     ProgressBar progressBar;
 
-
     @BindView(R.id.btn_start)
     Button startButton;
 
@@ -151,7 +150,15 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     public void onHelpClick() {
         Intent intent = new Intent(this, HelpActivity.class);
         startActivity(intent);
+    }
 
+    @OnClick(R.id.btn_more)
+    public void onMoreClick() {
+        Intent intent=null;
+        String url = "https://play.google.com/store/apps/dev?id=8030976532724501230";
+        intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
     }
 
 

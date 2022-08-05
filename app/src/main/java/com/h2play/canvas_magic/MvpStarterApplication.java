@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.appopen.AppOpenAd;
+import com.h2play.canvas_magic.util.AppOpenAdManager;
 import com.h2play.canvas_magic.util.FileUtil;
 import com.singhajit.sherlock.core.Sherlock;
 import com.squareup.leakcanary.LeakCanary;
@@ -31,7 +33,11 @@ public class MvpStarterApplication extends Application {
     public static MvpStarterApplication get(Context context) {
         return (MvpStarterApplication) context.getApplicationContext();
     }
+    private AppOpenAdManager appOpenAdManager;
 
+    public AppOpenAdManager getAppOpenAdManager() {
+        return this.appOpenAdManager;
+    }
     @Override
     public void onCreate() {
         super.onCreate();
@@ -45,6 +51,11 @@ public class MvpStarterApplication extends Application {
         }
 
         MobileAds.initialize(this );
+
+        appOpenAdManager = new AppOpenAdManager(this,
+                AppOpenAdManager.TEST_AD_UNIT_ID,
+                AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT);
+
 
         if(getComponent().dataManager().getShapeList().size() <= 0) {
 
