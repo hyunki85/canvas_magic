@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialog;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 
 import java.util.Arrays;
@@ -32,6 +33,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -50,6 +52,7 @@ import com.h2play.canvas_magic.features.main.MainActivity;
 import com.h2play.canvas_magic.features.share.ShareActivity;
 import com.h2play.canvas_magic.features.web.WebViewActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
+import com.h2play.canvas_magic.util.AdDialog;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -70,6 +73,8 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     Button startButton;
 
     private FirebaseAuth mAuth;
+    private AdView adView;
+    private AdDialog mCustomDialog;
 
 
     @Override
@@ -83,6 +88,10 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     }
 
+    @Override
+    public void onBackPressed() {
+        mCustomDialog.show();
+    }
 
     private void signInAnonymously() {
         mAuth.signInAnonymously()
@@ -103,6 +112,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         errorView.setErrorListener(this);
 
         AdView mAdView = (AdView) findViewById(R.id.adView);
+
         AdRequest adRequest = new AdRequest.Builder()
                 .build();
         mAdView.loadAd(adRequest);
@@ -110,6 +120,27 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         mAuth = FirebaseAuth.getInstance();
 
 
+        adView = new AdView(this);
+        adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+        adView.setAdUnitId("ca-app-pub-9937617798998725/1754825717");
+        adView.loadAd(new AdRequest.Builder().build());
+        // [END load_banner_ad]
+
+        mCustomDialog = new AdDialog(this,
+                adView,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCustomDialog.dismiss();
+                    }
+                },
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCustomDialog.dismiss();
+                        finish();
+                    }
+                });
     }
 
     @Override

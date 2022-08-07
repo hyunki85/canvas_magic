@@ -2,7 +2,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
@@ -22,85 +23,118 @@
         android:src="@drawable/logo" />
 
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_below="@id/img_logo"
-        android:gravity="center"
-        android:layout_marginBottom="60dp"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_start"
+            style="@style/menu_btn"
+            android:layout_width="240dp"
             android:text="@string/start_trick"
-            style="@style/menu_btn"/>
+            app:layout_constraintBottom_toTopOf="@+id/cl_group"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_channel"
-            style="@style/menu_btn"
-            android:layout_marginTop="16dp"
-            android:text="@string/edit"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintTop_toBottomOf="@+id/btn_start">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_channel"
+                style="@style/menu_btn"
+                android:text="@string/edit"
+                app:layout_constraintBottom_toTopOf="@+id/btn_help"
+                app:layout_constraintEnd_toStartOf="@+id/btn_share"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_start"
+                app:layout_constraintVertical_chainStyle="packed" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_share"
-            style="@style/menu_btn"
-            android:layout_marginTop="8dp"
-            android:text="@string/share"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_share"
+                style="@style/menu_btn"
+                android:text="@string/share"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btn_channel"
+                app:layout_constraintTop_toTopOf="@+id/btn_channel" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_help"
+                style="@style/menu_btn"
+                android:text="@string/how"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                app:layout_constraintEnd_toStartOf="@+id/btn_more"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_channel" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_help"
-            style="@style/menu_btn"
-            android:layout_marginTop="8dp"
-            android:text="@string/how"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_more"
+                style="@style/menu_btn"
+                android:backgroundTint="#dddd00"
+                android:text="@string/more"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/btn_help"
+                app:layout_constraintTop_toTopOf="@+id/btn_help" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_more"
-            style="@style/menu_btn"
-            android:backgroundTint="#dddd00"
-            android:layout_marginTop="8dp"
-            android:text="@string/more"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:padding="4dp"
             android:background="#44000000"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/adView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_group">
 
 
             <ImageView
                 android:id="@+id/img_rate"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/ic_star_24" />
 
 
             <ImageView
                 android:id="@+id/img_share"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginLeft="8dp"
                 android:src="@drawable/ic_share_24" />
 
 
         </LinearLayout>
 
-    </LinearLayout>
 
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-9937617798998725/6628693119">
-    </com.google.android.gms.ads.AdView>
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:adSize="SMART_BANNER"
+            app:adUnitId="ca-app-pub-9937617798998725/6628693119"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"></com.google.android.gms.ads.AdView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <com.h2play.canvas_magic.features.common.ErrorView
         android:id="@+id/view_error"

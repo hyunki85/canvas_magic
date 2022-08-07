@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -21,6 +22,9 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -39,6 +43,7 @@ import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
 import com.h2play.canvas_magic.features.pincode.PinActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
+import com.h2play.canvas_magic.util.AdDialog;
 import com.h2play.canvas_magic.util.FabricView;
 import com.h2play.canvas_magic.util.FileUtil;
 
@@ -61,6 +66,8 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     private ShapeInfo selectedShape;
     private TextView guideTextView;
 
+    private AdView adView;
+    private AdDialog mCustomDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +82,29 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         mainPresenter.getShape(shapeIndex);
 
         mainPresenter.checkNeedGuide();
+
+
+        adView = new AdView(this);
+        adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+        adView.setAdUnitId("ca-app-pub-9937617798998725/8292313909");
+        adView.loadAd(new AdRequest.Builder().build());
+        // [END load_banner_ad]
+
+        mCustomDialog = new AdDialog(this,
+                adView,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCustomDialog.dismiss();
+                    }
+                },
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCustomDialog.dismiss();
+                        finish();
+                    }
+                });
 
     }
 
@@ -158,6 +188,11 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         fabricView.setSize(50);
         fabricView.setColor(Color.WHITE);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        mCustomDialog.show();
     }
 
     @Override

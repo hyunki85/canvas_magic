@@ -152,7 +152,7 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback
             }
         };
 
-        ad.show(mostCurrentActivity, callback);
+        //ad.show(mostCurrentActivity, callback);
     }
 
     private void fetchAd() {
@@ -173,17 +173,17 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback
 
     // AppOpenAd.AppOpenAdLoadCallback implementations
 
-    @Override
-    public void onAppOpenAdLoaded(AppOpenAd ad) {
-        Log.d(TAG, "Ad loaded");
-        this.lastAdFetchTime = System.currentTimeMillis();
-        this.ad = ad;
-    }
-
-    @Override
-    public void onAppOpenAdFailedToLoad(LoadAdError error) {
-        Log.d(TAG, "Failed to load an ad: " + error.getMessage());
-    }
+//    @Override
+//    public void onAppOpenAdLoaded(AppOpenAd ad) {
+//        Log.d(TAG, "Ad loaded");
+//        this.lastAdFetchTime = System.currentTimeMillis();
+//        this.ad = ad;
+//    }
+//
+//    @Override
+//    public void onAppOpenAdFailedToLoad(LoadAdError error) {
+//        Log.d(TAG, "Failed to load an ad: " + error.getMessage());
+//    }
 
     // Application.ActivityLifecycleCallbacks implementations
 

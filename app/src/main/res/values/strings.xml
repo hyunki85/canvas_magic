@@ -48,4 +48,6 @@
     <string name="choose_share_app">choose one</string>
     <string name="the_name_of_the_shape_set">The name of the shape set</string>
     <string name="number_of_shapes">number of shapes</string>
+    <string name="exit_comment">You want exit?</string>
+    <string name="exit">exit</string>
 </resources>
