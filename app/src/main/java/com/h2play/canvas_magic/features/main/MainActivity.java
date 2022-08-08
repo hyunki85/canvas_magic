@@ -192,7 +192,11 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
     @Override
     public void onBackPressed() {
-        mCustomDialog.show();
+        if(guideTextView == null) {
+            mCustomDialog.show();
+        } else {
+            finish();
+        }
     }
 
     @Override

@@ -53,6 +53,7 @@ import com.h2play.canvas_magic.features.share.ShareActivity;
 import com.h2play.canvas_magic.features.web.WebViewActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.AdDialog;
+import com.vorlonsoft.android.rate.AppRate;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -141,6 +142,15 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
                         finish();
                     }
                 });
+
+        AppRate.with(this)
+                .setInstallDays((byte) 0)                  // default is 10, 0 means install day, 10 means app is launched 10 or more days later than installation
+                .setLaunchTimes((byte) 3)                  // default is 10, 3 means app is launched 3 or more times
+                .setRemindInterval((byte) 1)               // default is 1, 1 means app is launched 1 or more days after neutral button clicked
+                .setRemindLaunchesNumber((byte) 1)         // default is 0, 1 means app is launched 1 or more times after neutral button clicked
+                .monitor();                                // Monitors the app launch times
+        AppRate.showRateDialogIfMeetsConditions(this); // Shows the Rate Dialog when conditions are met
+
     }
 
     @Override

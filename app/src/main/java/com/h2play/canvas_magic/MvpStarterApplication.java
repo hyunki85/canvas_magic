@@ -49,7 +49,7 @@ public class MvpStarterApplication extends Application {
         }
 
         MobileAds.initialize(this );
-        RequestConfiguration aa = new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("73431CF5ECC2ECB14BBF5CFE4DD450C0")).build();
+        RequestConfiguration aa = new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("8EB76BD1A15E75814716E99259A5CDCE")).build();
         MobileAds.setRequestConfiguration(aa);
 
 
