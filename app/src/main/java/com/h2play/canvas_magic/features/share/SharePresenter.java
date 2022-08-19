@@ -1,16 +1,22 @@
 package com.h2play.canvas_magic.features.share;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.h2play.canvas_magic.data.DataManager;
 import com.h2play.canvas_magic.data.model.response.ShapeInfo;
 import com.h2play.canvas_magic.data.model.response.ShapeOnline;
@@ -21,8 +27,8 @@ import com.h2play.canvas_magic.util.FileUtil;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
-import java.util.SortedMap;
 
 import javax.inject.Inject;
 
@@ -79,7 +85,6 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
                 } else if(sortType == SORT_TYPE.FEATURED) {
                     query = query.startAfter(lastObj.star);
                 }
-
             }
             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -116,24 +121,57 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
 
     }
 
+    String getmd5hashfromstring(String input) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+            byte[] array = md.digest(input.getBytes());
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < array.length; ++i) {
+                sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+            }
+            return sb.toString();
+        } catch (java.security.NoSuchAlgorithmException e) {
+        }
+        return null;
+    }
+
     public void upload(Context context, String name, String fileName, int count) {
 
         String jsonText = FileUtil.getJsonFromFile(context, fileName);
-        CollectionReference shapes = db.collection("shapes");
 
-        Map<String, Object> shapeOnline = new HashMap<>();
-        shapeOnline.put("name", name);
-        shapeOnline.put("star", 0);
-        shapeOnline.put("count", count);
-        shapeOnline.put("date", new Date());
-        shapeOnline.put("json", jsonText);
-        shapes.document().set(shapeOnline).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                getView().onShareComplete();
+        JsonObject assetJsonObject = new Gson().fromJson(jsonText, JsonObject.class);
+        JsonArray shapesJson = assetJsonObject.get("shapes").getAsJsonArray();
+        Gson gson = new Gson();
+        String firstShapeJson = gson.toJson(shapesJson.get(0));
+
+        CollectionReference shapes = db.collection("shapes2");
+        Map<String, Object> shapeMap = new HashMap<>();
+        shapeMap.put("json", jsonText);
+        shapeMap.put("count", count);
+        shapeMap.put("name", name);
+        shapes.add(shapeMap).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                CollectionReference shapesInfo = db.collection("shapesInfo");
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                Map<String, Object> shapeInfoMap = new HashMap<>();
+                shapeInfoMap.put("user", currentUser.getUid());
+                shapeInfoMap.put("user_name", currentUser.getUid());
+                shapeInfoMap.put("shape_id", task.getResult().getId());
+                shapeInfoMap.put("name", name);
+                shapeInfoMap.put("star", 0);
+                shapeInfoMap.put("language", Locale.getDefault().getLanguage());
+                shapeInfoMap.put("date", new Date());
+                shapeInfoMap.put("json", firstShapeJson);
+                shapeInfoMap.put("md5", getmd5hashfromstring(jsonText));
+                shapesInfo.add(shapeInfoMap).addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        getView().onShareComplete();
+                    }
+                });
+            } else {
+                Log.d("upload", "upload failed");
             }
         });
-
     }
 
     public void getShapeList() {
