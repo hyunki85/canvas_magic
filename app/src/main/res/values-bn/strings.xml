@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">ক্যানভাস ট্রিক</string>
+
+    <string name="dialog_action_ok">ঠিক আছে</string>
+    
+    <string name="dialog_error_title">দুঃখিত</string>
+
+    
+    
+    
+    
+
+    
+    <string name="error_title">উফ</string>
+    <string name="error_message">পোকেমন লোড করতে সমস্যা ছিল, দয়া করে আবার চেষ্টা করুন!</string>
+    <string name="error_reload">পুনরায় লোড</string>
+    <string name="error_something_bad_happened">খারাপ কিছু ঘটেছে. অনুগ্রহপূর্বক আবার চেষ্টা করুন.</string>
+    <string name="need_save">আপনি সংরক্ষণ করবেন না, আপনি সংরক্ষণ করতে চান না?</string>
+    <string name="how">কিভাবে</string>
+    <string name="start_trick">কৌশল শুরু করুন</string>
+    <string name="edit">কাস্টম</string>
+    <string name="share">শেয়ার</string>
+    <string name="more">আরো অ্যাপ্লিকেশান</string>
+    <string name="make_title">তৈরি করুন</string>
+    <string name="shape_list_title">একটি শেপ সেট চয়ন করুন</string>
+    <string name="select_color">রঙ নির্বাচন করুন</string>
+    <string name="add_new">সৃষ্টি</string>
+    <string name="insert_new_name">একটি নতুন শেপ সেট তথ্য লিখুন</string>
+    <string name="share_title">শেয়ার</string>
+    <string name="upload_complete">সম্পূর্ণ আপলোড।</string>
+    <string name="save_complete">সম্পূর্ণ সংরক্ষণ করুন।</string>
+    <string name="help">সাহায্য</string>
+    <string name="detail">বিশদ</string>
+    <string name="whole">পুরো</string>
+    <string name="video_type">গাইড গল্প:</string>
+    <string name="need_one_item">কমপক্ষে একটি আকৃতি সেট প্রয়োজন।</string>
+    <string name="rename">নাম পরিবর্তন</string>
+    <string name="before">আগে</string>
+    <string name="sort_type">সাজান</string>
+    <string name="recent">সাম্প্রতিক</string>
+    <string name="star">তারা</string>
+    <string name="landscape">ল্যান্ডস্কেপ মোডে, আপনি এটি পূর্ণ স্ক্রিনে দেখতে পারেন।</string>
+    <string name="long_press">স্ক্রিন বন্ধ না হওয়া পর্যন্ত দীর্ঘ প্রেস</string>
+    <string name="double_tap">ডাবল ট্যাপ, আপনি কি চান।</string>
+    <string name="good_job">সাবাশ.এখন আপনি এই কৌশলটি আয়ত্ত করতে পারেন।</string>
+    <string name="featured">বৈশিষ্ট্যযুক্ত</string>
+    <string name="start_tutorial">টিউটোরিয়াল</string>
+    <string name="choose_share_app">একটি নির্বাচন করুন</string>
+    <string name="the_name_of_the_shape_set">শেপ সেট নাম</string>
+    <string name="number_of_shapes">আকারের সংখ্যা</string>
+    <string name="exit_comment">আপনি প্রস্থান চান?</string>
+    <string name="exit">প্রস্থান</string>
+</resources>

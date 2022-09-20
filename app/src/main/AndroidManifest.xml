@@ -35,6 +35,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".features.splash.SplashActivity"
                   android:theme="@style/SplashTheme"
+                    android:exported="true"
                   android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,6 +49,13 @@
         <activity android:name=".features.share.ShareActivity" android:screenOrientation="portrait"/>
         <activity android:name=".features.preview.PreviewActivity" android:screenOrientation="portrait"/>
         <activity android:name=".features.help.HelpActivity" />
+        <service
+            android:name=".util.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

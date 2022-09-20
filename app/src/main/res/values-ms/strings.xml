@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Trik Kanvas</string>
+
+    <string name="dialog_action_ok">Okey</string>
+    
+    <string name="dialog_error_title">Maaf</string>
+
+    
+    
+    
+    
+
+    
+    <string name="error_title">Alamak</string>
+    <string name="error_message">Terdapat Masalah Memuatkan Pokemon, Sila Cuba Lagi!</string>
+    <string name="error_reload">Tambah Nilai</string>
+    <string name="error_something_bad_happened">Sesuatu Yang Buruk Berlaku.Sila Cuba Lagi.</string>
+    <string name="need_save">Anda Tidak Menyimpan, Anda Tidak Mahu Menyimpan?</string>
+    <string name="how">Bagaimana Untuk</string>
+    <string name="start_trick">Mulakan Tipu Muslihat</string>
+    <string name="edit">Adat</string>
+    <string name="share">Berkongsi</string>
+    <string name="more">Lebih Banyak Aplikasi</string>
+    <string name="make_title">Buat</string>
+    <string name="shape_list_title">Pilih Set Bentuk</string>
+    <string name="select_color">Pilih Warna</string>
+    <string name="add_new">Buat</string>
+    <string name="insert_new_name">Masukkan Maklumat Set Bentuk Baru</string>
+    <string name="share_title">Berkongsi</string>
+    <string name="upload_complete">Muat Naik Lengkap.</string>
+    <string name="save_complete">Jimat Lengkap.</string>
+    <string name="help">Bantu</string>
+    <string name="detail">Perincian</string>
+    <string name="whole">Keseluruhan</string>
+    <string name="video_type">Kisah Panduan:</string>
+    <string name="need_one_item">Sekurang -Kurangnya Satu Set Bentuk Diperlukan.</string>
+    <string name="rename">Namakan Semula</string>
+    <string name="before">Sebelumnya</string>
+    <string name="sort_type">Menyusun</string>
+    <string name="recent">Terkini</string>
+    <string name="star">Bintang</string>
+    <string name="landscape">Dalam Mod Landskap, Anda Boleh Melihatnya Dalam Skrin Penuh.</string>
+    <string name="long_press">Tekan Lama Sehingga Skrin Dimatikan</string>
+    <string name="double_tap">Ketik Dua Kali, Apa Yang Anda Mahukan.</string>
+    <string name="good_job">Syabas.Sekarang Anda Boleh Menguasai Helah Ini.</string>
+    <string name="featured">Pilihan</string>
+    <string name="start_tutorial">Tutorial</string>
+    <string name="choose_share_app">Pilih Satu</string>
+    <string name="the_name_of_the_shape_set">Nama Set Bentuk</string>
+    <string name="number_of_shapes">Bilangan Bentuk</string>
+    <string name="exit_comment">Anda Mahu Keluar?</string>
+    <string name="exit">Keluar</string>
+</resources>

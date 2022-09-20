@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">キャンバストリック</string>
+
+    <string name="dialog_action_ok">わかった</string>
+    
+    <string name="dialog_error_title">ごめん</string>
+
+    
+    
+    
+    
+
+    
+    <string name="error_title">おっとっと</string>
+    <string name="error_message">ポケモンをロードするのに問題がありました。もう一度やり直してください！</string>
+    <string name="error_reload">リロード</string>
+    <string name="error_something_bad_happened">何か悪いことが起こりました。もう一度やり直してください。</string>
+    <string name="need_save">あなたは保存しません、あなたは保存したくありませんか？</string>
+    <string name="how">方法</string>
+    <string name="start_trick">トリックを始めます</string>
+    <string name="edit">カスタム</string>
+    <string name="share">シェア</string>
+    <string name="more">より多くのアプリケーション</string>
+    <string name="make_title">作る</string>
+    <string name="shape_list_title">形状セットを選択します</string>
+    <string name="select_color">色を選択します</string>
+    <string name="add_new">作成</string>
+    <string name="insert_new_name">新しい形状セット情報を入力します</string>
+    <string name="share_title">シェア</string>
+    <string name="upload_complete">完全にアップロードします。</string>
+    <string name="save_complete">完全に保存します。</string>
+    <string name="help">ヘルプ</string>
+    <string name="detail">詳細</string>
+    <string name="whole">全体</string>
+    <string name="video_type">ガイドストーリー：</string>
+    <string name="need_one_item">少なくとも1つの形状セットが必要です。</string>
+    <string name="rename">名前を変更します</string>
+    <string name="before">前</string>
+    <string name="sort_type">選別</string>
+    <string name="recent">最近</string>
+    <string name="star">星</string>
+    <string name="landscape">ランドスケープモードでは、フルスクリーンで表示できます。</string>
+    <string name="long_press">画面がオフになるまでロングプレス</string>
+    <string name="double_tap">ダブルタップ、あなたが欲しいもの。</string>
+    <string name="good_job">よくできた。これで、このトリックを習得できます。</string>
+    <string name="featured">特徴</string>
+    <string name="start_tutorial">チュートリアル</string>
+    <string name="choose_share_app">1つを選択してください</string>
+    <string name="the_name_of_the_shape_set">形状セットの名前</string>
+    <string name="number_of_shapes">形状の数</string>
+    <string name="exit_comment">あなたは出口が欲しいですか？</string>
+    <string name="exit">出口</string>
+</resources>

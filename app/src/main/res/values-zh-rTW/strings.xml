@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">帆布技巧</string>
+
+    <string name="dialog_action_ok">好的</string>
+    
+    <string name="dialog_error_title">對不起</string>
+
+    
+    
+    
+    
+
+    
+    <string name="error_title">糟糕</string>
+    <string name="error_message">加載口袋妖怪有問題，請重試！</string>
+    <string name="error_reload">重新加載</string>
+    <string name="error_something_bad_happened">發生了一些不好的事情。請再試一次。</string>
+    <string name="need_save">你不保存，你不想保存嗎？</string>
+    <string name="how">如何</string>
+    <string name="start_trick">開始技巧</string>
+    <string name="edit">風俗</string>
+    <string name="share">分享</string>
+    <string name="more">更多的應用</string>
+    <string name="make_title">製作</string>
+    <string name="shape_list_title">選擇一個形狀集</string>
+    <string name="select_color">選擇顏色</string>
+    <string name="add_new">創造</string>
+    <string name="insert_new_name">輸入新形狀集信息</string>
+    <string name="share_title">分享</string>
+    <string name="upload_complete">上傳完成。</string>
+    <string name="save_complete">保存完整。</string>
+    <string name="help">幫助</string>
+    <string name="detail">細節</string>
+    <string name="whole">所有的</string>
+    <string name="video_type">指南故事：</string>
+    <string name="need_one_item">至少需要一個形狀集。</string>
+    <string name="rename">改名</string>
+    <string name="before">前</string>
+    <string name="sort_type">種類</string>
+    <string name="recent">最近的</string>
+    <string name="star">星星</string>
+    <string name="landscape">在景觀模式下，您可以在全屏中查看它。</string>
+    <string name="long_press">長按直至屏幕關閉</string>
+    <string name="double_tap">雙擊，您想要什麼。</string>
+    <string name="good_job">好工作。現在您可以掌握此技巧。</string>
+    <string name="featured">特色</string>
+    <string name="start_tutorial">教程</string>
+    <string name="choose_share_app">選一個</string>
+    <string name="the_name_of_the_shape_set">形狀集的名稱</string>
+    <string name="number_of_shapes">形狀數</string>
+    <string name="exit_comment">你要出口嗎？</string>
+    <string name="exit">出口</string>
+</resources>

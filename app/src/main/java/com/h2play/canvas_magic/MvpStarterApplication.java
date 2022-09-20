@@ -2,15 +2,22 @@ package com.h2play.canvas_magic;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.appopen.AppOpenAd;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.h2play.canvas_magic.features.menu.MenuActivity;
 import com.h2play.canvas_magic.util.AppOpenAdManager;
 import com.h2play.canvas_magic.util.FileUtil;
 import com.singhajit.sherlock.core.Sherlock;
-import com.squareup.leakcanary.LeakCanary;
 import com.tspoon.traceur.Traceur;
 
 import com.h2play.canvas_magic.injection.component.AppComponent;
@@ -43,15 +50,14 @@ public class MvpStarterApplication extends Application {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
             Stetho.initializeWithDefaults(this);
-            LeakCanary.install(this);
+            //LeakCanary.install(this);
             Sherlock.init(this);
             Traceur.enableLogging();
         }
 
         MobileAds.initialize(this );
-        RequestConfiguration aa = new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("8EB76BD1A15E75814716E99259A5CDCE")).build();
+        RequestConfiguration aa = new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("73431CF5ECC2ECB14BBF5CFE4DD450C0")).build();
         MobileAds.setRequestConfiguration(aa);
-
 
         if(getComponent().dataManager().getShapeList().size() <= 0) {
 

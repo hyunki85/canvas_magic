@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">कैनवस ट्रिक</string>
+
+    <string name="dialog_action_ok">ठीक है</string>
+    
+    <string name="dialog_error_title">माफ़ करना</string>
+
+    
+    
+    
+    
+
+    
+    <string name="error_title">उफ़</string>
+    <string name="error_message">पोकेमॉन को लोड करने में एक समस्या थी, कृपया फिर से प्रयास करें!</string>
+    <string name="error_reload">पुनः लोड करें</string>
+    <string name="error_something_bad_happened">कुछ बुरा हो गया।कृपया पुन: प्रयास करें।</string>
+    <string name="need_save">आप नहीं करते हैं, आप नहीं चाहते हैं?</string>
+    <string name="how">कैसे करें</string>
+    <string name="start_trick">शुरू करना</string>
+    <string name="edit">रीति</string>
+    <string name="share">शेयर करना</string>
+    <string name="more">और ऐप</string>
+    <string name="make_title">बनाना</string>
+    <string name="shape_list_title">एक आकार सेट चुनें</string>
+    <string name="select_color">रंग चुनो</string>
+    <string name="add_new">सृजन करना</string>
+    <string name="insert_new_name">एक नया आकार सेट जानकारी दर्ज करें</string>
+    <string name="share_title">शेयर करना</string>
+    <string name="upload_complete">अपलोड पूरा हुआ।</string>
+    <string name="save_complete">पूरा सहेजें।</string>
+    <string name="help">मदद करना</string>
+    <string name="detail">विवरण</string>
+    <string name="whole">पूरे</string>
+    <string name="video_type">गाइड कहानी:</string>
+    <string name="need_one_item">कम से कम एक आकार सेट की आवश्यकता है।</string>
+    <string name="rename">नाम बदलने</string>
+    <string name="before">इससे पहले</string>
+    <string name="sort_type">क्रम से लगाना</string>
+    <string name="recent">हालिया</string>
+    <string name="star">सितारा</string>
+    <string name="landscape">लैंडस्केप मोड में, आप इसे पूर्ण स्क्रीन में देख सकते हैं।</string>
+    <string name="long_press">लंबे समय तक स्क्रीन को बंद करें</string>
+    <string name="double_tap">डबल टैप, आप क्या चाहते हैं।</string>
+    <string name="good_job">अच्छी नौकरी।अब आप इस ट्रिक में महारत हासिल कर सकते हैं।</string>
+    <string name="featured">विशेष रुप से प्रदर्शित</string>
+    <string name="start_tutorial">ट्यूटोरियल</string>
+    <string name="choose_share_app">एक का चयन</string>
+    <string name="the_name_of_the_shape_set">आकार सेट का नाम</string>
+    <string name="number_of_shapes">आकृतियों की संख्या</string>
+    <string name="exit_comment">आप बाहर निकलना चाहते हैं?</string>
+    <string name="exit">बाहर निकलना</string>
+</resources>

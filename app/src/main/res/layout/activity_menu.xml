@@ -13,20 +13,10 @@
         android:scaleType="fitXY"
         android:src="@drawable/bg_repeat" />
 
-    <ImageView
-        android:id="@+id/img_logo"
-        android:layout_width="159dp"
-        android:layout_height="32dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
-        android:src="@drawable/logo" />
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@id/img_logo"
+        android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
@@ -127,9 +117,9 @@
             android:id="@+id/adView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="90dp"
             app:adSize="SMART_BANNER"
             app:adUnitId="ca-app-pub-9937617798998725/6628693119"
-            android:minHeight="90dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"></com.google.android.gms.ads.AdView>

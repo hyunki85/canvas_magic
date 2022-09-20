@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Tuval Hilesi</string>
+
+    <string name="dialog_action_ok">Tamam</string>
+    
+    <string name="dialog_error_title">Afedersiniz</string>
+
+    
+    
+    
+    
+
+    
+    <string name="error_title">Oops</string>
+    <string name="error_message">Pokemon Yüklemede Bir Sorun Vardı, Lütfen Tekrar Deneyin!</string>
+    <string name="error_reload">Tekrar Yükle</string>
+    <string name="error_something_bad_happened">Kötü Bir Şey Oldu.Lütfen Tekrar Deneyin.</string>
+    <string name="need_save">Kaydetmiyorsun, Kurtarmak Istemiyor Musun?</string>
+    <string name="how">Nasıl</string>
+    <string name="start_trick">Hile Başlat</string>
+    <string name="edit">Gelenek</string>
+    <string name="share">Paylaşmak</string>
+    <string name="more">Daha Fazla Uygulama</string>
+    <string name="make_title">Yapmak</string>
+    <string name="shape_list_title">Bir Şekil Seti Seçin</string>
+    <string name="select_color">Renk Seç</string>
+    <string name="add_new">Oluşturmak</string>
+    <string name="insert_new_name">Yeni Bir Şekil Kümesi Bilgisi Girin</string>
+    <string name="share_title">Paylaşmak</string>
+    <string name="upload_complete">Yükleme Tamamlandı.</string>
+    <string name="save_complete">Tamamla Kaydet.</string>
+    <string name="help">Yardım</string>
+    <string name="detail">Detay</string>
+    <string name="whole">Tüm</string>
+    <string name="video_type">Rehber Hikaye:</string>
+    <string name="need_one_item">En Az Bir Şekil Seti Gereklidir.</string>
+    <string name="rename">Adını Değiştirmek</string>
+    <string name="before">Önceki</string>
+    <string name="sort_type">Çeşit</string>
+    <string name="recent">Son</string>
+    <string name="star">Yıldız</string>
+    <string name="landscape">Peyzaj Modunda, Tam Ekranda Görüntüleyebilirsiniz.</string>
+    <string name="long_press">Ekran Kapalana Kadar Uzun Basın</string>
+    <string name="double_tap">Çift Dokunun, Ne Istersen.</string>
+    <string name="good_job">Aferin.Şimdi Bu Hileye Hakim Olabilirsiniz.</string>
+    <string name="featured">Öne Çıkan</string>
+    <string name="start_tutorial">Öğretici</string>
+    <string name="choose_share_app">Birini Seç</string>
+    <string name="the_name_of_the_shape_set">Şekil Setinin Adı</string>
+    <string name="number_of_shapes">Şekil Sayısı</string>
+    <string name="exit_comment">Çıkış Mı Istiyorsun?</string>
+    <string name="exit">Çıkış</string>
+</resources>
