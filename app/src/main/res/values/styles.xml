@@ -22,7 +22,7 @@
     <style name="menu_btn">
         <item name="android:layout_width">180dp</item>
         <item name="android:layout_height">100dp</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">14dp</item>
     </style>
     <style name="AppCard" parent="Widget.MaterialComponents.CardView">
         <item name="cardElevation">8dp</item>
