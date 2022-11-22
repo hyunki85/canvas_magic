@@ -236,7 +236,7 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
 
         container.addView(et);
 
-        final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this,R.style.Theme_MaterialComponents_Light_Dialog_Alert);
+        final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this,R.style.AlertDialogTheme);
 
         alt_bld.setTitle(getResources().getString(R.string.add_new))
                 .setMessage(getResources().getString(R.string.insert_new_name))

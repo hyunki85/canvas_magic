@@ -25,12 +25,16 @@
             android:id="@+id/btn_start"
             style="@style/menu_btn"
             android:layout_width="240dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/btn_bg"
             android:text="@string/start_trick"
+            app:backgroundTint="#6C4AB6"
             app:layout_constraintBottom_toTopOf="@+id/cl_group"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.47000003"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_group"
@@ -44,11 +48,12 @@
                 android:id="@+id/btn_channel"
                 style="@style/menu_btn"
                 android:background="@drawable/btn_bg"
-
                 android:text="@string/edit"
+                app:backgroundTint="#8D72E1"
                 app:layout_constraintBottom_toTopOf="@+id/btn_help"
                 app:layout_constraintEnd_toStartOf="@+id/btn_share"
                 app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_start"
                 app:layout_constraintVertical_chainStyle="packed" />
@@ -59,6 +64,7 @@
                 android:background="@drawable/btn_bg"
 
                 android:text="@string/share"
+                app:backgroundTint="#8D72E1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btn_channel"
                 app:layout_constraintTop_toTopOf="@+id/btn_channel" />
@@ -66,25 +72,15 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_help"
                 style="@style/menu_btn"
+                android:layout_marginTop="24dp"
                 android:background="@drawable/btn_bg"
-
                 android:text="@string/how"
+                app:backgroundTint="#8D9EFF"
                 app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-                app:layout_constraintEnd_toStartOf="@+id/btn_more"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_channel" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_more"
-                style="@style/menu_btn"
-                android:background="@drawable/btn_bg"
-                android:text="@string/more"
-                app:backgroundTint="#dddd00"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/btn_help"
-                app:layout_constraintTop_toTopOf="@+id/btn_help" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -93,11 +89,13 @@
             android:id="@+id/linearLayout"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="4dp"
             app:layout_constraintBottom_toTopOf="@+id/adView"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_more"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_group">
 
@@ -130,6 +128,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"></com.google.android.gms.ads.AdView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_more"
+            style="@style/menu_btn"
+            android:background="@drawable/btn_bg"
+            android:text="@string/more"
+            app:backgroundTint="#dddd00"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/linearLayout"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

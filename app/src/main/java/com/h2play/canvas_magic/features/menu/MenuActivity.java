@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -72,6 +74,9 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     @BindView(R.id.btn_start)
     Button startButton;
+
+    @BindView(R.id.btn_more)
+    Button moreButton;
 
     private FirebaseAuth mAuth;
     private AdView adView;
@@ -142,6 +147,9 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
                         finish();
                     }
                 });
+
+        Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(this, R.anim.blink);
+        moreButton.startAnimation(hyperspaceJumpAnimation);
 
         AppRate.with(this)
                 .setInstallDays((byte) 0)                  // default is 10, 0 means install day, 10 means app is launched 10 or more days later than installation

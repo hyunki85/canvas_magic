@@ -169,7 +169,7 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
 
         container.addView(et);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.Theme_MaterialComponents_Light_Dialog_Alert);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AlertDialogTheme);
 
         View view = getLayoutInflater().inflate(R.layout.dialog_new,null);
         String items[] = new String[]{"6", "9", "12", "15"};
@@ -265,7 +265,7 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
 
         container.addView(et);
 
-        final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this,R.style.Theme_MaterialComponents_Light_Dialog_Alert);
+        final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this,R.style.AlertDialogTheme);
 
         alt_bld.setTitle(getResources().getString(R.string.rename))
                 .setMessage(getResources()
