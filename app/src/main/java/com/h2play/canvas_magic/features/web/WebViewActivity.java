@@ -5,31 +5,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
+import android.widget.Button;
 
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.h2play.canvas_magic.R;
 
 public class WebViewActivity extends AppCompatActivity {
 
-
     @InjectExtra String url;
     @InjectExtra String title;
 
-    @BindView(R.id.webview) WebView webView;
-    @BindView(R.id.txt_title) TextView titleTextView;
+    private WebView webView;
+    private TextView titleTextView;
+    private Button cancelButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
-        ButterKnife.bind(this);
         Dart.inject(this);
 
+        // Initialize views using findViewById instead of ButterKnife
+        webView = findViewById(R.id.webview);
+        titleTextView = findViewById(R.id.txt_title);
+        cancelButton = findViewById(R.id.btn_cancel);
+        
+        // Set click listener instead of using @OnClick
+        cancelButton.setOnClickListener(v -> onCancelClick());
 
         webView.setWebViewClient(new MyCustomWebViewClient(this));
         webView.clearCache(true);
@@ -41,7 +45,6 @@ public class WebViewActivity extends AppCompatActivity {
         titleTextView.setText(title);
     }
 
-    @OnClick(R.id.btn_cancel)
     public void onCancelClick() {
         finish();
     }

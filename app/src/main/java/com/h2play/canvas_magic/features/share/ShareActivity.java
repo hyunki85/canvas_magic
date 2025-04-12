@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.h2play.canvas_magic.R;
 import com.h2play.canvas_magic.data.model.response.ShapeInfo;
@@ -26,8 +27,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -40,18 +39,11 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
     @Inject
     ShapeAdapter shapeAdapter;
 
-    @BindView(R.id.view_error)
-    ErrorView errorView;
-
-    @BindView(R.id.progress)
-    ProgressBar progressBar;
-
-
-    @BindView(R.id.tab_category)
-    TabLayout tabLayout;
-
-    @BindView(R.id.rv_shape_online)
-    RecyclerView mPokemonRecycler;
+    private ErrorView errorView;
+    private ProgressBar progressBar;
+    private TabLayout tabLayout;
+    private RecyclerView mPokemonRecycler;
+    private FloatingActionButton fabUpload;
 
     public static Intent getStartIntent(Context context) {
         Intent intent = new Intent(context, ShareActivity.class);
@@ -61,6 +53,16 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize views using findViewById instead of ButterKnife
+        errorView = findViewById(R.id.view_error);
+        progressBar = findViewById(R.id.progress);
+        tabLayout = findViewById(R.id.tab_category);
+        mPokemonRecycler = findViewById(R.id.rv_shape_online);
+        fabUpload = findViewById(R.id.fab_upload);
+        
+        // Set click listeners (replacing @OnClick annotations)
+        fabUpload.setOnClickListener(v -> onUploadClick());
 
         errorView.setErrorListener(this);
 
@@ -94,7 +96,6 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
             }
         });
     }
-
 
     @Override
     public int getLayout() {
@@ -185,11 +186,8 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
         menuPresenter.addLike(shapeOnline);
     }
 
-    @OnClick(R.id.fab_upload)
     public void onUploadClick() {
         menuPresenter.getShapeList();
     }
-
-
 
 }

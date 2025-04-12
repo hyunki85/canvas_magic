@@ -6,21 +6,17 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.h2play.canvas_magic.R;
 import com.h2play.canvas_magic.data.model.response.Statistic;
 
 public class StatisticView extends RelativeLayout {
 
-    @BindView(R.id.text_name)
     TextView nameText;
-
-    @BindView(R.id.progress_stat)
     ProgressBar statProgress;
 
     public StatisticView(Context context) {
@@ -45,8 +41,9 @@ public class StatisticView extends RelativeLayout {
     }
 
     private void init() {
-        LayoutInflater.from(getContext()).inflate(R.layout.view_statistic, this);
-        ButterKnife.bind(this);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.view_statistic, this);
+        nameText = view.findViewById(R.id.text_name);
+        statProgress = view.findViewById(R.id.progress_stat);
     }
 
     @SuppressLint("SetTextI18n")

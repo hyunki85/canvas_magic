@@ -28,8 +28,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 import com.h2play.canvas_magic.R;
 import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
@@ -52,8 +50,9 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
     @Inject
     MakePresenter mainPresenter;
 
-    @BindView(R.id.fabricView)
-    FabricView fabricView;
+    private FabricView fabricView;
+    private View btnSave;
+    private View ibClear;
 
     private boolean needSave = false;
 
@@ -66,6 +65,15 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
         super.onCreate(savedInstanceState);
 
         Dart.inject(this);
+
+        // Initialize views
+        fabricView = findViewById(R.id.fabricView);
+        btnSave = findViewById(R.id.btn_save);
+        ibClear = findViewById(R.id.ib_clear);
+
+        // Set click listeners
+        btnSave.setOnClickListener(v -> onSaveClick());
+        ibClear.setOnClickListener(v -> onClearClick());
 
         selectedColor = Color.BLACK;
         fabricView.setColor(selectedColor);
@@ -87,7 +95,7 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
     @Override
     public void onBackPressed() {
 
-        if(needSave) {
+        if (needSave) {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setTitle(getResources().getString(R.string.app_name));
             alertDialog.setMessage(getResources().getString(R.string.need_save));
@@ -115,14 +123,12 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
 
     }
 
-    @OnClick(R.id.btn_save)
     public void onSaveClick() {
         needSave = false;
         saveJson();
         Toast.makeText(this, R.string.save_complete, Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.ib_clear)
     public void onClearClick() {
         fabricView.cleanPage();
         actions = new JsonArray();
@@ -138,38 +144,38 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
         WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
 
-        for ( JsonObject jsonObject : fabricView.getJsonArrays()) {
+        for (JsonObject jsonObject : fabricView.getJsonArrays()) {
             JsonObject newjsonObject = jsonObject.deepCopy();
             switch (newjsonObject.get("action").getAsString()) {
                 case "up":
                 case "down": {
-                    newjsonObject.addProperty("x", newjsonObject.get("x").getAsFloat()/displayMetrics.widthPixels);
-                    newjsonObject.addProperty("y", newjsonObject.get("y").getAsFloat()/displayMetrics.heightPixels);
+                    newjsonObject.addProperty("x", newjsonObject.get("x").getAsFloat() / displayMetrics.widthPixels);
+                    newjsonObject.addProperty("y", newjsonObject.get("y").getAsFloat() / displayMetrics.heightPixels);
                     break;
                 }
                 case "move": {
-                    newjsonObject.addProperty("x1", newjsonObject.get("x1").getAsFloat()/displayMetrics.widthPixels);
-                    newjsonObject.addProperty("y1", newjsonObject.get("y1").getAsFloat()/displayMetrics.heightPixels);
-                    newjsonObject.addProperty("x2", newjsonObject.get("x2").getAsFloat()/displayMetrics.widthPixels);
-                    newjsonObject.addProperty("y2", newjsonObject.get("y2").getAsFloat()/displayMetrics.heightPixels);
+                    newjsonObject.addProperty("x1", newjsonObject.get("x1").getAsFloat() / displayMetrics.widthPixels);
+                    newjsonObject.addProperty("y1", newjsonObject.get("y1").getAsFloat() / displayMetrics.heightPixels);
+                    newjsonObject.addProperty("x2", newjsonObject.get("x2").getAsFloat() / displayMetrics.widthPixels);
+                    newjsonObject.addProperty("y2", newjsonObject.get("y2").getAsFloat() / displayMetrics.heightPixels);
                     break;
                 }
             }
             jsonObjects.add(newjsonObject);
         }
 
-        for (int i = 0; i < actions.size(); ++i ) {
+        for (int i = 0; i < actions.size(); ++i) {
             jsonObjects.add(actions.get(i).getAsJsonObject());
         }
 
         Gson gson = new Gson();
         String str = gson.toJson(jsonObjects);
 
-        shapeArray.set(shapeIndex, gson.fromJson(str,JsonArray.class));
+        shapeArray.set(shapeIndex, gson.fromJson(str, JsonArray.class));
 
-        assetJsonObject.add("shapes",shapeArray);
+        assetJsonObject.add("shapes", shapeArray);
 
-        FileUtil.writeFile(this,fileName, new Gson().toJson(assetJsonObject));
+        FileUtil.writeFile(this, fileName, new Gson().toJson(assetJsonObject));
     }
 
     public void loadJson() {
@@ -177,8 +183,8 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
         File fl = new File(getFilesDir(), "file.txt");
 
         String jsonText = null;
-        if(fl.exists()) {
-            jsonText = FileUtil.getJsonFromFile(this,fileName);
+        if (fl.exists()) {
+            jsonText = FileUtil.getJsonFromFile(this, fileName);
         } else {
             InputStream inputStream = getResources().openRawResource(R.raw.base_pattern);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -197,7 +203,7 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
             }
         }
 
-        assetJsonObject = new Gson().fromJson(jsonText,JsonObject.class);
+        assetJsonObject = new Gson().fromJson(jsonText, JsonObject.class);
     }
 
     public void showShape() {
@@ -212,29 +218,29 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
             actions = shapes.get(shapeIndex).getAsJsonArray();
 
             List<JsonObject> jsonObjects = new ArrayList<>();
-            for (int i = 0; i < actions.size(); ++i ) {
+            for (int i = 0; i < actions.size(); ++i) {
                 jsonObjects.add(actions.get(i).getAsJsonObject());
             }
 
-            for (JsonObject jsonObject :  jsonObjects) {
+            for (JsonObject jsonObject : jsonObjects) {
                 switch (jsonObject.get("action").getAsString()) {
                     case "down": {
-                        fabricView.actionDown(jsonObject.get("x").getAsFloat()*displayMetrics.widthPixels
-                                ,jsonObject.get("y").getAsFloat()*displayMetrics.heightPixels);
+                        fabricView.actionDown(jsonObject.get("x").getAsFloat() * displayMetrics.widthPixels
+                                , jsonObject.get("y").getAsFloat() * displayMetrics.heightPixels);
                         break;
                     }
 
                     case "up": {
-                        fabricView.actionUp(jsonObject.get("x").getAsFloat()*displayMetrics.widthPixels
-                                ,jsonObject.get("y").getAsFloat()*displayMetrics.heightPixels);
+                        fabricView.actionUp(jsonObject.get("x").getAsFloat() * displayMetrics.widthPixels
+                                , jsonObject.get("y").getAsFloat() * displayMetrics.heightPixels);
                         break;
                     }
 
                     case "move": {
-                        fabricView.actionMove(jsonObject.get("x1").getAsFloat()*displayMetrics.widthPixels
-                                ,jsonObject.get("y1").getAsFloat()*displayMetrics.heightPixels,
-                                jsonObject.get("x2").getAsFloat()*displayMetrics.widthPixels,
-                                jsonObject.get("y2").getAsFloat()*displayMetrics.heightPixels);
+                        fabricView.actionMove(jsonObject.get("x1").getAsFloat() * displayMetrics.widthPixels
+                                , jsonObject.get("y1").getAsFloat() * displayMetrics.heightPixels,
+                                jsonObject.get("x2").getAsFloat() * displayMetrics.widthPixels,
+                                jsonObject.get("y2").getAsFloat() * displayMetrics.heightPixels);
                         break;
                     }
                 }
@@ -284,8 +290,8 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
 
     public static Intent getStartIntent(Context context, int index, String fileName) {
         Intent intent = new Intent(context, MakeActivity.class);
-        intent.putExtra("shapeIndex",index);
-        intent.putExtra("fileName",fileName);
+        intent.putExtra("shapeIndex", index);
+        intent.putExtra("fileName", fileName);
         return intent;
     }
 }

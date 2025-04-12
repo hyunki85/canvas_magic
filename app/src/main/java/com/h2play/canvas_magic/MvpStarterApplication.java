@@ -18,7 +18,7 @@ import com.h2play.canvas_magic.features.menu.MenuActivity;
 import com.h2play.canvas_magic.util.AppOpenAdManager;
 import com.h2play.canvas_magic.util.FileUtil;
 import com.singhajit.sherlock.core.Sherlock;
-import com.tspoon.traceur.Traceur;
+//import com.tspoon.traceur.Traceur;
 
 import com.h2play.canvas_magic.injection.component.AppComponent;
 import com.h2play.canvas_magic.injection.component.DaggerAppComponent;
@@ -52,7 +52,6 @@ public class MvpStarterApplication extends Application {
             Stetho.initializeWithDefaults(this);
             //LeakCanary.install(this);
             Sherlock.init(this);
-            Traceur.enableLogging();
         }
 
         MobileAds.initialize(this );

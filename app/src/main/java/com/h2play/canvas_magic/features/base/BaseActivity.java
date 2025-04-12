@@ -7,7 +7,6 @@ import android.view.MenuItem;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import butterknife.ButterKnife;
 import com.h2play.canvas_magic.MvpStarterApplication;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.injection.component.ConfigPersistentComponent;
@@ -35,7 +34,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
-        ButterKnife.bind(this);
 
         // Create the ActivityComponent and reuses cached ConfigPersistentComponent if this is
         // being called after a configuration change.

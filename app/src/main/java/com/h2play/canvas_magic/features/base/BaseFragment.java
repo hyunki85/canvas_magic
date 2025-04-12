@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import butterknife.ButterKnife;
 import com.h2play.canvas_magic.MvpStarterApplication;
 import com.h2play.canvas_magic.injection.component.ConfigPersistentComponent;
 import com.h2play.canvas_magic.injection.component.DaggerConfigPersistentComponent;
@@ -66,7 +65,6 @@ public abstract class BaseFragment extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getLayout(), container, false);
-        ButterKnife.bind(this, view);
         return view;
     }
 

@@ -9,14 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.h2play.canvas_magic.R;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-
 public class HelpActivity extends AppCompatActivity {
 
-    @BindView(R.id.videoview)
-    VideoView videoView;
+    private VideoView videoView;
+    private RadioButton rbDetail;
+    private RadioButton rbWhole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,20 +21,23 @@ public class HelpActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_help);
 
-        ButterKnife.bind(this);
+        // Initialize views using findViewById instead of ButterKnife
+        videoView = findViewById(R.id.videoview);
+        rbDetail = findViewById(R.id.rb_detail);
+        rbWhole = findViewById(R.id.rb_whole);
+        
+        // Set up listeners for RadioButtons instead of using @OnCheckedChanged
+        rbDetail.setOnCheckedChangeListener((buttonView, isChecked) -> onDetailClick(rbDetail, isChecked));
+        rbWhole.setOnCheckedChangeListener((buttonView, isChecked) -> onDetailClick(rbWhole, isChecked));
 
         String uriPath = "android.resource://" + getPackageName() + "/" + R.raw.how2;
-        videoView = findViewById(R.id.videoview);
 
         videoView.setOnPreparedListener(mp -> mp.setLooping(true));
         videoView.setVideoURI(Uri.parse(uriPath));
         videoView.start();
     }
 
-
-    @OnCheckedChanged({R.id.rb_detail,R.id.rb_whole})
     public void onDetailClick(RadioButton radioButton, boolean isChecked) {
-
         if(isChecked) {
             String uriPath = "android.resource://" + getPackageName() + "/" + R.raw.how2;
             switch (radioButton.getId()) {
@@ -51,7 +51,5 @@ public class HelpActivity extends AppCompatActivity {
             videoView.setVideoURI(Uri.parse(uriPath));
             videoView.start();
         }
-
     }
-
 }

@@ -26,8 +26,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -158,26 +156,20 @@ public class ShapeAdapter extends RecyclerView.Adapter<ShapeAdapter.ShapeViewHol
     class ShapeViewHolder extends RecyclerView.ViewHolder {
 
         ShapeOnline shapeOnline;
-        @BindView(R.id.txt_name)
         TextView nameText;
-
-        @BindView(R.id.txt_date)
         TextView dateText;
-
-        @BindView(R.id.txt_star)
         TextView starText;
-
-        @BindView(R.id.img_like)
         ImageView starImageView;
-
-        @BindView(R.id.fabricView1)
         FabricView fabricView;
-
-
 
         ShapeViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            nameText = itemView.findViewById(R.id.txt_name);
+            dateText = itemView.findViewById(R.id.txt_date);
+            starText = itemView.findViewById(R.id.txt_star);
+            starImageView = itemView.findViewById(R.id.img_like);
+            fabricView = itemView.findViewById(R.id.fabricView1);
+            
             itemView.setOnClickListener(v -> {
                 if (mClickListener != null) mClickListener.onShapeClick(shapeOnline);
             });

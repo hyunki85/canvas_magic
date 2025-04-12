@@ -34,9 +34,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-import butterknife.OnLongClick;
 import com.h2play.canvas_magic.R;
 import com.h2play.canvas_magic.data.model.response.ShapeInfo;
 import com.h2play.canvas_magic.features.base.BaseActivity;
@@ -56,11 +53,11 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     @Inject
     MainPresenter mainPresenter;
 
-    @BindView(R.id.fabricView)
-    FabricView fabricView;
-
-    @BindView(R.id.btn_start)
-    ImageButton imageButton;
+    private FabricView fabricView;
+    private ImageButton imageButton;
+    private ImageButton thicknessButton;
+    private ImageButton clearButton;
+    private ImageButton eraseButton;
 
     private int selectedColor;
     private ShapeInfo selectedShape;
@@ -68,11 +65,26 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
     private AdView adView;
     private AdDialog mCustomDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Dart.inject(this);
+
+        // Initialize views using findViewById instead of ButterKnife
+        fabricView = findViewById(R.id.fabricView);
+        imageButton = findViewById(R.id.btn_start);
+        thicknessButton = findViewById(R.id.ib_thickness);
+        clearButton = findViewById(R.id.ib_clear);
+        eraseButton = findViewById(R.id.ib_erase);
+
+        // Set click listeners (replacing @OnClick annotations)
+        imageButton.setOnClickListener(v -> onStartClick());
+        imageButton.setOnLongClickListener(v -> onStartLongClick());
+        thicknessButton.setOnClickListener(v -> onThicknessClick());
+        clearButton.setOnClickListener(v -> onClearClick());
+        eraseButton.setOnClickListener(v -> onEraseClick());
 
         selectedColor = Color.RED;
         GradientDrawable drawable = (GradientDrawable) imageButton.getBackground();
@@ -82,7 +94,6 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         mainPresenter.getShape(shapeIndex);
 
         mainPresenter.checkNeedGuide();
-
 
         adView = new AdView(this);
         adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
@@ -108,9 +119,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
     }
 
-    @OnClick(R.id.btn_start)
     public void onStartClick() {
-
         ColorPickerDialogBuilder
                 .with(this)
                 .setTitle(getResources().getString(R.string.select_color))
@@ -141,12 +150,10 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
                 })
                 .build()
                 .show();
-
     }
 
     @Override
     public void showLongPressGuide() {
-
         guideTextView = new TextView(this);
         guideTextView.setBackgroundResource(R.drawable.bubble);
         guideTextView.setText(getResources().getString(R.string.long_press));
@@ -156,43 +163,37 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         params.addRule(RelativeLayout.ABOVE, R.id.btn_start);
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.rootView);
-        layout.addView(guideTextView,params);
-
+        layout.addView(guideTextView, params);
     }
 
-    @OnLongClick(R.id.btn_start)
     public boolean onStartLongClick() {
         fabricView.setColor(selectedColor);
-        if(guideTextView != null) {
+        if (guideTextView != null) {
             guideTextView.setText(R.string.good_job);
         }
 
-        Intent intent = PinActivity.getStartIntent(this,selectedShape.count);
+        Intent intent = PinActivity.getStartIntent(this, selectedShape.count);
         startActivityForResult(intent, REQUEST_CODE);
         return true;
     }
 
-    @OnClick(R.id.ib_thickness)
     public void onThicknessClick() {
-        fabricView.setSize(fabricView.getSize()==20?10:20);
+        fabricView.setSize(fabricView.getSize() == 20 ? 10 : 20);
         fabricView.setColor(selectedColor);
     }
 
-    @OnClick(R.id.ib_clear)
     public void onClearClick() {
         fabricView.cleanPage();
     }
 
-    @OnClick(R.id.ib_erase)
     public void onEraseClick() {
         fabricView.setSize(50);
         fabricView.setColor(Color.WHITE);
-
     }
 
     @Override
     public void onBackPressed() {
-        if(guideTextView == null) {
+        if (guideTextView == null) {
             mCustomDialog.show();
         } else {
             finish();
@@ -270,7 +271,6 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         mainPresenter.detachView();
     }
 
-
     @Override
     public void showProgress(boolean show) {
 
@@ -288,7 +288,6 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     @Override
     public void onReloadData() {
     }
-
 
     public static Intent getStartIntent(Context context, int shapeIndex) {
         Intent intent = new Intent(context, MainActivity.class);

@@ -48,10 +48,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.BindViews;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -69,28 +65,30 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
     @Inject
     PreviewPresenter listPresenter;
 
-
-    @BindView(R.id.txt_title)
-    TextView titleTextView;
-
-    @BindView(R.id.view_error)
-    ErrorView errorView;
-
-    @BindView(R.id.progress)
-    ProgressBar progressBar;
-
-    @BindView(R.id.rv_preview)
-    RecyclerView recyclerView;
+    private TextView titleTextView;
+    private ErrorView errorView;
+    private ProgressBar progressBar;
+    private RecyclerView recyclerView;
+    private View fabSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize views
+        titleTextView = findViewById(R.id.txt_title);
+        errorView = findViewById(R.id.view_error);
+        progressBar = findViewById(R.id.progress);
+        recyclerView = findViewById(R.id.rv_preview);
+        fabSave = findViewById(R.id.fab_save);
+
         errorView.setErrorListener(this);
+        fabSave.setOnClickListener(v -> onSaveClick());
 
         Dart.inject(this);
 
         titleTextView.setText(shapeOnline.name);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,3));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         int spacingInPixels = ViewUtil.dpToPx(16);
         recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
@@ -106,7 +104,7 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
             }
 
             @Override
-            public void onBindViewHolder( PreviewHolder holder, int position) {
+            public void onBindViewHolder(PreviewHolder holder, int position) {
 
                 holder.itemView.post(new Runnable() {
                     @Override
@@ -128,7 +126,6 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
 
     @Override
     protected void onResume() {
-
         super.onResume();
     }
 
@@ -147,29 +144,29 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
         JsonArray actions = shapes.get(shapeIndex).getAsJsonArray();
 
         List<JsonObject> jsonObjects = new ArrayList<>();
-        for (int i = 0; i < actions.size(); ++i ) {
+        for (int i = 0; i < actions.size(); ++i) {
             jsonObjects.add(actions.get(i).getAsJsonObject());
         }
         ;
-        for (JsonObject jsonObject :  jsonObjects) {
+        for (JsonObject jsonObject : jsonObjects) {
             switch (jsonObject.get("action").getAsString()) {
                 case "down": {
-                    fabricView.actionDown(jsonObject.get("x").getAsFloat()*fabricView.getWidth()
-                            ,jsonObject.get("y").getAsFloat()*fabricView.getHeight());
+                    fabricView.actionDown(jsonObject.get("x").getAsFloat() * fabricView.getWidth()
+                            , jsonObject.get("y").getAsFloat() * fabricView.getHeight());
                     break;
                 }
 
                 case "up": {
-                    fabricView.actionUp(jsonObject.get("x").getAsFloat()*fabricView.getWidth()
-                            ,jsonObject.get("y").getAsFloat()*fabricView.getHeight());
+                    fabricView.actionUp(jsonObject.get("x").getAsFloat() * fabricView.getWidth()
+                            , jsonObject.get("y").getAsFloat() * fabricView.getHeight());
                     break;
                 }
 
                 case "move": {
-                    fabricView.actionMove(jsonObject.get("x1").getAsFloat()*fabricView.getWidth()
-                            ,jsonObject.get("y1").getAsFloat()*fabricView.getHeight(),
-                            jsonObject.get("x2").getAsFloat()*fabricView.getWidth(),
-                            jsonObject.get("y2").getAsFloat()*fabricView.getHeight());
+                    fabricView.actionMove(jsonObject.get("x1").getAsFloat() * fabricView.getWidth()
+                            , jsonObject.get("y1").getAsFloat() * fabricView.getHeight(),
+                            jsonObject.get("x2").getAsFloat() * fabricView.getWidth(),
+                            jsonObject.get("y2").getAsFloat() * fabricView.getHeight());
                     break;
                 }
             }
@@ -219,83 +216,60 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
 
     }
 
-    @OnClick(R.id.fab_save)
     public void onSaveClick() {
-
         final EditText et = new EditText(this);
         FrameLayout container = new FrameLayout(this);
 
-        FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
-
         params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
 
         et.setLayoutParams(params);
-
-
         container.addView(et);
 
-        final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this,R.style.AlertDialogTheme);
+        final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
 
         alt_bld.setTitle(getResources().getString(R.string.add_new))
                 .setMessage(getResources().getString(R.string.insert_new_name))
                 .setIcon(R.drawable.ic_plus_24).setView(container).setPositiveButton(getResources().getString(android.R.string.ok),
-
                 (dialog, id) -> {
-
                     if (et.getText().length() > 0) {
-                        listPresenter.addNewItem(getBaseContext(),et.getText().toString(),shapeOnline.json,shapeOnline.count);
+                        listPresenter.addNewItem(getBaseContext(), et.getText().toString(), shapeOnline.json, shapeOnline.count);
                     }
-
-
                 });
 
         AlertDialog alert = alt_bld.create();
-
         et.addTextChangedListener(new TextWatcher() {
-
             @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
                 // Check if edittext is empty
                 if (TextUtils.isEmpty(s)) {
                     // Disable ok button
                     ((AlertDialog) alert).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
                 } else {
                     // Something into edit text. Enable the button.
                     ((AlertDialog) alert).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
                 }
-
             }
         });
-
         alert.show();
         alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
-
-
     }
 
     class PreviewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.fabricView)
         FabricView fabricView;
 
         PreviewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            fabricView = itemView.findViewById(R.id.fabricView);
         }
     }
 

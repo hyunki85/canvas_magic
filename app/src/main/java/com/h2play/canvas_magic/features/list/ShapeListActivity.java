@@ -10,7 +10,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -30,28 +29,17 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.Inflater;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.BindViews;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import com.h2play.canvas_magic.R;
 import com.h2play.canvas_magic.data.model.response.ShapeInfo;
 import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
 import com.h2play.canvas_magic.features.make.MakeActivity;
-import com.h2play.canvas_magic.features.preview.PreviewActivity;
-import com.h2play.canvas_magic.features.share.ShareActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.FabricView;
 import com.h2play.canvas_magic.util.FileUtil;
@@ -68,17 +56,12 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
 
     ShapeInfo selectedShape;
 
-    @BindView(R.id.btn_shape)
-    Button shapeButton;
-
-    @BindView(R.id.view_error)
-    ErrorView errorView;
-
-    @BindView(R.id.progress)
-    ProgressBar progressBar;
-
-    @BindView(R.id.rv_preview)
-    RecyclerView recyclerView;
+    private Button shapeButton;
+    private ErrorView errorView;
+    private ProgressBar progressBar;
+    private RecyclerView recyclerView;
+    private View fabAdd;
+    private View ibMore;
 
     private List<ShapeInfo> shapeInfos;
     private RecyclerView.Adapter<PreviewHolder> adapter;
@@ -86,10 +69,23 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Initialize views
+        shapeButton = findViewById(R.id.btn_shape);
+        errorView = findViewById(R.id.view_error);
+        progressBar = findViewById(R.id.progress);
+        recyclerView = findViewById(R.id.rv_preview);
+        fabAdd = findViewById(R.id.fab_add);
+        ibMore = findViewById(R.id.ib_more);
+        
+        // Set click listeners
+        shapeButton.setOnClickListener(v -> onShapeClick());
+        fabAdd.setOnClickListener(v -> onAddClick());
+        ibMore.setOnClickListener(v -> onMoreClick());
+        
         errorView.setErrorListener(this);
 
         listPresenter.getShapes();
-
 
         recyclerView.setLayoutManager(new GridLayoutManager(this,3));
 
@@ -99,7 +95,6 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
             @NonNull
             @Override
             public PreviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
                 View view = LayoutInflater
                         .from(parent.getContext())
                         .inflate(R.layout.item_preview, parent, false);
@@ -108,7 +103,6 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
 
             @Override
             public void onBindViewHolder(PreviewHolder holder, int position) {
-
                 holder.itemView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -122,8 +116,6 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
                         startActivity(intent);
                     }
                 });
-
-
             }
 
             @Override
@@ -132,14 +124,11 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
             }
         };
         recyclerView.setAdapter(adapter);
-
     }
 
     @Override
     protected void onResume() {
-
         super.onResume();
-
         if(selectedShape != null) {
             showShape(selectedShape.name,selectedShape.fileName, selectedShape.count);
         }
@@ -152,21 +141,15 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
         shapeButton.setText(selectedShape.name);
     }
 
-    @OnClick(R.id.fab_add)
     public void onAddClick() {
-
         final EditText et = new EditText(this);
         FrameLayout container = new FrameLayout(this);
 
         FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
         params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
-
         params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
 
         et.setLayoutParams(params);
-
-
         container.addView(et);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AlertDialogTheme);
@@ -191,20 +174,14 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
             }
         });
         editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void afterTextChanged(Editable s) {
-
                 // Check if edittext is empty
                 if (TextUtils.isEmpty(s)) {
                     // Disable ok button
@@ -213,18 +190,13 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
                     // Something into edit text. Enable the button.
                     button.setEnabled(true);
                 }
-
             }
         });
 
         alert.show();
         alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
-
-
     }
 
-    @OnClick(R.id.ib_more)
     public void onMoreClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this,
                 R.style.Theme_MaterialComponents_Light_Dialog_Alert);
@@ -234,7 +206,6 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0: {
-
                                 showRenameDialog();
                                 break;
                             }
@@ -250,80 +221,60 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
     }
 
     private void showRenameDialog() {
-
         final EditText et = new EditText(this);
         FrameLayout container = new FrameLayout(this);
 
         FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
         params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
-
         params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
 
         et.setLayoutParams(params);
-
-
         container.addView(et);
 
         final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this,R.style.AlertDialogTheme);
 
         alt_bld.setTitle(getResources().getString(R.string.rename))
-                .setMessage(getResources()
-                        .getString(R.string.insert_new_name)+"\n"+getResources().getString(R.string.before)+" : " + selectedShape.name)
+                .setMessage(getResources().getString(R.string.insert_new_name)+"\n"+getResources().getString(R.string.before)+" : " + selectedShape.name)
                 .setView(container).setPositiveButton(getResources().getString(android.R.string.ok),
-
                 (dialog, id) -> {
-
                     if (et.getText().length() > 0) {
-                        listPresenter.renameItem( selectedShape.name, et.getText().toString());
+                        listPresenter.renameItem(selectedShape.name, et.getText().toString());
                     }
                 });
 
         AlertDialog alert = alt_bld.create();
 
         et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void afterTextChanged(Editable s) {
-
                 // Check if edittext is empty
                 if (TextUtils.isEmpty(s)) {
                     // Disable ok button
                     ((AlertDialog) alert).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
                 } else {
                     // Something into edit text. Enable the button.
                     ((AlertDialog) alert).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
                 }
-
             }
         });
 
         alert.show();
         alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
     }
 
-
-    @OnClick(R.id.btn_shape)
     public void onShapeClick() {
-
         if (shapeInfos == null) {
             return;
         }
 
         Observable.fromIterable(shapeInfos)
-                .map( shapeInfo-> shapeInfo.name).toList()
+                .map(shapeInfo -> shapeInfo.name).toList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((strings, throwable) -> {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -331,7 +282,7 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
                     builder.setTitle(R.string.shape_list_title)
                             .setItems(cs, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    showShape(shapeInfos.get(which).name, shapeInfos.get(which).fileName,shapeInfos.get(which).count);
+                                    showShape(shapeInfos.get(which).name, shapeInfos.get(which).fileName, shapeInfos.get(which).count);
                                 }
                             });
                     builder.create().show();
@@ -378,7 +329,6 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
         fabricView.setInteractionMode(LOCKED_MODE);
     }
 
-
     @Override
     public int getLayout() {
         return R.layout.activity_list;
@@ -401,11 +351,10 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
 
     @Override
     public void showShapeList(List<ShapeInfo> shapeInfos) {
-
         this.shapeInfos = shapeInfos;
         selectedShape = shapeInfos.get(0);
         shapeButton.setText(selectedShape.name);
-        showShape(selectedShape.name,selectedShape.fileName,selectedShape.count);
+        showShape(selectedShape.name, selectedShape.fileName, selectedShape.count);
     }
 
     @Override
@@ -415,7 +364,7 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
 
     @Override
     public void showProgress(boolean show) {
-
+        // Implementation
     }
 
     @Override
@@ -431,17 +380,15 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
 
     @Override
     public void onReloadData() {
-
+        // Implementation
     }
 
     class PreviewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.fabricView)
         FabricView fabricView;
 
         PreviewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            fabricView = itemView.findViewById(R.id.fabricView);
         }
     }
 

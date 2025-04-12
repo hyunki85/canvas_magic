@@ -19,8 +19,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.OnTouch;
-
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
 import com.h2play.canvas_magic.R;
@@ -31,7 +29,6 @@ import com.h2play.canvas_magic.features.preview.PreviewActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.ViewUtil;
 
-import kotlin.Unit;
 import timber.log.Timber;
 
 import static android.util.TypedValue.COMPLEX_UNIT_DIP;
@@ -53,36 +50,33 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
         intent.putExtra("count", count);
         return intent;
     }
-    
 
-    @OnTouch(R.id.fl_main)
     public boolean onMainClick(View view, MotionEvent motionEvent) {
 
-        if(motionEvent.getAction() != MotionEvent.ACTION_UP)
+        if (motionEvent.getAction() != MotionEvent.ACTION_UP)
             return true;
 
         int x = (int) motionEvent.getX();
         int y = (int) motionEvent.getY();
 
-        int indexX = x / (width/3);
-        int indexY = y / (height/(count/3));
+        int indexX = x / (width / 3);
+        int indexY = y / (height / (count / 3));
 
-        int index = indexY*3 + indexX;
+        int index = indexY * 3 + indexX;
 
-        if(System.currentTimeMillis() - lastTouchTime < 400) {
+        if (System.currentTimeMillis() - lastTouchTime < 400) {
 
-            if(lastIndex == index) {
+            if (lastIndex == index) {
                 pinPresenter.noMoreGuide();
                 Intent intent = new Intent();
-                intent.putExtra(PIN,index+1);
-                setResult(RESULT_OK,intent);
+                intent.putExtra(PIN, index + 1);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         }
 
         lastIndex = index;
-        lastTouchTime =  System.currentTimeMillis();
-
+        lastTouchTime = System.currentTimeMillis();
 
         return true;
 
@@ -110,10 +104,17 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
         Display display = getWindowManager().getDefaultDisplay();
 
         Point point = new Point();
-         display.getSize(point);
+        display.getSize(point);
 
         width = point.x;
         height = point.y;
+
+        findViewById(R.id.fl_main).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return onMainClick(v, event);
+            }
+        });
 
         pinPresenter.needGuide();
 
@@ -160,13 +161,13 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
         FrameLayout layout = (FrameLayout) findViewById(R.id.fl_main);
         TextView guideTextView = new TextView(this);
         guideTextView.setText(getResources().getString(R.string.double_tap));
-        guideTextView.setTextSize(COMPLEX_UNIT_DIP,25);
+        guideTextView.setTextSize(COMPLEX_UNIT_DIP, 25);
         guideTextView.setTextColor(Color.WHITE);
         guideTextView.setGravity(Gravity.CENTER);
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        layout.addView(guideTextView,params);
+        layout.addView(guideTextView, params);
 
         ImageView imageView = new ImageView(this);
         imageView.setImageResource(R.drawable.guide_grid);
@@ -180,7 +181,7 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
 
         params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        layout.addView(imageView,params);
+        layout.addView(imageView, params);
 
     }
 

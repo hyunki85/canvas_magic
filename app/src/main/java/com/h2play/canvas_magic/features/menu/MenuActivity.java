@@ -1,41 +1,21 @@
 package com.h2play.canvas_magic.features.menu;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDialog;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.OnClick;
-
-import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -52,10 +32,13 @@ import com.h2play.canvas_magic.features.help.HelpActivity;
 import com.h2play.canvas_magic.features.list.ShapeListActivity;
 import com.h2play.canvas_magic.features.main.MainActivity;
 import com.h2play.canvas_magic.features.share.ShareActivity;
-import com.h2play.canvas_magic.features.web.WebViewActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.AdDialog;
 import com.vorlonsoft.android.rate.AppRate;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -66,32 +49,27 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     @Inject
     MenuPresenter menuPresenter;
 
-    @BindView(R.id.view_error)
-    ErrorView errorView;
-
-    @BindView(R.id.progress)
-    ProgressBar progressBar;
-
-    @BindView(R.id.btn_start)
-    Button startButton;
-
-    @BindView(R.id.btn_more)
-    Button moreButton;
+    private ErrorView errorView;
+    private ProgressBar progressBar;
+    private Button startButton;
+    private Button moreButton;
+    private View btnChannel;
+    private View btnHelp;
+    private View imgRate;
+    private View imgShare;
+    private View btnShare;
 
     private FirebaseAuth mAuth;
     private AdView adView;
     private AdDialog mCustomDialog;
 
-
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser == null) {
+        if (currentUser == null) {
             signInAnonymously();
         }
-
     }
 
     @Override
@@ -115,50 +93,55 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        errorView = findViewById(R.id.view_error);
+        progressBar = findViewById(R.id.progress);
+        startButton = findViewById(R.id.btn_start);
+        moreButton = findViewById(R.id.btn_more);
+        btnChannel = findViewById(R.id.btn_channel);
+        btnHelp = findViewById(R.id.btn_help);
+        imgRate = findViewById(R.id.img_rate);
+        imgShare = findViewById(R.id.img_share);
+        btnShare = findViewById(R.id.btn_share);
+
+        btnChannel.setOnClickListener(v -> onChannelClick());
+        btnHelp.setOnClickListener(v -> onHelpClick());
+        moreButton.setOnClickListener(v -> onMoreClick());
+        imgRate.setOnClickListener(v -> onRateClick());
+        imgShare.setOnClickListener(v -> onShareLinkClick());
+        startButton.setOnClickListener(v -> onStartClick());
+        btnShare.setOnClickListener(v -> onShareClick());
+
         errorView.setErrorListener(this);
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-
-        AdRequest adRequest = new AdRequest.Builder()
-                .build();
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
         mAuth = FirebaseAuth.getInstance();
-
 
         adView = new AdView(this);
         adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
         adView.setAdUnitId("ca-app-pub-9937617798998725/1754825717");
         adView.loadAd(new AdRequest.Builder().build());
-        // [END load_banner_ad]
 
         mCustomDialog = new AdDialog(this,
                 adView,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mCustomDialog.dismiss();
-                    }
-                },
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mCustomDialog.dismiss();
-                        finish();
-                    }
+                view -> mCustomDialog.dismiss(),
+                view -> {
+                    mCustomDialog.dismiss();
+                    finish();
                 });
 
         Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(this, R.anim.blink);
         moreButton.startAnimation(hyperspaceJumpAnimation);
 
         AppRate.with(this)
-                .setInstallDays((byte) 0)                  // default is 10, 0 means install day, 10 means app is launched 10 or more days later than installation
-                .setLaunchTimes((byte) 3)                  // default is 10, 3 means app is launched 3 or more times
-                .setRemindInterval((byte) 1)               // default is 1, 1 means app is launched 1 or more days after neutral button clicked
-                .setRemindLaunchesNumber((byte) 1)         // default is 0, 1 means app is launched 1 or more times after neutral button clicked
-                .monitor();                                // Monitors the app launch times
-        AppRate.showRateDialogIfMeetsConditions(this); // Shows the Rate Dialog when conditions are met
-
+                .setInstallDays((byte) 0)
+                .setLaunchTimes((byte) 3)
+                .setRemindInterval((byte) 1)
+                .setRemindLaunchesNumber((byte) 1)
+                .monitor();
+        AppRate.showRateDialogIfMeetsConditions(this);
     }
 
     @Override
@@ -188,61 +171,47 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         menuPresenter.detachView();
     }
 
-
-    @OnClick(R.id.btn_channel)
     public void onChannelClick() {
         Intent intent = new Intent(this, ShapeListActivity.class);
         startActivity(intent);
     }
 
-    @OnClick(R.id.btn_help)
     public void onHelpClick() {
         Intent intent = new Intent(this, HelpActivity.class);
         startActivity(intent);
     }
 
-    @OnClick(R.id.btn_more)
     public void onMoreClick() {
-        Intent intent=null;
         String url = "https://play.google.com/store/apps/dev?id=8030976532724501230";
-        intent = new Intent(Intent.ACTION_VIEW);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
     }
 
-
-    @OnClick(R.id.img_rate)
     public void onRateClick() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(
-                "https://play.google.com/store/apps/details?id="+ BuildConfig.APPLICATION_ID));
+        intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID));
         intent.setPackage("com.android.vending");
         startActivity(intent);
-
     }
 
-    @OnClick(R.id.img_share)
     public void onShareLinkClick() {
         try {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name);
-            String shareMessage = "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID ;
+            String shareMessage = "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID;
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
             startActivity(Intent.createChooser(shareIntent, getString(R.string.choose_share_app)));
-        } catch(Exception e) {
-            //e.toString();
+        } catch (Exception e) {
+            // Handle exception
         }
-
     }
 
-    @OnClick(R.id.btn_start)
     public void onStartClick() {
         menuPresenter.getShapeList();
     }
 
-
-    @OnClick(R.id.btn_share)
     public void onShareClick() {
         Intent intent = ShareActivity.getStartIntent(MenuActivity.this);
         startActivity(intent);
@@ -250,29 +219,26 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     @Override
     public void startTutorial() {
-        Intent intent = MainActivity.getStartIntent(MenuActivity.this,0);
+        Intent intent = MainActivity.getStartIntent(MenuActivity.this, 0);
         startActivity(intent);
     }
 
     @Override
     public void showShapeList(List<ShapeInfo> shapeInfos) {
-
         Observable.fromIterable(shapeInfos)
-                .map( shapeInfo-> shapeInfo.name).toList()
+                .map(shapeInfo -> shapeInfo.name).toList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((strings, throwable) -> {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this,
                             R.style.Theme_MaterialComponents_Light_Dialog_Alert);
-                    final CharSequence[] cs = strings.toArray(new CharSequence[strings.size()]);
+                    final CharSequence[] cs = strings.toArray(new CharSequence[0]);
                     builder.setTitle(R.string.shape_list_title)
-                            .setItems(cs, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent intent = MainActivity.getStartIntent(MenuActivity.this,which);
-                                    startActivity(intent);
-                                    DataManager dataManager = MvpStarterApplication.get(MenuActivity.this).getComponent().dataManager();
-                                    if(!dataManager.needGuide()) {
-                                        finish();
-                                    }
+                            .setItems(cs, (dialog, which) -> {
+                                Intent intent = MainActivity.getStartIntent(MenuActivity.this, which);
+                                startActivity(intent);
+                                DataManager dataManager = MvpStarterApplication.get(MenuActivity.this).getComponent().dataManager();
+                                if (!dataManager.needGuide()) {
+                                    finish();
                                 }
                             });
                     builder.create().show();
@@ -281,13 +247,13 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     @Override
     public void showProgress(boolean show) {
-
+        // Implementation
     }
 
     @Override
     public void showError(Throwable error) {
         errorView.setVisibility(View.VISIBLE);
-        Timber.e(error, "There was an error retrieving the pokemon");
+        Timber.e(error, "There was an error retrieving the data");
     }
 
     @Override
@@ -297,6 +263,6 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     @Override
     public void onReloadData() {
-
+        // Implementation
     }
 }

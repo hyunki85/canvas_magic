@@ -6,10 +6,9 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.h2play.canvas_magic.R;
 
 public class ErrorView extends LinearLayout {
@@ -40,11 +39,15 @@ public class ErrorView extends LinearLayout {
     private void init() {
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
-        LayoutInflater.from(getContext()).inflate(R.layout.view_error, this);
-        ButterKnife.bind(this);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.view_error, this);
+        view.findViewById(R.id.button_reload).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onReloadButtonClick();
+            }
+        });
     }
 
-    @OnClick(R.id.button_reload)
     public void onReloadButtonClick() {
         if (errorListener != null) {
             errorListener.onReloadData();

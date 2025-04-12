@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import com.h2play.canvas_magic.R;
 import com.h2play.canvas_magic.data.model.response.Statistic;
 import com.h2play.canvas_magic.features.base.BaseActivity;
@@ -30,23 +29,12 @@ public class DetailActivity extends BaseActivity implements DetailMvpView, Error
     @Inject
     DetailPresenter detailPresenter;
 
-    @BindView(R.id.view_error)
-    ErrorView errorView;
-
-    @BindView(R.id.image_pokemon)
-    ImageView pokemonImage;
-
-    @BindView(R.id.progress)
-    ProgressBar progress;
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-    @BindView(R.id.layout_stats)
-    LinearLayout statLayout;
-
-    @BindView(R.id.layout_pokemon)
-    View pokemonLayout;
+    private ErrorView errorView;
+    private ImageView pokemonImage;
+    private ProgressBar progress;
+    private Toolbar toolbar;
+    private LinearLayout statLayout;
+    private View pokemonLayout;
 
     private String pokemonName;
 
@@ -60,6 +48,14 @@ public class DetailActivity extends BaseActivity implements DetailMvpView, Error
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Initialize views
+        errorView = findViewById(R.id.view_error);
+        pokemonImage = findViewById(R.id.image_pokemon);
+        progress = findViewById(R.id.progress);
+        toolbar = findViewById(R.id.toolbar);
+        statLayout = findViewById(R.id.layout_stats);
+        pokemonLayout = findViewById(R.id.layout_pokemon);
+
         pokemonName = getIntent().getStringExtra(EXTRA_POKEMON_NAME);
         if (pokemonName == null) {
             throw new IllegalArgumentException("Detail Activity requires a pokemon name@");
@@ -71,7 +67,6 @@ public class DetailActivity extends BaseActivity implements DetailMvpView, Error
         setTitle(pokemonName.substring(0, 1).toUpperCase() + pokemonName.substring(1));
 
         errorView.setErrorListener(this);
-
     }
 
     @Override
