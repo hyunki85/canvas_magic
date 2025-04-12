@@ -198,8 +198,7 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
     }
 
     public void onMoreClick() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this,
-                R.style.Theme_MaterialComponents_Light_Dialog_Alert);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final CharSequence[] cs = getResources().getStringArray(R.array.menu_array);
         builder.setTitle(R.string.shape_list_title)
                 .setItems(cs, new DialogInterface.OnClickListener() {

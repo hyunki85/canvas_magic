@@ -18,6 +18,7 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -93,6 +94,14 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Making sure Firebase is initialized before accessing FirebaseAuth
+        if (!com.google.firebase.FirebaseApp.getApps(this).isEmpty()) {
+            mAuth = FirebaseAuth.getInstance();
+        } else {
+            com.google.firebase.FirebaseApp.initializeApp(this);
+            mAuth = FirebaseAuth.getInstance();
+        }
+
         errorView = findViewById(R.id.view_error);
         progressBar = findViewById(R.id.progress);
         startButton = findViewById(R.id.btn_start);
@@ -116,8 +125,6 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         AdView mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-
-        mAuth = FirebaseAuth.getInstance();
 
         adView = new AdView(this);
         adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
@@ -229,8 +236,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
                 .map(shapeInfo -> shapeInfo.name).toList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((strings, throwable) -> {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this,
-                            R.style.Theme_MaterialComponents_Light_Dialog_Alert);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     final CharSequence[] cs = strings.toArray(new CharSequence[0]);
                     builder.setTitle(R.string.shape_list_title)
                             .setItems(cs, (dialog, which) -> {

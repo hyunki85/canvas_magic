@@ -40,11 +40,9 @@ public class HelpActivity extends AppCompatActivity {
     public void onDetailClick(RadioButton radioButton, boolean isChecked) {
         if(isChecked) {
             String uriPath = "android.resource://" + getPackageName() + "/" + R.raw.how2;
-            switch (radioButton.getId()) {
-                case R.id.rb_whole: {
-                    uriPath = "android.resource://" + getPackageName() + "/" + R.raw.whole;
-                    break;
-                }
+            
+            if (radioButton.getId() == R.id.rb_whole) {
+                uriPath = "android.resource://" + getPackageName() + "/" + R.raw.whole;
             }
 
             videoView.setOnPreparedListener(mp -> mp.setLooping(true));

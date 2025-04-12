@@ -47,6 +47,9 @@ public class MvpStarterApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        // Initialize Firebase first - making sure this happens before anything else
+        com.google.firebase.FirebaseApp.initializeApp(getApplicationContext());
+
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
             Stetho.initializeWithDefaults(this);
@@ -54,10 +57,12 @@ public class MvpStarterApplication extends Application {
             Sherlock.init(this);
         }
 
-        MobileAds.initialize(this );
+        // Rest of the initialization code
+        MobileAds.initialize(this);
         RequestConfiguration aa = new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("73431CF5ECC2ECB14BBF5CFE4DD450C0")).build();
         MobileAds.setRequestConfiguration(aa);
 
+        // Moving this after Firebase is initialized
         if(getComponent().dataManager().getShapeList().size() <= 0) {
 
             String name = "Number";

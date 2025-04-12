@@ -132,8 +132,7 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
                 .map( shapeInfo-> shapeInfo.name).toList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((strings, throwable) -> {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this,
-                            R.style.Theme_MaterialComponents_Light_Dialog_Alert);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     final CharSequence[] cs = strings.toArray(new CharSequence[strings.size()]);
                     builder.setTitle(R.string.shape_list_title)
                             .setItems(cs, new DialogInterface.OnClickListener() {
