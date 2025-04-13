@@ -115,4 +115,12 @@ public class DataManager {
     public void setNoMoreGuide() {
         preferencesHelper.putBoolean(NEED_GUIDE,true);
     }
+    
+    /**
+     * 가이드를 다시 활성화하는 메서드
+     * NEED_GUIDE 값을 false로 설정하여 needGuide() 메서드가 true를 반환하도록 함
+     */
+    public void enableGuide() {
+        preferencesHelper.putBoolean(NEED_GUIDE, false);
+    }
 }

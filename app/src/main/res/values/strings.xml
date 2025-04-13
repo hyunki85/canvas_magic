@@ -50,4 +50,14 @@
     <string name="number_of_shapes">number of shapes</string>
     <string name="exit_comment">You want exit?</string>
     <string name="exit">exit</string>
+    <string name="long_press_description">색상 버튼을 길게 눌러 다음 단계로 진행하세요</string>
+    <string name="tap_description">탭하여 색상을 선택하세요</string>
+    <string name="guide_next">다음</string>
+    <string name="guide_skip">건너뛰기</string>
+    <string name="guide_got_it">알겠습니다</string>
+    <string name="restart_tutorial">튜토리얼 다시하기</string>
+    <string name="restart_tutorial_confirm">튜토리얼 모드를 다시 활성화하시겠습니까?</string>
+    <string name="yes">예</string>
+    <string name="no">아니오</string>
+    <string name="line_thickness">선 두께</string>
 </resources>

@@ -111,6 +111,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         imgRate = findViewById(R.id.img_rate);
         imgShare = findViewById(R.id.img_share);
         btnShare = findViewById(R.id.btn_share);
+        Button btnRestartTutorial = findViewById(R.id.btn_restart_tutorial);
 
         btnChannel.setOnClickListener(v -> onChannelClick());
         btnHelp.setOnClickListener(v -> onHelpClick());
@@ -119,6 +120,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         imgShare.setOnClickListener(v -> onShareLinkClick());
         startButton.setOnClickListener(v -> onStartClick());
         btnShare.setOnClickListener(v -> onShareClick());
+        btnRestartTutorial.setOnClickListener(v -> onRestartTutorialClick());
 
         errorView.setErrorListener(this);
 
@@ -222,6 +224,24 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     public void onShareClick() {
         Intent intent = ShareActivity.getStartIntent(MenuActivity.this);
         startActivity(intent);
+    }
+
+    /**
+     * 튜토리얼 다시하기 버튼 클릭 핸들러
+     * 확인 대화상자를 표시하고, 사용자가 확인하면 가이드를 다시 활성화한 후 튜토리얼 시작
+     */
+    public void onRestartTutorialClick() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.app_name)
+                .setMessage(R.string.restart_tutorial_confirm)
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    // 가이드 다시 활성화
+                    menuPresenter.restartTutorial();
+                })
+                .setNegativeButton(R.string.no, (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .show();
     }
 
     @Override

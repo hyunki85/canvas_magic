@@ -1,7 +1,8 @@
 package com.h2play.canvas_magic.features.main;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,8 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
@@ -43,6 +46,7 @@ import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.AdDialog;
 import com.h2play.canvas_magic.util.FabricView;
 import com.h2play.canvas_magic.util.FileUtil;
+import com.h2play.canvas_magic.util.GuideView;
 
 public class MainActivity extends BaseActivity implements MainMvpView, ErrorView.ErrorListener {
 
@@ -61,10 +65,11 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
     private int selectedColor;
     private ShapeInfo selectedShape;
-    private TextView guideTextView;
+    private TextView guideTextView; // 추가된 변수
 
     private AdView adView;
     private AdDialog mCustomDialog;
+    private GuideView activeGuideView; // 추가된 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,23 +159,53 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
     @Override
     public void showLongPressGuide() {
-        guideTextView = new TextView(this);
-        guideTextView.setBackgroundResource(R.drawable.bubble);
-        guideTextView.setText(getResources().getString(R.string.long_press));
-
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_LEFT, R.id.btn_start);
-        params.addRule(RelativeLayout.ABOVE, R.id.btn_start);
-
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.rootView);
-        layout.addView(guideTextView, params);
+        
+        // 기존 guideTextView 대신 새로운 GuideView 사용
+        activeGuideView = new GuideView(this, layout);
+        activeGuideView.setTitle(R.string.long_press);
+        activeGuideView.setDescription(getResources().getString(R.string.long_press_description));
+        activeGuideView.setAnimationType(true); // 롱프레스 애니메이션 사용
+        
+        // 화면 중앙에 가이드 뷰 배치 (0, 0은 자동으로 화면 중앙에 배치하도록 GuideView 코드 수정함)
+        activeGuideView.updatePosition(0, 0);
+        activeGuideView.show();
+        
+        // 버튼 위치를 강조하기 위해 버튼에 애니메이션 효과 추가
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageButton, "scaleX", 1f, 1.2f, 1f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageButton, "scaleY", 1f, 1.2f, 1f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(scaleX, scaleY);
+        animatorSet.setDuration(1000);
+        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorSet.setStartDelay(1500); // 가이드 뷰가 표시된 후 시작
+        
+        // setRepeatCount가 AnimatorSet에 없으므로 ValueAnimator 사용 또는 다른 방식으로 반복
+        ValueAnimator repeatAnimator = ValueAnimator.ofInt(0, 1);
+        repeatAnimator.setDuration(2000); // 한 번의 애니메이션 + 딜레이 시간
+        repeatAnimator.setRepeatCount(1);
+        repeatAnimator.addUpdateListener(animation -> {
+            if(animation.getAnimatedFraction() == 0f) {
+                // 애니메이션 시작할 때마다 버튼 애니메이션 실행
+                animatorSet.start();
+            }
+        });
+        repeatAnimator.start();
+        
+        // 가이드 뷰 콜백 설정
+        activeGuideView.setGuideListener(new GuideView.GuideListener() {
+            @Override
+            public void onGuideCompleted() {
+                // 가이드 완료 후 작업이 필요하면 여기에 구현
+            }
+        });
     }
 
     public boolean onStartLongClick() {
         fabricView.setColor(selectedColor);
-        if (guideTextView != null) {
-            guideTextView.setText(R.string.good_job);
-        }
+        
+        // 가이드 텍스트 업데이트 대신 새로운 방식의 피드백 제공
+        Toast.makeText(this, R.string.good_job, Toast.LENGTH_SHORT).show();
 
         Intent intent = PinActivity.getStartIntent(this, selectedShape.count);
         startActivityForResult(intent, REQUEST_CODE);
@@ -193,7 +228,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
     @Override
     public void onBackPressed() {
-        if (guideTextView == null) {
+        if (activeGuideView != null) {
             mCustomDialog.show();
         } else {
             finish();

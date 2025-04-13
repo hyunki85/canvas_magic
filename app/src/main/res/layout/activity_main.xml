@@ -43,7 +43,9 @@
         android:layout_margin="16dp"
         android:padding="16dp"
         android:background="@drawable/bg_button"
-        android:src="@drawable/paint_brush"/>
+        android:src="@drawable/line_thickness"
+        android:contentDescription="@string/line_thickness"
+        android:tooltipText="@string/line_thickness"/>
 
 
     <ImageButton

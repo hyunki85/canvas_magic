@@ -35,6 +35,14 @@ public class MenuPresenter extends BasePresenter<MenuMvpView> {
         if(dataManager.needGuide()) {
             getView().showTutorial();
         }
-
+    }
+    
+    /**
+     * 튜토리얼 다시하기 기능
+     * 가이드를 활성화하고, 튜토리얼 시작
+     */
+    public void restartTutorial() {
+        dataManager.enableGuide();
+        getView().startTutorial();
     }
 }

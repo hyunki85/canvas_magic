@@ -27,6 +27,7 @@ import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
 import com.h2play.canvas_magic.features.preview.PreviewActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
+import com.h2play.canvas_magic.util.GuideView; // GuideView 클래스 임포트 추가
 import com.h2play.canvas_magic.util.ViewUtil;
 
 import timber.log.Timber;
@@ -157,32 +158,91 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
 
     @Override
     public void showGuide() {
-
         FrameLayout layout = (FrameLayout) findViewById(R.id.fl_main);
-        TextView guideTextView = new TextView(this);
-        guideTextView.setText(getResources().getString(R.string.double_tap));
-        guideTextView.setTextSize(COMPLEX_UNIT_DIP, 25);
-        guideTextView.setTextColor(Color.WHITE);
-        guideTextView.setGravity(Gravity.CENTER);
-
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        layout.addView(guideTextView, params);
-
+        
+        // 새로운 가이드 애니메이션 방식으로 변경
+        // 첫 번째 가이드: 더블탭 애니메이션 가이드
+        GuideView doubleTapGuide = new GuideView(this, layout);
+        doubleTapGuide.setTitle(getResources().getString(R.string.double_tap));
+        doubleTapGuide.setDescription(getResources().getString(R.string.tap_description));
+        doubleTapGuide.setAnimationType(false); // 탭 애니메이션 사용
+        
+        // 화면 중앙에 위치
+        doubleTapGuide.getView().post(() -> {
+            int centerX = layout.getWidth() / 2;
+            int centerY = layout.getHeight() / 3;
+            doubleTapGuide.updatePosition(centerX, centerY);
+        });
+        
+        doubleTapGuide.show();
+        
+        // 투명한 오버레이 생성하여 탭할 영역을 시각적으로 강조
+        View overlayView = new View(this);
+        overlayView.setBackgroundColor(Color.parseColor("#33000000")); // 반투명 검정색
+        layout.addView(overlayView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        
+        // 그리드 이미지 추가 (기존 코드 활용)
         ImageView imageView = new ImageView(this);
         imageView.setImageResource(R.drawable.guide_grid);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        
+        // 이미지 애니메이션 효과 추가
+        imageView.setAlpha(0f);
+        imageView.animate()
+                .alpha(1f)
+                .setDuration(800)
+                .setStartDelay(500)
+                .start();
+        
+        // 탭 인식을 위한 OnTouchListener 설정 (기존 로직 유지)
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return false;
             }
         });
-
-        params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
+        
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        
         layout.addView(imageView, params);
-
+        
+        // 번호를 탭하면 번호가 반짝이는 애니메이션 효과 추가
+        // 각 번호 위치를 탭하면 해당 위치에 ripple 효과 생성
+        layout.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 탭 위치에 ripple 효과 생성
+                View rippleView = new View(PinActivity.this);
+                rippleView.setBackgroundResource(R.drawable.circle_ripple);
+                
+                int size = dpToPx(80);
+                FrameLayout.LayoutParams rippleParams = new FrameLayout.LayoutParams(size, size);
+                rippleParams.leftMargin = (int)event.getX() - size/2;
+                rippleParams.topMargin = (int)event.getY() - size/2;
+                layout.addView(rippleView, rippleParams);
+                
+                // Ripple 애니메이션
+                rippleView.animate()
+                        .scaleX(1.5f)
+                        .scaleY(1.5f)
+                        .alpha(0f)
+                        .setDuration(500)
+                        .withEndAction(() -> layout.removeView(rippleView))
+                        .start();
+            }
+            
+            // 실제 터치 이벤트는 기존 onMainClick 메서드에서 처리
+            return onMainClick(v, event);
+        });
+    }
+    
+    // dp를 px로 변환하는 유틸리티 메서드
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
     }
 
     @Override

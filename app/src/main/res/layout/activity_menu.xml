@@ -1,162 +1,235 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
 
-    <ImageView
+    <!-- Gradient background -->
+    <View
+        android:id="@+id/background_gradient"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@drawable/bg_repeat" />
+        android:background="@drawable/background_gradient"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+    <!-- App title -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Original btn_start but with improved styling -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_start"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="64dp"
+        android:text="@string/start_trick"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/primary_color"
+        app:cornerRadius="16dp"
+        app:elevation="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
+    <!-- Original button IDs preserved in a grid -->
+    <androidx.gridlayout.widget.GridLayout
+        android:id="@+id/grid_actions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="24dp"
+        app:columnCount="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_start"
+        app:rowCount="2"
+        app:useDefaultMargins="true">
+
+        <!-- Original btn_channel but with improved styling -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_start"
-            style="@style/menu_btn"
-            android:layout_width="240dp"
-            android:layout_marginBottom="32dp"
-            android:background="@drawable/btn_bg"
-            android:text="@string/start_trick"
-            app:backgroundTint="#6C4AB6"
-            app:layout_constraintBottom_toTopOf="@+id/cl_group"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.47000003"
-            app:layout_constraintVertical_chainStyle="packed" />
+            android:id="@+id/btn_channel"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:text="@string/edit"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:backgroundTint="@color/secondary_color"
+            app:cornerRadius="16dp"
+            app:elevation="4dp"
+            app:icon="@drawable/ic_edit"
+            app:iconGravity="top"
+            app:iconPadding="8dp"
+            app:iconSize="32dp"
+            app:iconTint="@color/white"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <!-- Original btn_share but with improved styling -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_share"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:text="@string/share"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:backgroundTint="@color/secondary_color"
+            app:cornerRadius="16dp"
+            app:elevation="4dp"
+            app:icon="@drawable/ic_share"
+            app:iconGravity="top"
+            app:iconPadding="8dp"
+            app:iconSize="32dp"
+            app:iconTint="@color/white"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <!-- Original btn_help but with improved styling -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_help"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:text="@string/how"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:backgroundTint="@color/tertiary_color"
+            app:cornerRadius="16dp"
+            app:elevation="4dp"
+            app:icon="@drawable/ic_help"
+            app:iconGravity="top"
+            app:iconPadding="8dp"
+            app:iconSize="32dp"
+            app:iconTint="@color/white"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+            
+        <!-- 튜토리얼 다시하기 버튼 추가 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_restart_tutorial"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:text="@string/restart_tutorial"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:backgroundTint="@color/accent_blue"
+            app:cornerRadius="16dp"
+            app:elevation="4dp"
+            app:icon="@drawable/ic_help"
+            app:iconGravity="top"
+            app:iconPadding="8dp"
+            app:iconSize="32dp"
+            app:iconTint="@color/white"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+    </androidx.gridlayout.widget.GridLayout>
+
+    <!-- Bottom action bar with original IDs -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="@color/card_background"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintBottom_toTopOf="@id/adView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_group"
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-            app:layout_constraintTop_toBottomOf="@+id/btn_start">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_channel"
-                style="@style/menu_btn"
-                android:background="@drawable/btn_bg"
-                android:text="@string/edit"
-                app:backgroundTint="#8D72E1"
-                app:layout_constraintBottom_toTopOf="@+id/btn_help"
-                app:layout_constraintEnd_toStartOf="@+id/btn_share"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_start"
-                app:layout_constraintVertical_chainStyle="packed" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_share"
-                style="@style/menu_btn"
-                android:background="@drawable/btn_bg"
-
-                android:text="@string/share"
-                app:backgroundTint="#8D72E1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btn_channel"
-                app:layout_constraintTop_toTopOf="@+id/btn_channel" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_help"
-                style="@style/menu_btn"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/btn_bg"
-                android:text="@string/how"
-                app:backgroundTint="#8D9EFF"
-                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_channel" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="4dp"
-            app:layout_constraintBottom_toTopOf="@+id/adView"
-            app:layout_constraintEnd_toStartOf="@+id/btn_more"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cl_group">
-
+            android:padding="16dp">
 
             <ImageView
                 android:id="@+id/img_rate"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/star" />
-
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/star"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/img_share"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/accent_yellow" />
 
             <ImageView
                 android:id="@+id/img_share"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="8dp"
-                android:src="@drawable/share" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/share"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_more"
+                app:layout_constraintStart_toEndOf="@id/img_rate"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/accent_blue" />
 
+            <!-- Original btn_more but with improved styling -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/more"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/accent_green"
+                app:cornerRadius="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/img_share"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-        </LinearLayout>
+    <!-- Ad view with original ID -->
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="90dp"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="ca-app-pub-9937617798998725/6628693119"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="90dp"
-            app:adSize="SMART_BANNER"
-            app:adUnitId="ca-app-pub-9937617798998725/6628693119"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"></com.google.android.gms.ads.AdView>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_more"
-            style="@style/menu_btn"
-            android:background="@drawable/btn_bg"
-            android:text="@string/more"
-            app:backgroundTint="#dddd00"
-            app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/linearLayout"
-            app:layout_constraintTop_toTopOf="@+id/linearLayout" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+    <!-- Error view with original ID -->
     <com.h2play.canvas_magic.features.common.ErrorView
         android:id="@+id/view_error"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Progress indicator with original ID -->
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

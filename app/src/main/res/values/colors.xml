@@ -8,4 +8,20 @@
     <!--<color name="icons">@color/white</color>-->
     <color name="white">#FFFFFF</color>
     <!--<color name="divider">#B6B6B6</color>-->
+
+    <color name="background_color">#F5F5F5</color>
+    <color name="primary_color">#6C4AB6</color>
+    <color name="secondary_color">#8D72E1</color>
+    <color name="tertiary_color">#8D9EFF</color>
+    <color name="card_background">#FFFFFF</color>
+
+    <!-- Accents -->
+    <color name="accent_blue">#1E88E5</color>
+    <color name="accent_green">#4CAF50</color>
+    <color name="accent_yellow">#FFC107</color>
+
+    <!-- Text and UI colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="ripple_color">#33FFFFFF</color>
 </resources>
