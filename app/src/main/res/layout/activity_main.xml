@@ -5,7 +5,8 @@
     android:id="@+id/rootView"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:fitsSystemWindows="true">
 
     <com.h2play.canvas_magic.util.FabricView
         android:layout_width="match_parent"

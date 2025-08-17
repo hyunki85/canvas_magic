@@ -28,6 +28,7 @@ import com.h2play.canvas_magic.features.common.ErrorView;
 import com.h2play.canvas_magic.features.preview.PreviewActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.GuideView; // GuideView 클래스 임포트 추가
+import com.h2play.canvas_magic.util.SpotlightGuideOverlay;
 import com.h2play.canvas_magic.util.ViewUtil;
 
 import timber.log.Timber;
@@ -158,85 +159,48 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
 
     @Override
     public void showGuide() {
-        FrameLayout layout = (FrameLayout) findViewById(R.id.fl_main);
-        
-        // 새로운 가이드 애니메이션 방식으로 변경
-        // 첫 번째 가이드: 더블탭 애니메이션 가이드
-        GuideView doubleTapGuide = new GuideView(this, layout);
-        doubleTapGuide.setTitle(getResources().getString(R.string.double_tap));
-        doubleTapGuide.setDescription(getResources().getString(R.string.tap_description));
-        doubleTapGuide.setAnimationType(false); // 탭 애니메이션 사용
-        
-        // 화면 중앙에 위치
-        doubleTapGuide.getView().post(() -> {
-            int centerX = layout.getWidth() / 2;
-            int centerY = layout.getHeight() / 3;
-            doubleTapGuide.updatePosition(centerX, centerY);
-        });
-        
-        doubleTapGuide.show();
-        
-        // 투명한 오버레이 생성하여 탭할 영역을 시각적으로 강조
-        View overlayView = new View(this);
-        overlayView.setBackgroundColor(Color.parseColor("#33000000")); // 반투명 검정색
-        layout.addView(overlayView, new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        
-        // 그리드 이미지 추가 (기존 코드 활용)
+    FrameLayout layout = (FrameLayout) findViewById(R.id.fl_main);
+
+    // 예전 방식 복구: 가이드 그리드 이미지를 전체 화면에 깔아주기 (오버레이 아래에 위치)
+    final String GUIDE_GRID_TAG = "guide_grid_bg";
+    if (layout.findViewWithTag(GUIDE_GRID_TAG) == null) {
         ImageView imageView = new ImageView(this);
+        imageView.setTag(GUIDE_GRID_TAG);
         imageView.setImageResource(R.drawable.guide_grid);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        
-        // 이미지 애니메이션 효과 추가
-        imageView.setAlpha(0f);
-        imageView.animate()
-                .alpha(1f)
-                .setDuration(800)
-                .setStartDelay(500)
-                .start();
-        
-        // 탭 인식을 위한 OnTouchListener 설정 (기존 로직 유지)
-        imageView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return false;
-            }
-        });
-        
+        imageView.setOnTouchListener((v, event) -> false); // 터치 소비하지 않음
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
         layout.addView(imageView, params);
-        
-        // 번호를 탭하면 번호가 반짝이는 애니메이션 효과 추가
-        // 각 번호 위치를 탭하면 해당 위치에 ripple 효과 생성
-        layout.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                // 탭 위치에 ripple 효과 생성
-                View rippleView = new View(PinActivity.this);
-                rippleView.setBackgroundResource(R.drawable.circle_ripple);
-                
-                int size = dpToPx(80);
-                FrameLayout.LayoutParams rippleParams = new FrameLayout.LayoutParams(size, size);
-                rippleParams.leftMargin = (int)event.getX() - size/2;
-                rippleParams.topMargin = (int)event.getY() - size/2;
-                layout.addView(rippleView, rippleParams);
-                
-                // Ripple 애니메이션
-                rippleView.animate()
-                        .scaleX(1.5f)
-                        .scaleY(1.5f)
-                        .alpha(0f)
-                        .setDuration(500)
-                        .withEndAction(() -> layout.removeView(rippleView))
-                        .start();
-            }
-            
-            // 실제 터치 이벤트는 기존 onMainClick 메서드에서 처리
-            return onMainClick(v, event);
+    }
+
+    // 시나리오: 상대가 6을 선택했다는 메시지와 함께, 숫자 6 위치를 강조
+    SpotlightGuideOverlay overlay = new SpotlightGuideOverlay(this, layout);
+    // 오버레이는 아직 attach되지 않았으므로 overlay.post가 아닌 layout.post로 지연 실행
+    layout.post(() -> {
+        // 레이아웃 실제 크기 기준으로 그리드 셀 계산 (터치 로직과 시각 가이드를 일치)
+        int rows = Math.max(1, count / 3);
+        int cellW = Math.max(1, layout.getWidth() / 3);
+        int cellH = Math.max(1, layout.getHeight() / rows);
+
+        int targetNumber = 6; // 1-based
+        int targetIndex = Math.max(0, Math.min(count - 1, targetNumber - 1));
+        int col = targetIndex % 3;          // 0..2
+        int row = targetIndex / 3;          // 0..rows-1
+
+        float left = col * cellW;
+        float top = row * cellH;
+        android.graphics.RectF rect = new android.graphics.RectF(
+            left, top, left + cellW, top + cellH);
+
+        String tip = getString(R.string.opponent_chose_number, targetNumber);
+            overlay.highlightRect(rect, 10, tip, layout);
+            overlay.show(); // 오버레이는 마지막에 addView되어 그리드 위에 표시됨
         });
+
+    // 이 오버레이는 영역 내부 터치를 fl_main으로 전달 -> 더블탭 로직(onMainClick) 그대로 동작
     }
     
     // dp를 px로 변환하는 유틸리티 메서드

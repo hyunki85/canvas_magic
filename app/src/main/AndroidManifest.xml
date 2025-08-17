@@ -23,7 +23,7 @@
         </activity>
         <activity
             android:name="com.h2play.canvas_magic.features.main.MainActivity"
-            android:theme="@style/FullTheme"
+            android:theme="@style/MainTheme"
             android:screenOrientation="portrait" >
         </activity>
         <activity

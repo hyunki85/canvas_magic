@@ -60,4 +60,5 @@
     <string name="yes">예</string>
     <string name="no">아니오</string>
     <string name="line_thickness">선 두께</string>
+    <string name="opponent_chose_number">상대가 %1$d을(를) 선택했어요. 해당 칸을 더블탭하세요</string>
 </resources>

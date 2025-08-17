@@ -47,6 +47,7 @@ import com.h2play.canvas_magic.util.AdDialog;
 import com.h2play.canvas_magic.util.FabricView;
 import com.h2play.canvas_magic.util.FileUtil;
 import com.h2play.canvas_magic.util.GuideView;
+import com.h2play.canvas_magic.util.SpotlightGuideOverlay;
 
 public class MainActivity extends BaseActivity implements MainMvpView, ErrorView.ErrorListener {
 
@@ -69,7 +70,8 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
     private AdView adView;
     private AdDialog mCustomDialog;
-    private GuideView activeGuideView; // 추가된 변수
+    private GuideView activeGuideView; // 기존 카드형 가이드 (현재는 미사용 유지)
+    private SpotlightGuideOverlay spotlightOverlay; // 스포트라이트 가이드 오버레이
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +126,16 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            // Ensure we are not in immersive/fullscreen modes
+            View decor = getWindow().getDecorView();
+            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        }
+    }
+
     public void onStartClick() {
         ColorPickerDialogBuilder
                 .with(this)
@@ -160,16 +172,16 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     @Override
     public void showLongPressGuide() {
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.rootView);
-        
-        // 기존 guideTextView 대신 새로운 GuideView 사용
-        activeGuideView = new GuideView(this, layout);
-        activeGuideView.setTitle(R.string.long_press);
-        activeGuideView.setDescription(getResources().getString(R.string.long_press_description));
-        activeGuideView.setAnimationType(true); // 롱프레스 애니메이션 사용
-        
-        // 화면 중앙에 가이드 뷰 배치 (0, 0은 자동으로 화면 중앙에 배치하도록 GuideView 코드 수정함)
-        activeGuideView.updatePosition(0, 0);
-        activeGuideView.show();
+        // 레이아웃이 완료된 뒤에 하이라이트를 표시하여 좌표 오차 방지
+        layout.post(() -> {
+            if (isFinishing() || isDestroyed()) return;
+            // 스포트라이트 오버레이로 직접 타깃(팔레트 버튼)을 강조
+            spotlightOverlay = new SpotlightGuideOverlay(this, layout);
+            String tip = getString(R.string.long_press_description);
+            spotlightOverlay.highlight(imageButton, 8, tip);
+            spotlightOverlay.setListener(() -> spotlightOverlay = null);
+            spotlightOverlay.show();
+        });
         
         // 버튼 위치를 강조하기 위해 버튼에 애니메이션 효과 추가
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageButton, "scaleX", 1f, 1.2f, 1f);
@@ -190,15 +202,9 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
                 animatorSet.start();
             }
         });
-        repeatAnimator.start();
+    repeatAnimator.start();
         
-        // 가이드 뷰 콜백 설정
-        activeGuideView.setGuideListener(new GuideView.GuideListener() {
-            @Override
-            public void onGuideCompleted() {
-                // 가이드 완료 후 작업이 필요하면 여기에 구현
-            }
-        });
+    // 카드형 가이드 콜백은 사용하지 않음
     }
 
     public boolean onStartLongClick() {
@@ -206,6 +212,12 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         
         // 가이드 텍스트 업데이트 대신 새로운 방식의 피드백 제공
         Toast.makeText(this, R.string.good_job, Toast.LENGTH_SHORT).show();
+
+        // 가이드가 떠있다면 닫기
+        if (spotlightOverlay != null) {
+            spotlightOverlay.hide();
+            spotlightOverlay = null;
+        }
 
         Intent intent = PinActivity.getStartIntent(this, selectedShape.count);
         startActivityForResult(intent, REQUEST_CODE);
@@ -228,7 +240,10 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
     @Override
     public void onBackPressed() {
-        if (activeGuideView != null) {
+        if (spotlightOverlay != null) {
+            // 가이드 노출 중엔 먼저 가이드를 닫고 기존 동작(광고 다이얼로그) 표시
+            spotlightOverlay.hide();
+            spotlightOverlay = null;
             mCustomDialog.show();
         } else {
             finish();

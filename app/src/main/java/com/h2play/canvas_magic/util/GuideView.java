@@ -162,15 +162,18 @@ public class GuideView {
     }
     
     public void updateToTargetPosition(View targetView, int offsetX, int offsetY) {
-        int[] location = new int[2];
-        targetView.getLocationInWindow(location);
-        
-        // 타겟 뷰의 중앙 위치 계산
-        float x = location[0] + targetView.getWidth() / 2f + offsetX;
-        
-        // 타겟 뷰 위치에 가이드 표시 (타겟 버튼 위에 표시)
-        float y = location[1] - targetView.getHeight() / 2f + offsetY;
-        
+        // parentView 좌표계로 변환해서 정확히 정렬
+        int[] parentLoc = new int[2];
+        int[] targetLoc = new int[2];
+        parentView.getLocationOnScreen(parentLoc);
+        targetView.getLocationOnScreen(targetLoc);
+
+        float centerXInParent = (targetLoc[0] - parentLoc[0]) + (targetView.getWidth() / 2f);
+        float centerYInParent = (targetLoc[1] - parentLoc[1]) + (targetView.getHeight() / 2f);
+
+        float x = centerXInParent + offsetX;
+        float y = centerYInParent + offsetY;
+
         updatePosition(x, y);
     }
     
