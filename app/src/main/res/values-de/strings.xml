@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">OK</string>
+    <string name="dialog_error_title">Entschuldigung</string>
+
+    <string name="error_title">Hoppla</string>
+    <string name="error_message">Es gab ein Problem beim Laden, bitte versuchen Sie es erneut!</string>
+    <string name="error_reload">Neu laden</string>
+    <string name="error_something_bad_happened">Etwas ist schief gelaufen. Bitte versuchen Sie es erneut.</string>
+    <string name="need_save">Sie haben nicht gespeichert, möchten Sie speichern?</string>
+    <string name="how">Anleitung</string>
+    <string name="start_trick">Trick starten</string>
+    <string name="edit">Anpassen</string>
+    <string name="share">Teilen</string>
+    <string name="more">Mehr Apps</string>
+    <string name="make_title">Erstellen</string>
+    <string name="shape_list_title">Wählen Sie ein Formenset</string>
+    <string name="select_color">Farbe auswählen</string>
+    <string name="add_new">Erstellen</string>
+    <string name="insert_new_name">Geben Sie die Informationen des neuen Sets ein</string>
+    <string name="share_title">Teilen</string>
+    <string name="upload_complete">Upload abgeschlossen.</string>
+    <string name="save_complete">Speichern abgeschlossen.</string>
+    <string name="help">Hilfe</string>
+    <string name="detail">Detail</string>
+    <string name="whole">Gesamt</string>
+    <string name="video_type">ANLEITUNG:</string>
+    <string name="need_one_item">Mindestens ein Formenset ist erforderlich.</string>
+    <string name="rename">Umbenennen</string>
+    <string name="before">Vorher</string>
+    <string name="sort_type">Sortieren</string>
+    <string name="recent">Aktuell</string>
+    <string name="star">Favorit</string>
+    <string name="landscape">Im Querformat können Sie im Vollbild ansehen.</string>
+    <string name="long_press">Lang drücken bis der Bildschirm ausgeht</string>
+    <string name="double_tap">Doppeltippen Sie, was Sie möchten.</string>
+    <string name="good_job">Gut gemacht. Jetzt beherrschen Sie diesen Trick.</string>
+    <string name="featured">Empfohlen</string>
+    <string name="start_tutorial">Tutorial</string>
+    <string name="choose_share_app">Wählen Sie eine</string>
+    <string name="the_name_of_the_shape_set">Name des Formensets</string>
+    <string name="number_of_shapes">Anzahl der Formen</string>
+    <string name="exit_comment">Möchten Sie beenden?</string>
+    <string name="exit">Beenden</string>
+    <string name="long_press_description">Halten Sie die Farbtaste gedrückt, um fortzufahren</string>
+    <string name="tap_description">Tippen Sie, um eine Farbe auszuwählen</string>
+    <string name="guide_next">Weiter</string>
+    <string name="guide_skip">Überspringen</string>
+    <string name="guide_got_it">Verstanden</string>
+    <string name="restart_tutorial">Tutorial neu starten</string>
+    <string name="restart_tutorial_confirm">Möchten Sie das Tutorial neu starten?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="line_thickness">Linienstärke</string>
+    <string name="opponent_chose_number">Der Gegner hat %1$d gewählt. Tippen Sie zweimal auf dieses Feld</string>
+    <string name="menu_subtitle">Einfach zu startende Canvas-Tricks</string>
+</resources>

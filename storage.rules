@@ -1,0 +1,14 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // 메뉴 아이콘 전용 공개 읽기, 쓰기 금지
+    match /menu_icons/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+    // 그 외 기본 거부
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">Aceptar</string>
+    <string name="dialog_error_title">Lo siento</string>
+
+    <string name="error_title">Ups</string>
+    <string name="error_message">Hubo un problema al cargar, ¡inténtalo de nuevo!</string>
+    <string name="error_reload">Recargar</string>
+    <string name="error_something_bad_happened">Algo salió mal. Por favor, inténtalo de nuevo.</string>
+    <string name="need_save">No guardaste, ¿no quieres guardar?</string>
+    <string name="how">Cómo usar</string>
+    <string name="start_trick">Iniciar Truco</string>
+    <string name="edit">Personalizar</string>
+    <string name="share">Compartir</string>
+    <string name="more">Más Apps</string>
+    <string name="make_title">Crear</string>
+    <string name="shape_list_title">Elige un conjunto de formas</string>
+    <string name="select_color">Seleccionar color</string>
+    <string name="add_new">Crear</string>
+    <string name="insert_new_name">Ingresa la información del nuevo conjunto</string>
+    <string name="share_title">Compartir</string>
+    <string name="upload_complete">Carga completada.</string>
+    <string name="save_complete">Guardado completado.</string>
+    <string name="help">Ayuda</string>
+    <string name="detail">Detalle</string>
+    <string name="whole">Completo</string>
+    <string name="video_type">GUÍA:</string>
+    <string name="need_one_item">Se requiere al menos un conjunto de formas.</string>
+    <string name="rename">Renombrar</string>
+    <string name="before">Antes</string>
+    <string name="sort_type">Ordenar</string>
+    <string name="recent">Reciente</string>
+    <string name="star">Favorito</string>
+    <string name="landscape">En modo horizontal, puedes verlo en pantalla completa.</string>
+    <string name="long_press">Mantén presionado hasta que la pantalla se apague</string>
+    <string name="double_tap">Toca dos veces lo que quieras.</string>
+    <string name="good_job">Buen trabajo. Ahora puedes dominar este truco.</string>
+    <string name="featured">Destacados</string>
+    <string name="start_tutorial">Tutorial</string>
+    <string name="choose_share_app">Elige uno</string>
+    <string name="the_name_of_the_shape_set">Nombre del conjunto de formas</string>
+    <string name="number_of_shapes">Número de formas</string>
+    <string name="exit_comment">¿Quieres salir?</string>
+    <string name="exit">Salir</string>
+    <string name="long_press_description">Mantén presionado el botón de color para continuar</string>
+    <string name="tap_description">Toca para seleccionar un color</string>
+    <string name="guide_next">Siguiente</string>
+    <string name="guide_skip">Omitir</string>
+    <string name="guide_got_it">Entendido</string>
+    <string name="restart_tutorial">Reiniciar tutorial</string>
+    <string name="restart_tutorial_confirm">¿Quieres reiniciar el tutorial?</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="line_thickness">Grosor de línea</string>
+    <string name="opponent_chose_number">El oponente eligió %1$d. Toca dos veces esa casilla</string>
+    <string name="menu_subtitle">Trucos de lienzo fáciles de comenzar</string>
+</resources>

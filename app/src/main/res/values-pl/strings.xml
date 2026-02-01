@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">OK</string>
+    <string name="dialog_error_title">Przepraszamy</string>
+
+    <string name="error_title">Ups</string>
+    <string name="error_message">Wystąpił problem podczas ładowania, spróbuj ponownie!</string>
+    <string name="error_reload">Załaduj ponownie</string>
+    <string name="error_something_bad_happened">Coś poszło nie tak. Spróbuj ponownie.</string>
+    <string name="need_save">Nie zapisałeś, nie chcesz zapisać?</string>
+    <string name="how">Jak używać</string>
+    <string name="start_trick">Rozpocznij Sztuczkę</string>
+    <string name="edit">Dostosuj</string>
+    <string name="share">Udostępnij</string>
+    <string name="more">Więcej aplikacji</string>
+    <string name="make_title">Utwórz</string>
+    <string name="shape_list_title">Wybierz zestaw kształtów</string>
+    <string name="select_color">Wybierz kolor</string>
+    <string name="add_new">Utwórz</string>
+    <string name="insert_new_name">Wprowadź informacje o nowym zestawie</string>
+    <string name="share_title">Udostępnij</string>
+    <string name="upload_complete">Przesyłanie zakończone.</string>
+    <string name="save_complete">Zapisywanie zakończone.</string>
+    <string name="help">Pomoc</string>
+    <string name="detail">Szczegóły</string>
+    <string name="whole">Cały</string>
+    <string name="video_type">PRZEWODNIK:</string>
+    <string name="need_one_item">Wymagany jest co najmniej jeden zestaw kształtów.</string>
+    <string name="rename">Zmień nazwę</string>
+    <string name="before">Przed</string>
+    <string name="sort_type">Sortuj</string>
+    <string name="recent">Ostatnie</string>
+    <string name="star">Ulubione</string>
+    <string name="landscape">W trybie poziomym możesz oglądać na pełnym ekranie.</string>
+    <string name="long_press">Przytrzymaj, aż ekran zgaśnie</string>
+    <string name="double_tap">Dotknij dwukrotnie to, co chcesz.</string>
+    <string name="good_job">Świetnie. Teraz opanowałeś tę sztuczkę.</string>
+    <string name="featured">Polecane</string>
+    <string name="start_tutorial">Samouczek</string>
+    <string name="choose_share_app">Wybierz jedną</string>
+    <string name="the_name_of_the_shape_set">Nazwa zestawu kształtów</string>
+    <string name="number_of_shapes">Liczba kształtów</string>
+    <string name="exit_comment">Chcesz wyjść?</string>
+    <string name="exit">Wyjdź</string>
+    <string name="long_press_description">Przytrzymaj przycisk koloru, aby kontynuować</string>
+    <string name="tap_description">Dotknij, aby wybrać kolor</string>
+    <string name="guide_next">Dalej</string>
+    <string name="guide_skip">Pomiń</string>
+    <string name="guide_got_it">Rozumiem</string>
+    <string name="restart_tutorial">Uruchom ponownie samouczek</string>
+    <string name="restart_tutorial_confirm">Czy chcesz ponownie uruchomić samouczek?</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+    <string name="line_thickness">Grubość linii</string>
+    <string name="opponent_chose_number">Przeciwnik wybrał %1$d. Dotknij dwukrotnie to pole</string>
+    <string name="menu_subtitle">Łatwe do rozpoczęcia sztuczki na płótnie</string>
+</resources>

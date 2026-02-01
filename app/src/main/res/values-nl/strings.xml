@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">OK</string>
+    <string name="dialog_error_title">Sorry</string>
+
+    <string name="error_title">Oeps</string>
+    <string name="error_message">Er was een probleem bij het laden, probeer het opnieuw!</string>
+    <string name="error_reload">Herladen</string>
+    <string name="error_something_bad_happened">Er ging iets mis. Probeer het opnieuw.</string>
+    <string name="need_save">Je hebt niet opgeslagen, wil je niet opslaan?</string>
+    <string name="how">Hoe te gebruiken</string>
+    <string name="start_trick">Start Truc</string>
+    <string name="edit">Aanpassen</string>
+    <string name="share">Delen</string>
+    <string name="more">Meer Apps</string>
+    <string name="make_title">Maken</string>
+    <string name="shape_list_title">Kies een vormenset</string>
+    <string name="select_color">Selecteer kleur</string>
+    <string name="add_new">Maken</string>
+    <string name="insert_new_name">Voer nieuwe set informatie in</string>
+    <string name="share_title">Delen</string>
+    <string name="upload_complete">Upload voltooid.</string>
+    <string name="save_complete">Opslaan voltooid.</string>
+    <string name="help">Help</string>
+    <string name="detail">Detail</string>
+    <string name="whole">Geheel</string>
+    <string name="video_type">GIDS:</string>
+    <string name="need_one_item">Minstens één vormenset is vereist.</string>
+    <string name="rename">Hernoemen</string>
+    <string name="before">Voor</string>
+    <string name="sort_type">Sorteren</string>
+    <string name="recent">Recent</string>
+    <string name="star">Favoriet</string>
+    <string name="landscape">In liggende modus kun je op volledig scherm bekijken.</string>
+    <string name="long_press">Houd ingedrukt totdat het scherm uitgaat</string>
+    <string name="double_tap">Tik tweemaal op wat je wilt.</string>
+    <string name="good_job">Goed gedaan. Nu beheers je deze truc.</string>
+    <string name="featured">Uitgelicht</string>
+    <string name="start_tutorial">Tutorial</string>
+    <string name="choose_share_app">Kies er één</string>
+    <string name="the_name_of_the_shape_set">Naam van de vormenset</string>
+    <string name="number_of_shapes">Aantal vormen</string>
+    <string name="exit_comment">Wil je afsluiten?</string>
+    <string name="exit">Afsluiten</string>
+    <string name="long_press_description">Houd de kleurknop ingedrukt om door te gaan</string>
+    <string name="tap_description">Tik om een kleur te selecteren</string>
+    <string name="guide_next">Volgende</string>
+    <string name="guide_skip">Overslaan</string>
+    <string name="guide_got_it">Begrepen</string>
+    <string name="restart_tutorial">Herstart tutorial</string>
+    <string name="restart_tutorial_confirm">Wil je de tutorial herstarten?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nee</string>
+    <string name="line_thickness">Lijndikte</string>
+    <string name="opponent_chose_number">De tegenstander koos %1$d. Tik tweemaal op dat vakje</string>
+    <string name="menu_subtitle">Makkelijk te starten canvas trucs</string>
+</resources>

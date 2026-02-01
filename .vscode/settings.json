@@ -1,3 +1,12 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "mcp": {
+        "servers": {
+            "playstore": {
+                "type": "stdio",
+                "command": "node",
+                "args": ["/Users/hyunki/Documents/GitHub/canvas_magic/mcp-playstore/index.js"]
+            }
+        }
+    }
 }

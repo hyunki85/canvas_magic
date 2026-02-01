@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">OK</string>
+    <string name="dialog_error_title">Spiacente</string>
+
+    <string name="error_title">Ops</string>
+    <string name="error_message">Si è verificato un problema durante il caricamento, riprova!</string>
+    <string name="error_reload">Ricarica</string>
+    <string name="error_something_bad_happened">Qualcosa è andato storto. Per favore riprova.</string>
+    <string name="need_save">Non hai salvato, non vuoi salvare?</string>
+    <string name="how">Come usare</string>
+    <string name="start_trick">Inizia Trucco</string>
+    <string name="edit">Personalizza</string>
+    <string name="share">Condividi</string>
+    <string name="more">Altre App</string>
+    <string name="make_title">Crea</string>
+    <string name="shape_list_title">Scegli un set di forme</string>
+    <string name="select_color">Seleziona colore</string>
+    <string name="add_new">Crea</string>
+    <string name="insert_new_name">Inserisci le informazioni del nuovo set</string>
+    <string name="share_title">Condividi</string>
+    <string name="upload_complete">Caricamento completato.</string>
+    <string name="save_complete">Salvataggio completato.</string>
+    <string name="help">Aiuto</string>
+    <string name="detail">Dettaglio</string>
+    <string name="whole">Completo</string>
+    <string name="video_type">GUIDA:</string>
+    <string name="need_one_item">È richiesto almeno un set di forme.</string>
+    <string name="rename">Rinomina</string>
+    <string name="before">Prima</string>
+    <string name="sort_type">Ordina</string>
+    <string name="recent">Recente</string>
+    <string name="star">Preferito</string>
+    <string name="landscape">In modalità orizzontale, puoi vedere a schermo intero.</string>
+    <string name="long_press">Tieni premuto fino allo spegnimento dello schermo</string>
+    <string name="double_tap">Tocca due volte quello che vuoi.</string>
+    <string name="good_job">Ben fatto. Ora padroneggi questo trucco.</string>
+    <string name="featured">In evidenza</string>
+    <string name="start_tutorial">Tutorial</string>
+    <string name="choose_share_app">Scegli uno</string>
+    <string name="the_name_of_the_shape_set">Nome del set di forme</string>
+    <string name="number_of_shapes">Numero di forme</string>
+    <string name="exit_comment">Vuoi uscire?</string>
+    <string name="exit">Esci</string>
+    <string name="long_press_description">Tieni premuto il pulsante colore per continuare</string>
+    <string name="tap_description">Tocca per selezionare un colore</string>
+    <string name="guide_next">Avanti</string>
+    <string name="guide_skip">Salta</string>
+    <string name="guide_got_it">Capito</string>
+    <string name="restart_tutorial">Riavvia tutorial</string>
+    <string name="restart_tutorial_confirm">Vuoi riavviare il tutorial?</string>
+    <string name="yes">Sì</string>
+    <string name="no">No</string>
+    <string name="line_thickness">Spessore linea</string>
+    <string name="opponent_chose_number">L\'avversario ha scelto %1$d. Tocca due volte quella casella</string>
+    <string name="menu_subtitle">Trucchi su tela facili da iniziare</string>
+</resources>

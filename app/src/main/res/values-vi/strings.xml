@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">OK</string>
+    <string name="dialog_error_title">Xin lỗi</string>
+
+    <string name="error_title">Rất tiếc</string>
+    <string name="error_message">Đã xảy ra lỗi khi tải, vui lòng thử lại!</string>
+    <string name="error_reload">Tải lại</string>
+    <string name="error_something_bad_happened">Đã xảy ra lỗi. Vui lòng thử lại.</string>
+    <string name="need_save">Bạn chưa lưu, không muốn lưu sao?</string>
+    <string name="how">Hướng dẫn</string>
+    <string name="start_trick">Bắt đầu Thủ thuật</string>
+    <string name="edit">Tùy chỉnh</string>
+    <string name="share">Chia sẻ</string>
+    <string name="more">Ứng dụng khác</string>
+    <string name="make_title">Tạo</string>
+    <string name="shape_list_title">Chọn bộ hình dạng</string>
+    <string name="select_color">Chọn màu</string>
+    <string name="add_new">Tạo</string>
+    <string name="insert_new_name">Nhập thông tin bộ mới</string>
+    <string name="share_title">Chia sẻ</string>
+    <string name="upload_complete">Tải lên hoàn tất.</string>
+    <string name="save_complete">Lưu hoàn tất.</string>
+    <string name="help">Trợ giúp</string>
+    <string name="detail">Chi tiết</string>
+    <string name="whole">Toàn bộ</string>
+    <string name="video_type">HƯỚNG DẪN:</string>
+    <string name="need_one_item">Cần ít nhất một bộ hình dạng.</string>
+    <string name="rename">Đổi tên</string>
+    <string name="before">Trước</string>
+    <string name="sort_type">Sắp xếp</string>
+    <string name="recent">Gần đây</string>
+    <string name="star">Yêu thích</string>
+    <string name="landscape">Ở chế độ ngang, bạn có thể xem toàn màn hình.</string>
+    <string name="long_press">Nhấn giữ cho đến khi màn hình tắt</string>
+    <string name="double_tap">Chạm hai lần vào thứ bạn muốn.</string>
+    <string name="good_job">Tuyệt vời. Bây giờ bạn đã thành thạo thủ thuật này.</string>
+    <string name="featured">Nổi bật</string>
+    <string name="start_tutorial">Hướng dẫn</string>
+    <string name="choose_share_app">Chọn một</string>
+    <string name="the_name_of_the_shape_set">Tên bộ hình dạng</string>
+    <string name="number_of_shapes">Số lượng hình dạng</string>
+    <string name="exit_comment">Bạn muốn thoát?</string>
+    <string name="exit">Thoát</string>
+    <string name="long_press_description">Nhấn giữ nút màu để tiếp tục</string>
+    <string name="tap_description">Chạm để chọn màu</string>
+    <string name="guide_next">Tiếp theo</string>
+    <string name="guide_skip">Bỏ qua</string>
+    <string name="guide_got_it">Đã hiểu</string>
+    <string name="restart_tutorial">Khởi động lại hướng dẫn</string>
+    <string name="restart_tutorial_confirm">Bạn có muốn khởi động lại hướng dẫn?</string>
+    <string name="yes">Có</string>
+    <string name="no">Không</string>
+    <string name="line_thickness">Độ dày đường kẻ</string>
+    <string name="opponent_chose_number">Đối thủ chọn %1$d. Chạm hai lần vào ô đó</string>
+    <string name="menu_subtitle">Thủ thuật canvas dễ dàng bắt đầu</string>
+</resources>

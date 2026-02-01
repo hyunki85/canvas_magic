@@ -59,4 +59,11 @@
         <item name="android:layout_height">100dp</item>
     </style>
 
+    <!-- 공유 화면 탭 텍스트 스타일 -->
+    <style name="ShareTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
 </resources>

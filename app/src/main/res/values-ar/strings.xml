@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">موافق</string>
+    <string name="dialog_error_title">عذراً</string>
+
+    <string name="error_title">عفواً</string>
+    <string name="error_message">حدثت مشكلة أثناء التحميل، يرجى المحاولة مرة أخرى!</string>
+    <string name="error_reload">إعادة تحميل</string>
+    <string name="error_something_bad_happened">حدث خطأ ما. يرجى المحاولة مرة أخرى.</string>
+    <string name="need_save">لم تحفظ، ألا تريد الحفظ؟</string>
+    <string name="how">كيفية الاستخدام</string>
+    <string name="start_trick">ابدأ الخدعة</string>
+    <string name="edit">تخصيص</string>
+    <string name="share">مشاركة</string>
+    <string name="more">المزيد من التطبيقات</string>
+    <string name="make_title">إنشاء</string>
+    <string name="shape_list_title">اختر مجموعة أشكال</string>
+    <string name="select_color">اختر اللون</string>
+    <string name="add_new">إنشاء</string>
+    <string name="insert_new_name">أدخل معلومات المجموعة الجديدة</string>
+    <string name="share_title">مشاركة</string>
+    <string name="upload_complete">اكتمل التحميل.</string>
+    <string name="save_complete">تم الحفظ.</string>
+    <string name="help">مساعدة</string>
+    <string name="detail">تفاصيل</string>
+    <string name="whole">كامل</string>
+    <string name="video_type">الدليل:</string>
+    <string name="need_one_item">مطلوب مجموعة أشكال واحدة على الأقل.</string>
+    <string name="rename">إعادة تسمية</string>
+    <string name="before">قبل</string>
+    <string name="sort_type">ترتيب</string>
+    <string name="recent">الأحدث</string>
+    <string name="star">المفضلة</string>
+    <string name="landscape">في الوضع الأفقي، يمكنك المشاهدة بملء الشاشة.</string>
+    <string name="long_press">اضغط مطولاً حتى تنطفئ الشاشة</string>
+    <string name="double_tap">انقر مرتين على ما تريد.</string>
+    <string name="good_job">أحسنت. الآن أتقنت هذه الخدعة.</string>
+    <string name="featured">مميز</string>
+    <string name="start_tutorial">البرنامج التعليمي</string>
+    <string name="choose_share_app">اختر واحداً</string>
+    <string name="the_name_of_the_shape_set">اسم مجموعة الأشكال</string>
+    <string name="number_of_shapes">عدد الأشكال</string>
+    <string name="exit_comment">هل تريد الخروج؟</string>
+    <string name="exit">خروج</string>
+    <string name="long_press_description">اضغط مطولاً على زر اللون للمتابعة</string>
+    <string name="tap_description">انقر لتحديد لون</string>
+    <string name="guide_next">التالي</string>
+    <string name="guide_skip">تخطي</string>
+    <string name="guide_got_it">فهمت</string>
+    <string name="restart_tutorial">إعادة البرنامج التعليمي</string>
+    <string name="restart_tutorial_confirm">هل تريد إعادة البرنامج التعليمي؟</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+    <string name="line_thickness">سمك الخط</string>
+    <string name="opponent_chose_number">اختار الخصم %1$d. انقر مرتين على تلك الخانة</string>
+    <string name="menu_subtitle">حيل لوحة سهلة البدء</string>
+</resources>

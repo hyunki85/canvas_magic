@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">OK</string>
+    <string name="dialog_error_title">Maaf</string>
+
+    <string name="error_title">Ups</string>
+    <string name="error_message">Terjadi masalah saat memuat, silakan coba lagi!</string>
+    <string name="error_reload">Muat Ulang</string>
+    <string name="error_something_bad_happened">Terjadi kesalahan. Silakan coba lagi.</string>
+    <string name="need_save">Anda belum menyimpan, tidak ingin menyimpan?</string>
+    <string name="how">Cara Menggunakan</string>
+    <string name="start_trick">Mulai Trik</string>
+    <string name="edit">Kustomisasi</string>
+    <string name="share">Bagikan</string>
+    <string name="more">Aplikasi Lainnya</string>
+    <string name="make_title">Buat</string>
+    <string name="shape_list_title">Pilih set bentuk</string>
+    <string name="select_color">Pilih warna</string>
+    <string name="add_new">Buat</string>
+    <string name="insert_new_name">Masukkan info set baru</string>
+    <string name="share_title">Bagikan</string>
+    <string name="upload_complete">Unggah selesai.</string>
+    <string name="save_complete">Penyimpanan selesai.</string>
+    <string name="help">Bantuan</string>
+    <string name="detail">Detail</string>
+    <string name="whole">Lengkap</string>
+    <string name="video_type">PANDUAN:</string>
+    <string name="need_one_item">Diperlukan minimal satu set bentuk.</string>
+    <string name="rename">Ubah nama</string>
+    <string name="before">Sebelum</string>
+    <string name="sort_type">Urutkan</string>
+    <string name="recent">Terbaru</string>
+    <string name="star">Favorit</string>
+    <string name="landscape">Dalam mode lanskap, Anda dapat melihat layar penuh.</string>
+    <string name="long_press">Tekan lama hingga layar mati</string>
+    <string name="double_tap">Ketuk dua kali yang Anda inginkan.</string>
+    <string name="good_job">Bagus. Sekarang Anda menguasai trik ini.</string>
+    <string name="featured">Unggulan</string>
+    <string name="start_tutorial">Tutorial</string>
+    <string name="choose_share_app">Pilih satu</string>
+    <string name="the_name_of_the_shape_set">Nama set bentuk</string>
+    <string name="number_of_shapes">Jumlah bentuk</string>
+    <string name="exit_comment">Ingin keluar?</string>
+    <string name="exit">Keluar</string>
+    <string name="long_press_description">Tekan lama tombol warna untuk melanjutkan</string>
+    <string name="tap_description">Ketuk untuk memilih warna</string>
+    <string name="guide_next">Selanjutnya</string>
+    <string name="guide_skip">Lewati</string>
+    <string name="guide_got_it">Mengerti</string>
+    <string name="restart_tutorial">Mulai ulang tutorial</string>
+    <string name="restart_tutorial_confirm">Ingin memulai ulang tutorial?</string>
+    <string name="yes">Ya</string>
+    <string name="no">Tidak</string>
+    <string name="line_thickness">Ketebalan garis</string>
+    <string name="opponent_chose_number">Lawan memilih %1$d. Ketuk dua kali kotak tersebut</string>
+    <string name="menu_subtitle">Trik kanvas yang mudah dimulai</string>
+</resources>

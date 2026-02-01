@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">ОК</string>
+    <string name="dialog_error_title">Извините</string>
+
+    <string name="error_title">Упс</string>
+    <string name="error_message">Возникла проблема при загрузке, попробуйте снова!</string>
+    <string name="error_reload">Перезагрузить</string>
+    <string name="error_something_bad_happened">Что-то пошло не так. Пожалуйста, попробуйте снова.</string>
+    <string name="need_save">Вы не сохранили, хотите сохранить?</string>
+    <string name="how">Как использовать</string>
+    <string name="start_trick">Начать Трюк</string>
+    <string name="edit">Настроить</string>
+    <string name="share">Поделиться</string>
+    <string name="more">Больше приложений</string>
+    <string name="make_title">Создать</string>
+    <string name="shape_list_title">Выберите набор фигур</string>
+    <string name="select_color">Выбрать цвет</string>
+    <string name="add_new">Создать</string>
+    <string name="insert_new_name">Введите информацию о новом наборе</string>
+    <string name="share_title">Поделиться</string>
+    <string name="upload_complete">Загрузка завершена.</string>
+    <string name="save_complete">Сохранение завершено.</string>
+    <string name="help">Помощь</string>
+    <string name="detail">Детали</string>
+    <string name="whole">Полный</string>
+    <string name="video_type">РУКОВОДСТВО:</string>
+    <string name="need_one_item">Требуется хотя бы один набор фигур.</string>
+    <string name="rename">Переименовать</string>
+    <string name="before">До</string>
+    <string name="sort_type">Сортировка</string>
+    <string name="recent">Недавние</string>
+    <string name="star">Избранное</string>
+    <string name="landscape">В альбомном режиме можно смотреть на весь экран.</string>
+    <string name="long_press">Удерживайте, пока экран не погаснет</string>
+    <string name="double_tap">Дважды нажмите на то, что хотите.</string>
+    <string name="good_job">Отлично. Теперь вы освоили этот трюк.</string>
+    <string name="featured">Избранное</string>
+    <string name="start_tutorial">Обучение</string>
+    <string name="choose_share_app">Выберите один</string>
+    <string name="the_name_of_the_shape_set">Название набора фигур</string>
+    <string name="number_of_shapes">Количество фигур</string>
+    <string name="exit_comment">Хотите выйти?</string>
+    <string name="exit">Выход</string>
+    <string name="long_press_description">Удерживайте кнопку цвета, чтобы продолжить</string>
+    <string name="tap_description">Нажмите, чтобы выбрать цвет</string>
+    <string name="guide_next">Далее</string>
+    <string name="guide_skip">Пропустить</string>
+    <string name="guide_got_it">Понятно</string>
+    <string name="restart_tutorial">Перезапустить обучение</string>
+    <string name="restart_tutorial_confirm">Хотите перезапустить обучение?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="line_thickness">Толщина линии</string>
+    <string name="opponent_chose_number">Противник выбрал %1$d. Дважды нажмите на эту клетку</string>
+    <string name="menu_subtitle">Простые трюки с холстом</string>
+</resources>

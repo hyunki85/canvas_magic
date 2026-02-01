@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">确定</string>
+    <string name="dialog_error_title">抱歉</string>
+
+    <string name="error_title">哎呀</string>
+    <string name="error_message">加载时出现问题，请重试！</string>
+    <string name="error_reload">重新加载</string>
+    <string name="error_something_bad_happened">出了点问题，请重试。</string>
+    <string name="need_save">您还没有保存，不想保存吗？</string>
+    <string name="how">使用方法</string>
+    <string name="start_trick">开始技巧</string>
+    <string name="edit">自定义</string>
+    <string name="share">分享</string>
+    <string name="more">更多应用</string>
+    <string name="make_title">创建</string>
+    <string name="shape_list_title">选择形状集</string>
+    <string name="select_color">选择颜色</string>
+    <string name="add_new">创建</string>
+    <string name="insert_new_name">输入新集合信息</string>
+    <string name="share_title">分享</string>
+    <string name="upload_complete">上传完成。</string>
+    <string name="save_complete">保存完成。</string>
+    <string name="help">帮助</string>
+    <string name="detail">详情</string>
+    <string name="whole">全部</string>
+    <string name="video_type">指南：</string>
+    <string name="need_one_item">至少需要一个形状集。</string>
+    <string name="rename">重命名</string>
+    <string name="before">之前</string>
+    <string name="sort_type">排序</string>
+    <string name="recent">最近</string>
+    <string name="star">收藏</string>
+    <string name="landscape">在横屏模式下，您可以全屏查看。</string>
+    <string name="long_press">长按直到屏幕关闭</string>
+    <string name="double_tap">双击您想要的内容。</string>
+    <string name="good_job">做得好。现在您已掌握这个技巧。</string>
+    <string name="featured">精选</string>
+    <string name="start_tutorial">教程</string>
+    <string name="choose_share_app">选择一个</string>
+    <string name="the_name_of_the_shape_set">形状集名称</string>
+    <string name="number_of_shapes">形状数量</string>
+    <string name="exit_comment">要退出吗？</string>
+    <string name="exit">退出</string>
+    <string name="long_press_description">长按颜色按钮以继续</string>
+    <string name="tap_description">点击选择颜色</string>
+    <string name="guide_next">下一步</string>
+    <string name="guide_skip">跳过</string>
+    <string name="guide_got_it">知道了</string>
+    <string name="restart_tutorial">重新开始教程</string>
+    <string name="restart_tutorial_confirm">要重新开始教程吗？</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="line_thickness">线条粗细</string>
+    <string name="opponent_chose_number">对手选择了 %1$d。双击该格子</string>
+    <string name="menu_subtitle">轻松开始的画布技巧</string>
+</resources>

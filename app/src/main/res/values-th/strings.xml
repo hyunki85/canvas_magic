@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">ตกลง</string>
+    <string name="dialog_error_title">ขออภัย</string>
+
+    <string name="error_title">อุ๊ปส์</string>
+    <string name="error_message">เกิดปัญหาในการโหลด กรุณาลองอีกครั้ง!</string>
+    <string name="error_reload">โหลดใหม่</string>
+    <string name="error_something_bad_happened">เกิดข้อผิดพลาด กรุณาลองอีกครั้ง</string>
+    <string name="need_save">คุณยังไม่ได้บันทึก ไม่ต้องการบันทึกหรือ?</string>
+    <string name="how">วิธีใช้</string>
+    <string name="start_trick">เริ่มเทคนิค</string>
+    <string name="edit">ปรับแต่ง</string>
+    <string name="share">แชร์</string>
+    <string name="more">แอปเพิ่มเติม</string>
+    <string name="make_title">สร้าง</string>
+    <string name="shape_list_title">เลือกชุดรูปทรง</string>
+    <string name="select_color">เลือกสี</string>
+    <string name="add_new">สร้าง</string>
+    <string name="insert_new_name">ป้อนข้อมูลชุดใหม่</string>
+    <string name="share_title">แชร์</string>
+    <string name="upload_complete">อัพโหลดเสร็จสิ้น</string>
+    <string name="save_complete">บันทึกเสร็จสิ้น</string>
+    <string name="help">ช่วยเหลือ</string>
+    <string name="detail">รายละเอียด</string>
+    <string name="whole">ทั้งหมด</string>
+    <string name="video_type">คู่มือ:</string>
+    <string name="need_one_item">ต้องมีชุดรูปทรงอย่างน้อยหนึ่งชุด</string>
+    <string name="rename">เปลี่ยนชื่อ</string>
+    <string name="before">ก่อน</string>
+    <string name="sort_type">เรียงลำดับ</string>
+    <string name="recent">ล่าสุด</string>
+    <string name="star">รายการโปรด</string>
+    <string name="landscape">ในโหมดแนวนอน คุณสามารถดูแบบเต็มหน้าจอได้</string>
+    <string name="long_press">กดค้างจนหน้าจอดับ</string>
+    <string name="double_tap">แตะสองครั้งที่สิ่งที่คุณต้องการ</string>
+    <string name="good_job">ยอดเยี่ยม ตอนนี้คุณเชี่ยวชาญเทคนิคนี้แล้ว</string>
+    <string name="featured">แนะนำ</string>
+    <string name="start_tutorial">บทช่วยสอน</string>
+    <string name="choose_share_app">เลือกหนึ่ง</string>
+    <string name="the_name_of_the_shape_set">ชื่อชุดรูปทรง</string>
+    <string name="number_of_shapes">จำนวนรูปทรง</string>
+    <string name="exit_comment">ต้องการออกหรือไม่?</string>
+    <string name="exit">ออก</string>
+    <string name="long_press_description">กดค้างปุ่มสีเพื่อดำเนินการต่อ</string>
+    <string name="tap_description">แตะเพื่อเลือกสี</string>
+    <string name="guide_next">ถัดไป</string>
+    <string name="guide_skip">ข้าม</string>
+    <string name="guide_got_it">เข้าใจแล้ว</string>
+    <string name="restart_tutorial">เริ่มบทช่วยสอนใหม่</string>
+    <string name="restart_tutorial_confirm">ต้องการเริ่มบทช่วยสอนใหม่หรือไม่?</string>
+    <string name="yes">ใช่</string>
+    <string name="no">ไม่</string>
+    <string name="line_thickness">ความหนาของเส้น</string>
+    <string name="opponent_chose_number">คู่ต่อสู้เลือก %1$d แตะสองครั้งที่ช่องนั้น</string>
+    <string name="menu_subtitle">เทคนิคแคนวาสที่เริ่มต้นง่าย</string>
+</resources>

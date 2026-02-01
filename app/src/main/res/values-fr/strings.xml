@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas Trick</string>
+
+    <string name="dialog_action_ok">OK</string>
+    <string name="dialog_error_title">Désolé</string>
+
+    <string name="error_title">Oups</string>
+    <string name="error_message">Un problème est survenu, veuillez réessayer !</string>
+    <string name="error_reload">Recharger</string>
+    <string name="error_something_bad_happened">Une erreur s\'est produite. Veuillez réessayer.</string>
+    <string name="need_save">Vous n\'avez pas sauvegardé, voulez-vous sauvegarder ?</string>
+    <string name="how">Comment utiliser</string>
+    <string name="start_trick">Démarrer le Tour</string>
+    <string name="edit">Personnaliser</string>
+    <string name="share">Partager</string>
+    <string name="more">Plus d\'Apps</string>
+    <string name="make_title">Créer</string>
+    <string name="shape_list_title">Choisissez un ensemble de formes</string>
+    <string name="select_color">Sélectionner la couleur</string>
+    <string name="add_new">Créer</string>
+    <string name="insert_new_name">Entrez les informations du nouvel ensemble</string>
+    <string name="share_title">Partager</string>
+    <string name="upload_complete">Téléchargement terminé.</string>
+    <string name="save_complete">Sauvegarde terminée.</string>
+    <string name="help">Aide</string>
+    <string name="detail">Détail</string>
+    <string name="whole">Complet</string>
+    <string name="video_type">GUIDE :</string>
+    <string name="need_one_item">Au moins un ensemble de formes est requis.</string>
+    <string name="rename">Renommer</string>
+    <string name="before">Avant</string>
+    <string name="sort_type">Trier</string>
+    <string name="recent">Récent</string>
+    <string name="star">Favori</string>
+    <string name="landscape">En mode paysage, vous pouvez voir en plein écran.</string>
+    <string name="long_press">Appuyez longuement jusqu\'à ce que l\'écran s\'éteigne</string>
+    <string name="double_tap">Appuyez deux fois sur ce que vous voulez.</string>
+    <string name="good_job">Bon travail. Vous maîtrisez maintenant ce tour.</string>
+    <string name="featured">En vedette</string>
+    <string name="start_tutorial">Tutoriel</string>
+    <string name="choose_share_app">Choisissez-en un</string>
+    <string name="the_name_of_the_shape_set">Nom de l\'ensemble de formes</string>
+    <string name="number_of_shapes">Nombre de formes</string>
+    <string name="exit_comment">Voulez-vous quitter ?</string>
+    <string name="exit">Quitter</string>
+    <string name="long_press_description">Appuyez longuement sur le bouton de couleur pour continuer</string>
+    <string name="tap_description">Appuyez pour sélectionner une couleur</string>
+    <string name="guide_next">Suivant</string>
+    <string name="guide_skip">Passer</string>
+    <string name="guide_got_it">Compris</string>
+    <string name="restart_tutorial">Redémarrer le tutoriel</string>
+    <string name="restart_tutorial_confirm">Voulez-vous redémarrer le tutoriel ?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="line_thickness">Épaisseur de ligne</string>
+    <string name="opponent_chose_number">L\'adversaire a choisi %1$d. Appuyez deux fois sur cette case</string>
+    <string name="menu_subtitle">Tours de toile faciles à démarrer</string>
+</resources>
