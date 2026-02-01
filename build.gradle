@@ -3,12 +3,9 @@ buildscript {
         mavenCentral()
         google()
         gradlePluginPortal()
-        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.9.1'
-        //noinspection GradleDynamicVersion
-        classpath 'io.fabric.tools:gradle:1.+'
         classpath 'com.google.gms:google-services:4.4.2'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.52.0'
     }
@@ -20,7 +17,6 @@ allprojects {
         google()
         gradlePluginPortal()
         maven { url "https://jitpack.io" }
-        maven { url 'https://maven.fabric.io/public' }
     }
 }
 
