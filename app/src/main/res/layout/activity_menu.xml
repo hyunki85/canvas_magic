@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color">
+    android:background="@color/background_color"
+    android:fitsSystemWindows="true">
 
     <!-- Gradient background -->
     <View
@@ -29,7 +30,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Original btn_start but with improved styling -->
+    <!-- Subtitle -->
+    <TextView
+        android:id="@+id/tv_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/menu_subtitle"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:alpha="0.9"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Original btn_start but with improved styling (fallback) -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_start"
         android:layout_width="0dp"
@@ -47,7 +62,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
-    <!-- Original button IDs preserved in a grid -->
+    <!-- Static fallback grid (hidden when dynamic menu is available) -->
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/grid_actions"
         android:layout_width="0dp"
@@ -65,7 +80,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_channel"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:text="@string/edit"
             android:textColor="@color/white"
             android:textSize="16sp"
@@ -84,7 +99,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_share"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:text="@string/share"
             android:textColor="@color/white"
             android:textSize="16sp"
@@ -103,8 +118,8 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_help"
             android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:text="@string/how"
+            android:layout_height="80dp"
+            android:text="@string/start_tutorial"
             android:textColor="@color/white"
             android:textSize="16sp"
             app:backgroundTint="@color/tertiary_color"
@@ -122,7 +137,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_restart_tutorial"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:text="@string/restart_tutorial"
             android:textColor="@color/white"
             android:textSize="16sp"
@@ -138,7 +153,21 @@
             app:layout_rowWeight="1" />
     </androidx.gridlayout.widget.GridLayout>
 
-    <!-- Bottom action bar with original IDs -->
+    <!-- Dynamic menu RecyclerView (shown when JSON config present) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_dynamic_menu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:layoutAnimation="@anim/layout_animation_fade_in_up"
+        app:layout_constraintTop_toBottomOf="@id/tv_subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/adView"/>
+
+    <!-- Bottom action bar with original IDs (fallback) -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_actions"
         android:layout_width="match_parent"

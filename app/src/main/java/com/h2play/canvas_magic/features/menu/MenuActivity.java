@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -36,6 +38,10 @@ import com.h2play.canvas_magic.features.share.ShareActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.AdDialog;
 import com.vorlonsoft.android.rate.AppRate;
+
+import com.h2play.canvas_magic.features.menu.config.MenuConfig;
+import com.h2play.canvas_magic.features.menu.config.MenuConfigLoader;
+import com.h2play.canvas_magic.features.menu.config.MenuItemConfig;
 
 import java.util.List;
 
@@ -63,6 +69,10 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     private FirebaseAuth mAuth;
     private AdView adView;
     private AdDialog mCustomDialog;
+
+    // Dynamic menu
+    private RecyclerView rvDynamicMenu;
+    private DynamicMenuAdapter dynamicAdapter;
 
     @Override
     public void onStart() {
@@ -112,15 +122,19 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         imgShare = findViewById(R.id.img_share);
         btnShare = findViewById(R.id.btn_share);
         Button btnRestartTutorial = findViewById(R.id.btn_restart_tutorial);
+    rvDynamicMenu = findViewById(R.id.rv_dynamic_menu);
 
-        btnChannel.setOnClickListener(v -> onChannelClick());
-        btnHelp.setOnClickListener(v -> onHelpClick());
-        moreButton.setOnClickListener(v -> onMoreClick());
-        imgRate.setOnClickListener(v -> onRateClick());
-        imgShare.setOnClickListener(v -> onShareLinkClick());
-        startButton.setOnClickListener(v -> onStartClick());
-        btnShare.setOnClickListener(v -> onShareClick());
-        btnRestartTutorial.setOnClickListener(v -> onRestartTutorialClick());
+    btnChannel.setOnClickListener(v -> onChannelClick());
+    btnHelp.setOnClickListener(v -> onHelpClick());
+    moreButton.setOnClickListener(v -> onMoreClick());
+    imgRate.setOnClickListener(v -> onRateClick());
+    imgShare.setOnClickListener(v -> onShareLinkClick());
+    startButton.setOnClickListener(v -> onStartClick());
+    btnShare.setOnClickListener(v -> onShareClick());
+    btnRestartTutorial.setOnClickListener(v -> onRestartTutorialClick());
+
+    // Try load dynamic menu from Remote Config first, then assets fallback
+    setupDynamicMenu();
 
         errorView.setErrorListener(this);
 
@@ -142,7 +156,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
                 });
 
         Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(this, R.anim.blink);
-        moreButton.startAnimation(hyperspaceJumpAnimation);
+    moreButton.startAnimation(hyperspaceJumpAnimation);
 
         AppRate.with(this)
                 .setInstallDays((byte) 0)
@@ -186,7 +200,10 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     }
 
     public void onHelpClick() {
-        Intent intent = new Intent(this, HelpActivity.class);
+        // 튜토리얼 전용 웹 페이지로 이동 (로컬 에셋)
+        Intent intent = new Intent(this, com.h2play.canvas_magic.features.web.WebViewActivity.class);
+        intent.putExtra("url", "file:///android_asset/tutorial.html");
+        intent.putExtra("title", getString(R.string.start_tutorial));
         startActivity(intent);
     }
 
@@ -224,6 +241,81 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     public void onShareClick() {
         Intent intent = ShareActivity.getStartIntent(MenuActivity.this);
         startActivity(intent);
+    }
+
+    private void setupDynamicMenu() {
+        boolean devMode = BuildConfig.DEBUG;
+        MenuConfig cfg = MenuConfigLoader.loadFromRemoteConfig(this, devMode);
+        if (cfg == null) {
+            cfg = MenuConfigLoader.loadFromAssets(this);
+        }
+        if (cfg == null || cfg.items == null || cfg.items.isEmpty()) {
+            // keep fallback visible
+            return;
+        }
+
+        // Configure Recycler
+        GridLayoutManager glm = new GridLayoutManager(this, 2);
+        rvDynamicMenu.setLayoutManager(glm);
+        dynamicAdapter = new DynamicMenuAdapter(this, this::handleDynamicAction);
+        rvDynamicMenu.setAdapter(dynamicAdapter);
+        glm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override public int getSpanSize(int position) {
+                if (dynamicAdapter == null) return 1;
+                int vt = dynamicAdapter.getItemViewType(position);
+                // promo 타입은 두 칸을 차지
+                return vt == 1 ? 2 : 1;
+            }
+        });
+        dynamicAdapter.submit(cfg.items);
+
+        // Hide fallback static views we replace (start/grid/card)
+        View grid = findViewById(R.id.grid_actions);
+        View card = findViewById(R.id.card_actions);
+        if (grid != null) grid.setVisibility(View.GONE);
+        if (card != null) card.setVisibility(View.GONE);
+        if (startButton != null) startButton.setVisibility(View.GONE);
+
+        rvDynamicMenu.setVisibility(View.VISIBLE);
+    }
+
+    private void handleDynamicAction(MenuItemConfig item) {
+        if (item == null) return;
+        String action = item.action == null ? "" : item.action;
+        switch (action) {
+            case "open_url":
+                if (item.payload != null) {
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(item.payload));
+                    startActivity(i);
+                }
+                break;
+            case "rate":
+                onRateClick();
+                break;
+            case "share_link":
+                onShareLinkClick();
+                break;
+            case "more_apps":
+                onMoreClick();
+                break;
+            case "start_tutorial":
+                onStartClick();
+                break;
+            case "shape_list":
+                onChannelClick();
+                break;
+            case "open_help":
+                onHelpClick();
+                break;
+            case "open_share":
+                onShareClick();
+                break;
+            case "restart_tutorial":
+                onRestartTutorialClick();
+                break;
+            default:
+                // no-op
+        }
     }
 
     /**
