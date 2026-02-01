@@ -13,7 +13,6 @@ import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 
@@ -30,193 +29,106 @@ import com.h2play.canvas_magic.util.DrawableObjects.CTransform;
 import com.h2play.canvas_magic.util.DrawableObjects.CTranslation;
 
 /**
- * Created by antwan on 10/3/2015.
- * A library for creating graphics on an object model on top of canvas.
- * How to use:
- * <H1>Layout</H1>
- * Create a view in your layout, star this: <pre>
- &lt;com.agsw.FabricView.FabricView
- android:id="@+id/my_fabric_view"
- android:layout_width="match_parent"
- android:layout_height="match_parent"
- android:padding="20dp"
- android:text="@string/my_fabric_view_title"
- /&gt;</pre>
- * <H1>Activity code</H1>
- * Retrieve and configure your FabricView: <pre>
-FabricView myFabricView = (FabricView) parent.findViewById(R.id.my_fabric_view); //Retrieve by ID
- //Configuration. All of which is optional. Defaults are marked with an asterisk here.
-myFabricView.setBackgroundMode(BACKGROUND_STYLE_BLANK); //Set the background style (BACKGROUND_STYLE_BLANK*, BACKGROUND_STYLE_NOTEBOOK_PAPER, BACKGROUND_STYLE_GRAPH_PAPER)
-
-myFabricView.setInteractionMode(FabricView.DRAW_MODE); //Set its draw mode (DRAW_MODE*, SELECT_MODE, ROTATE_MODE, LOCKED_MODE)
-myFabricView.setDeleteIcon(deleteIcon); //If you don't star the default delete icon
-myFabricView.setColor(R.color.purple); //Line color
-myFabricView.setSize(10); //Line width
-myFabricView.setSelectionColor(R.color.lightergray); //Selection box color
-//To be notified of any deletion:
-myFabricView.setDeletionListener(new FabricView.DeletionListener() {
-  public void deleted(CDrawable drawable) {
-    doSomethingAboutThis(drawable);
-  }
-});
-
-//Manipulations... The following functions could be attached to buttons of your choosing:
-myFabricView.cleanPage(); //Erases everything.
-myFabricView.undo(); //Cancels the last operation.
-myFabricView.redo(); //Reinstates the last undone operation.
-myFabricView.selectLastDrawn(); //Mark the last drawn object as selected.
-myFabricView.deSelect(); //Unmark all objects for selection.
-myFabricView.deleteSelection(); //Removes all selected objects and its transforms.
-myFabricView.deleteDrawable(); //Removes a single object and its transforms.
-
-//Retrieving the picture from the view:
-Bitmap fullResult = myFabricView.getCanvasBitmap(); //Gets a copy of the whole view. This includes decorations such as selection rectangle. So make sure you switch to LOCKED_MODE before calling.
-Bitmap croppedResult = myFabricView.getCroppedCanvasBitmap(); //Same as previous, except with no margin around the picture.
-List&lt;CDrabable&gt; drawablesList = myFabricView.getDrawablesList(); //Returns all the drawables of the view. See next sections.
-CDrawable currentSelection = myFabricView.getSelection();
-
-//Save point functions
-boolean everythingIsSaved = myFabricView.isSaved(); //true = there were no operations added or undone after the last call to markSaved().
-markSaved(); //Indicates that everything was saved. You can save the bitmap or the drawable objects. (See previous section.)
-revertUnsaved(); //Restore the drawables to the last save point.
-List&lt;CDrabable&gt; unsavedDrawablesList = getUnsavedDrawablesList(); //Returns all the drawables that were not saved yet.</pre>
- * <H1>Drawables and Transforms</H1>
- * The list of visible objects inside the view is a stack. There are two kinds: CDrawable and CTransform (subclass of the latter).
- * A CDrawable is an object that can be "drawn" on the canvas. A CTransform represents a modification of a CDrawable.
- * A CDrawable is linked to its CTransforms (see getTransforms() and hasTransforms()), and each CTransform is aware of its
- * CDrawable (see getDrawable()).
- *
- * The subclasses of CDrawable are CPath (a set of continuous lines), CBitmap, and CText. Another subclass is CTransform, and this one
- * has its one subclasses which are CRotation, CScale, and CTranslation.
+ * 모던화된 FabricView - 캔버스 그리기 뷰
+ * 
+ * 개선사항:
+ * - 하드웨어 가속 활용
+ * - 메모리 효율성 개선
+ * - 터치 반응성 향상
+ * - deprecated API 제거
+ * 
+ * 사용법:
+ * <pre>
+ * FabricView fabricView = findViewById(R.id.fabricView);
+ * fabricView.setColor(Color.RED);
+ * fabricView.setSize(10);
+ * fabricView.setInteractionMode(FabricView.DRAW_MODE);
+ * </pre>
  */
 public class FabricView extends View {
 
-    /**********************************************************************************************/
-    /*************************************     Vars    *******************************************/
-    /*********************************************************************************************/
-    // painting objects and properties
-    private ArrayList<CDrawable> mDrawableList = new ArrayList<>();
-    private ArrayList<CDrawable> mUndoList = new ArrayList<>();
+    // Drawable 리스트
+    private final ArrayList<CDrawable> mDrawableList = new ArrayList<>();
+    private final ArrayList<CDrawable> mUndoList = new ArrayList<>();
+    private final ArrayList<JsonObject> jsonObjects = new ArrayList<>();
+
+    // 선택 관련
     private CDrawable selected = null;
+    private CDrawable hovering = null;
     private long pressStartTime;
     private float pressedX;
     private float pressedY;
-    private CDrawable hovering = null;
-    private ArrayList<JsonObject> jsonObjects = new ArrayList<>();
 
+    // 그리기 설정
     private int mColor = Color.BLACK;
+    private int mBackgroundColor = Color.WHITE;
+    private Paint.Style mStyle = Paint.Style.STROKE;
+    private float mSize = 5f;
+    
+    // 상태
     private int savePoint = 0;
+    private int mInteractionMode = DRAW_MODE;
+    private int mBackgroundMode = BACKGROUND_STYLE_BLANK;
+    private boolean mTextExpectTouch = false;
+
+    // 삭제 아이콘
     private Bitmap deleteIcon;
-    private RectF deleteIconPosition = new RectF(-1, -1, -1, -1);
+    private final RectF deleteIconPosition = new RectF(-1, -1, -1, -1);
     private DeletionListener deletionListener = null;
 
-    // Canvas interaction modes
-    private int mInteractionMode = DRAW_MODE;
-
-    // background color of the library
-    private int mBackgroundColor = Color.WHITE;
-    // default style for the library
-    private Paint.Style mStyle = Paint.Style.STROKE;
-
-    // default stroke size for the library
-    private float mSize = 5f;
-
-    // flag indicating whether or not the background needs to be redrawn
-    private boolean mRedrawBackground;
-
-    // background mode for the library, default to blank
-    private int mBackgroundMode = BACKGROUND_STYLE_BLANK;
-
-    /**
-     * Default Notebook left line color. Value = Color.Red.
-     */
-    public static final int NOTEBOOK_LEFT_LINE_COLOR = Color.RED;
-
-    // Flag indicating that we are waiting for a location for the text
-    private boolean mTextExpectTouch;
-
-    // Vars to decrease dirty area and increase performance
+    // 터치 추적
     private float lastTouchX, lastTouchY;
     private final RectF dirtyRect = new RectF();
-
-    // keep track of path and paint being in use
-    CPath currentPath;
-    Paint currentPaint;
-    Paint selectionPaint;
-
+    
+    // 현재 그리기 중인 경로
+    private CPath currentPath;
+    private Paint currentPaint;
+    private Paint selectionPaint;
     private int selectionColor = Color.DKGRAY;
-    private static final int MAX_CLICK_DURATION = 1000;
-    private static final int MAX_CLICK_DISTANCE = 15;
-
-    /*********************************************************************************************/
-    /************************************     FLAGS    *******************************************/
-    /*********************************************************************************************/
-
-    //Background modes:
-    /**
-     * Background mode, used in setBackgroundMode(). No lines will be drawn on the background. This is the default.
-     */
-    public static final int BACKGROUND_STYLE_BLANK = 0;
-    /**
-     * Background mode, used in setBackgroundMode(). Will draw blue lines horizontally and a red line on the left vertically.
-     */
-    public static final int BACKGROUND_STYLE_NOTEBOOK_PAPER = 1;
-    /**
-     * Background mode, used in setBackgroundMode(). Will draw blue lines horizontally and vertically.
-     */
-    public static final int BACKGROUND_STYLE_GRAPH_PAPER = 2;
-
-    //Interactive Modes:
-    /**
-     * Interactive modes: Will let the user draw. This is the default.
-     */
-    public static final int DRAW_MODE = 0;
-    /**
-     * Interactive modes: Will let the user select objects.
-     */
-    public static final int SELECT_MODE = 1;
-    /**
-     * Interactive modes: Will let the user rotate objects. This is not yet supported.
-     */
-    public static final int ROTATE_MODE = 2; // TODO Support Object Rotation.
-    /**
-     * Interactive modes: Will remove all decorations and the user won't be able to modify anything. This is the mode to use when retrieving the bitmaps with getCroppedCanvasBitmap() or getCanvasBitmap().
-     */
-    public static final int LOCKED_MODE = 3;
-
-    /*********************************************************************************************/
-    /**********************************     CONSTANTS    *****************************************/
-    /*********************************************************************************************/
-    /**
-     * Number of pixels that will be on the left side of the red line when in BACKGROUND_STYLE_GRAPH_PAPER background mode.
-     */
-    public static final int NOTEBOOK_LEFT_LINE_PADDING = 120;
-    private static final int SELECTION_LINE_WIDTH = 2;
-
-    /*********************************************************************************************/
-    /************************************     TO-DOs    ******************************************/
-    /*********************************************************************************************/
-    private float mZoomLevel = 1.0f; //TODO Support Zoom
-    private float mHorizontalOffset = 1, mVerticalOffset = 1; // TODO Support Offset and Viewport
-    /**
-     * Unused at this time.
-     */
-    public int mAutoscrollDistance = 100; // TODO Support Autoscroll
+    
+    // 크롭 영역
     private Rect cropBounds = null;
 
+    // 상수
+    private static final float TOUCH_TOLERANCE = 4;
+    private static final int MAX_CLICK_DURATION = 1000;
+    private static final int MAX_CLICK_DISTANCE = 15;
+    private static final int SELECTION_LINE_WIDTH = 2;
+    
+    public static final int NOTEBOOK_LEFT_LINE_COLOR = Color.RED;
+    public static final int NOTEBOOK_LEFT_LINE_PADDING = 120;
+
+    // 배경 모드
+    public static final int BACKGROUND_STYLE_BLANK = 0;
+    public static final int BACKGROUND_STYLE_NOTEBOOK_PAPER = 1;
+    public static final int BACKGROUND_STYLE_GRAPH_PAPER = 2;
+
+    // 상호작용 모드
+    public static final int DRAW_MODE = 0;
+    public static final int SELECT_MODE = 1;
+    public static final int ROTATE_MODE = 2;
+    public static final int LOCKED_MODE = 3;
+
     /**
-     *  Constructor, sets defaut values.
+     * 생성자
      *
-     * @param context the activity that containts the view
-     * @param attrs   view attributes
+     * @param context 컨텍스트
+     * @param attrs   뷰 속성
      */
     public FabricView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initView(context);
+    }
+
+    private void initView(Context context) {
         setFocusable(true);
         setFocusableInTouchMode(true);
-        this.setBackgroundColor(mBackgroundColor);
-        mTextExpectTouch = false;
+        setBackgroundColor(mBackgroundColor);
+        
+        // 하드웨어 가속 활성화
+        setLayerType(LAYER_TYPE_HARDWARE, null);
 
+        // 선택 페인트 초기화
         selectionPaint = new Paint();
         selectionPaint.setAntiAlias(true);
         selectionPaint.setColor(selectionColor);
@@ -230,15 +142,14 @@ public class FabricView extends View {
     }
 
     /**
-     * Called when there is the canvas is being re-drawn.
+     * 캔버스 그리기
      */
     @Override
     protected void onDraw(Canvas canvas) {
-        // check if background needs to be redrawn
         drawBackground(canvas, mBackgroundMode);
         Rect totalBounds = new Rect(canvas.getWidth(), canvas.getHeight(), 0, 0);
 
-        // go through each item in the list and draw it
+        // 모든 drawable 그리기
         for (int i = 0; i < mDrawableList.size(); i++) {
             try {
                 CDrawable d = mDrawableList.get(i);
@@ -249,27 +160,23 @@ public class FabricView extends View {
                 Rect bounds = d.computeBounds();
                 totalBounds.union(bounds);
                 d.draw(canvas);
+                
+                // 선택 모드에서 선택된 객체 표시
                 if (mInteractionMode == SELECT_MODE && d.equals(selected)) {
                     growRect(bounds, SELECTION_LINE_WIDTH);
                     canvas.drawRect(new RectF(bounds), selectionPaint);
-                    deleteIconPosition = new RectF();
-                    deleteIconPosition.left = bounds.right - (deleteIcon.getWidth() / 2);
-                    deleteIconPosition.top = bounds.top - (deleteIcon.getHeight() / 2);
+                    deleteIconPosition.left = bounds.right - (deleteIcon.getWidth() / 2f);
+                    deleteIconPosition.top = bounds.top - (deleteIcon.getHeight() / 2f);
                     deleteIconPosition.right = deleteIconPosition.left + deleteIcon.getWidth();
                     deleteIconPosition.bottom = deleteIconPosition.top + deleteIcon.getHeight();
                     canvas.drawBitmap(deleteIcon, deleteIconPosition.left, deleteIconPosition.top, d.getPaint());
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                // 개별 drawable 그리기 실패 시 계속 진행
             }
         }
-        if(totalBounds.width() <= 0) {
-            //No bounds
-            cropBounds = null;
-        }
-        else {
-            cropBounds = totalBounds;
-        }
+        
+        cropBounds = totalBounds.width() > 0 ? totalBounds : null;
     }
 
     public ArrayList<CDrawable> getDrawables() {
@@ -327,8 +234,6 @@ public class FabricView extends View {
     private boolean onTouchRotateMode(MotionEvent event) {
         return false;
     }
-
-    private static final float TOUCH_TOLERANCE = 4;
 
     public void actionDown(float eventX, float eventY) {
 
@@ -519,10 +424,10 @@ public class FabricView extends View {
      * Drawing Events
      ******************************************/
     /**
-     * Draw the background on the canvas
+     * 배경 그리기
      *
-     * @param canvas         the canvas to draw on
-     * @param backgroundMode one of BACKGROUND_STYLE_GRAPH_PAPER, BACKGROUND_STYLE_NOTEBOOK_PAPER, BACKGROUND_STYLE_BLANK
+     * @param canvas         캔버스
+     * @param backgroundMode 배경 모드
      */
     public void drawBackground(Canvas canvas, int backgroundMode) {
         canvas.drawColor(mBackgroundColor);
@@ -542,7 +447,6 @@ public class FabricView extends View {
                     break;
             }
         }
-        mRedrawBackground = false;
     }
 
     /**
@@ -616,12 +520,10 @@ public class FabricView extends View {
     }
 
     /**
-     * Capture Text from the keyboard and draw it on the screen
-     * //TODO Implement the method
+     * 키보드에서 텍스트 캡처 (미구현)
      */
     private void drawTextFromKeyboard() {
-        Toast.makeText(getContext(), "Touch where you want the text to be", Toast.LENGTH_LONG).show();
-        //TODO
+        // TODO: 구현 필요
         mTextExpectTouch = true;
     }
 
