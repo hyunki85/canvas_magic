@@ -56,4 +56,19 @@
     <string name="line_thickness">ความหนาของเส้น</string>
     <string name="opponent_chose_number">คู่ต่อสู้เลือก %1$d แตะสองครั้งที่ช่องนั้น</string>
     <string name="menu_subtitle">เทคนิคแคนวาสที่เริ่มต้นง่าย</string>
+
+    <string name="tutorial_character_name">ผู้ชม</string>
+    <string name="tutorial_vn_step1">บอกพวกเขา:\n\"เลือกตัวเลข 0 ถึง 9\"</string>
+    <string name="tutorial_vn_step2">ถามพวกเขา:\n\"เลือกได้แล้วหรือยัง?\"</string>
+    <string name="tutorial_vn_step3">มองตาพวกเขา\n(ทำเป็นอ่านใจ)</string>
+    <string name="tutorial_vn_step4">ทำท่าวาดบนหน้าจอ\n(ท่าทางอะไรก็ได้)</string>
+    <string name="tutorial_vn_step5">เก่งมาก! ตอนนี้ถึงคิวคุณแล้ว</string>
+    <string name="tutorial_vn_step6">เห็นไหม? หน้าจอดูเหมือนปิดอยู่\nวางโทรศัพท์ระหว่างคุณกับเขา\nแล้วแตะสองครั้งที่ตำแหน่งตัวเลข\nหน้าจอจะสว่างขึ้นพร้อมรูปภาพ!</string>
+    <string name="tutorial_quiz_question">ถ้าเขาเลือก 9\nต้องแตะสองครั้งที่ช่องไหน?</string>
+    <string name="tutorial_quiz_correct">ถูกต้อง! ลองทำเองเลย!</string>
+    <string name="tutorial_quiz_wrong">ลองคิดอีกครั้ง!</string>
+    <string name="tutorial_practice_intro">คราวนี้ผู้ชมเลือก 8\nลองแตะสองครั้งที่ช่อง 8 โดยไม่มีคำแนะนำ!</string>
+    <string name="tutorial_practice_bubble">ถ้าผู้ชมเลือก %d\nต้องแตะสองครั้งที่ไหน?</string>
+    <string name="tutorial_practice_wrong">ไม่ใช่ช่อง 8! ลองอีกครั้ง</string>
+    <string name="tutorial_practice_correct">เยี่ยม! คุณพร้อมแล้ว!</string>
 </resources>

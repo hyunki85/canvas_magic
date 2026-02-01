@@ -14,6 +14,8 @@ import android.view.WindowManager;
 import android.widget.Toast;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
+import androidx.activity.OnBackPressedCallback;
+
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
 import com.google.android.gms.ads.AdRequest;
@@ -112,6 +114,17 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
                     mCustomDialog.dismiss();
                     finish();
                 });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (spotlightOverlay != null) {
+                    spotlightOverlay.hide();
+                    spotlightOverlay = null;
+                }
+                mCustomDialog.show();
+            }
+        });
     }
 
     @Override
@@ -124,6 +137,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     }
 
     public void onStartClick() {
+        if (isTutorialMode) return;
         showColorPicker();
     }
 
@@ -199,6 +213,21 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         
         // 튜토리얼 모드 활성화
         isTutorialMode = true;
+
+        // longPressProgress를 android.R.id.content로 옮겨서 스포트라이트 오버레이 위에 표시
+        layout.post(() -> {
+            ViewGroup contentRoot = findViewById(android.R.id.content);
+            if (contentRoot != null && longPressProgress.getParent() != contentRoot) {
+                ViewGroup oldParent = (ViewGroup) longPressProgress.getParent();
+                if (oldParent != null) oldParent.removeView(longPressProgress);
+                android.widget.FrameLayout.LayoutParams params = new android.widget.FrameLayout.LayoutParams(
+                        (int) (80 * getResources().getDisplayMetrics().density),
+                        (int) (80 * getResources().getDisplayMetrics().density),
+                        android.view.Gravity.CENTER
+                );
+                contentRoot.addView(longPressProgress, params);
+            }
+        });
     }
 
     /**
@@ -247,6 +276,12 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         onStartLongClick();
     }
 
+    private static final int REQUEST_TUTORIAL_PRE_PIN = 2002;
+    private static final int REQUEST_PRACTICE_PIN = 2005;
+    private static final int PRACTICE_TARGET_PIN = 8;
+    private Intent pendingPinData = null;
+    private boolean wasGuideMode = false;
+
     public boolean onStartLongClick() {
         fabricView.setColor(selectedColor);
         Toast.makeText(this, R.string.good_job, Toast.LENGTH_SHORT).show();
@@ -256,8 +291,15 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
             spotlightOverlay = null;
         }
 
-        Intent intent = PinActivity.getStartIntent(this, selectedShape.count);
-        startActivityForResult(intent, REQUEST_CODE);
+        wasGuideMode = mainPresenter.isGuideMode();
+        if (wasGuideMode) {
+            Intent intent = com.h2play.canvas_magic.features.tutorial.TutorialDialogueActivity
+                    .getStartIntent(this, com.h2play.canvas_magic.features.tutorial.TutorialDialogueActivity.PHASE_PRE_PIN);
+            startActivityForResult(intent, REQUEST_TUTORIAL_PRE_PIN);
+        } else {
+            Intent intent = PinActivity.getStartIntent(this, selectedShape.count);
+            startActivityForResult(intent, REQUEST_CODE);
+        }
         return true;
     }
 
@@ -272,21 +314,42 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     }
 
     @Override
-    public void onBackPressed() {
-        if (spotlightOverlay != null) {
-            // 가이드 노출 중엔 먼저 가이드를 닫고 기존 동작(광고 다이얼로그) 표시
-            spotlightOverlay.hide();
-            spotlightOverlay = null;
-            mCustomDialog.show();
-        } else {
-            finish();
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_TUTORIAL_PRE_PIN && resultCode == RESULT_OK) {
+            Intent intent = PinActivity.getStartIntent(this, selectedShape.count);
+            startActivityForResult(intent, REQUEST_CODE);
+            return;
+        }
+
+        // 연습용 PinActivity에서 돌아옴 → 8번을 탭했는지 검증
+        if (requestCode == REQUEST_PRACTICE_PIN && resultCode == RESULT_OK) {
+            int tappedPin = data.getIntExtra(PinActivity.PIN, -1);
+            if (tappedPin != PRACTICE_TARGET_PIN) {
+                // 오답 → 다시 시도
+                Toast.makeText(this, R.string.tutorial_practice_wrong, Toast.LENGTH_SHORT).show();
+                Intent retry = PinActivity.getStartIntent(this, selectedShape.count);
+                retry.putExtra(PinActivity.EXTRA_PRACTICE_TARGET, PRACTICE_TARGET_PIN);
+                retry.putExtra(PinActivity.EXTRA_SHOW_GRID, true);
+                startActivityForResult(retry, REQUEST_PRACTICE_PIN);
+                return;
+            }
+            // 정답 → 축하 후 8번 그리기 진행
+            Toast.makeText(this, R.string.tutorial_practice_correct, Toast.LENGTH_SHORT).show();
+            pendingPinData = null;
+            // data는 이미 PIN=8이므로 그대로 아래 그리기 로직으로 진행
+        }
+
+        // 튜토리얼 첫 PinActivity 완료 → 말풍선 연습 PinActivity로 이동
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && wasGuideMode) {
+            pendingPinData = data;
+            Intent practiceIntent = PinActivity.getStartIntent(this, selectedShape.count);
+            practiceIntent.putExtra(PinActivity.EXTRA_PRACTICE_TARGET, PRACTICE_TARGET_PIN);
+            startActivityForResult(practiceIntent, REQUEST_PRACTICE_PIN);
+            return;
+        }
+
         fabricView.cleanPage();
 
         DisplayMetrics displayMetrics = new DisplayMetrics();

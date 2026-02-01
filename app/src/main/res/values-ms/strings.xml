@@ -50,4 +50,19 @@
     <string name="number_of_shapes">Bilangan Bentuk</string>
     <string name="exit_comment">Anda Mahu Keluar?</string>
     <string name="exit">Keluar</string>
+
+    <string name="tutorial_character_name">Penonton</string>
+    <string name="tutorial_vn_step1">Beritahu mereka:\n\"Pilih nombor dari 0 hingga 9\"</string>
+    <string name="tutorial_vn_step2">Tanya mereka:\n\"Sudah pilih?\"</string>
+    <string name="tutorial_vn_step3">Pandang mata mereka.\n(Berpura-pura membaca fikiran)</string>
+    <string name="tutorial_vn_step4">Berpura-pura melukis di skrin.\n(Apa-apa isyarat pun boleh)</string>
+    <string name="tutorial_vn_step5">Bagus! Sekarang giliran anda.</string>
+    <string name="tutorial_vn_step6">Nampak? Skrin kelihatan seperti mati.\nLetakkan telefon antara anda dan mereka,\nketuk dua kali pada kedudukan nombor.\nSkrin menyala dan lukisan muncul!</string>
+    <string name="tutorial_quiz_question">Jika mereka pilih 9,\nsel mana perlu anda ketuk dua kali?</string>
+    <string name="tutorial_quiz_correct">Betul! Sekarang cuba sendiri!</string>
+    <string name="tutorial_quiz_wrong">Fikir semula!</string>
+    <string name="tutorial_practice_intro">Kali ini penonton memilih 8.\nKetuk dua kali sel 8 tanpa panduan!</string>
+    <string name="tutorial_practice_bubble">Jika penonton memilih %d,\ndi mana perlu anda ketuk dua kali?</string>
+    <string name="tutorial_practice_wrong">Itu bukan sel 8! Cuba lagi.</string>
+    <string name="tutorial_practice_correct">Sempurna! Anda sudah bersedia!</string>
 </resources>

@@ -56,4 +56,19 @@
     <string name="line_thickness">Độ dày đường kẻ</string>
     <string name="opponent_chose_number">Đối thủ chọn %1$d. Chạm hai lần vào ô đó</string>
     <string name="menu_subtitle">Thủ thuật canvas dễ dàng bắt đầu</string>
+
+    <string name="tutorial_character_name">Khán giả</string>
+    <string name="tutorial_vn_step1">Nói với họ:\n\"Chọn một số từ 0 đến 9\"</string>
+    <string name="tutorial_vn_step2">Hỏi họ:\n\"Chọn xong chưa?\"</string>
+    <string name="tutorial_vn_step3">Nhìn vào mắt họ.\n(Giả vờ đọc suy nghĩ)</string>
+    <string name="tutorial_vn_step4">Giả vờ vẽ trên màn hình.\n(Cử chỉ nào cũng được)</string>
+    <string name="tutorial_vn_step5">Tuyệt vời! Bây giờ đến lượt bạn.</string>
+    <string name="tutorial_vn_step6">Thấy không? Màn hình trông như đã tắt.\nĐặt điện thoại giữa bạn và họ,\nchạm hai lần vào vị trí số.\nMàn hình sáng lên và hình vẽ xuất hiện!</string>
+    <string name="tutorial_quiz_question">Nếu họ chọn số 9,\nbạn cần chạm hai lần vào ô nào?</string>
+    <string name="tutorial_quiz_correct">Đúng rồi! Bây giờ tự thử nhé!</string>
+    <string name="tutorial_quiz_wrong">Nghĩ lại nhé!</string>
+    <string name="tutorial_practice_intro">Lần này khán giả chọn số 8.\nChạm hai lần vào ô 8 mà không cần hướng dẫn!</string>
+    <string name="tutorial_practice_bubble">Nếu khán giả chọn %d,\nbạn cần chạm hai lần ở đâu?</string>
+    <string name="tutorial_practice_wrong">Đó không phải ô 8! Thử lại nhé.</string>
+    <string name="tutorial_practice_correct">Hoàn hảo! Bạn đã sẵn sàng!</string>
 </resources>

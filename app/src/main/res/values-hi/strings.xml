@@ -50,4 +50,19 @@
     <string name="number_of_shapes">आकृतियों की संख्या</string>
     <string name="exit_comment">आप बाहर निकलना चाहते हैं?</string>
     <string name="exit">बाहर निकलना</string>
+
+    <string name="tutorial_character_name">दर्शक</string>
+    <string name="tutorial_vn_step1">उनसे कहें:\n\"0 से 9 में से एक नंबर चुनो\"</string>
+    <string name="tutorial_vn_step2">पूछें:\n\"चुन लिया?\"</string>
+    <string name="tutorial_vn_step3">उनकी आँखों में देखें।\n(मन पढ़ने का नाटक करें)</string>
+    <string name="tutorial_vn_step4">स्क्रीन पर ड्रॉ करने का नाटक करें।\n(कोई भी जेस्चर चलेगा)</string>
+    <string name="tutorial_vn_step5">बहुत अच्छे! अब आपकी बारी है।</string>
+    <string name="tutorial_vn_step6">देखा? स्क्रीन बंद जैसी दिखती है।\nफ़ोन को अपने और उनके बीच रखें,\nनंबर की जगह पर दो बार टैप करें।\nस्क्रीन जगेगी और ड्रॉइंग दिखेगी!</string>
+    <string name="tutorial_quiz_question">अगर उन्होंने 9 चुना,\nतो किस सेल पर डबल टैप करना होगा?</string>
+    <string name="tutorial_quiz_correct">सही! अब खुद कोशिश करें!</string>
+    <string name="tutorial_quiz_wrong">फिर से सोचें!</string>
+    <string name="tutorial_practice_intro">इस बार दर्शक ने 8 चुना।\nबिना गाइड के सेल 8 पर डबल टैप करें!</string>
+    <string name="tutorial_practice_bubble">अगर दर्शक ने %d चुना,\nतो कहाँ डबल टैप करना होगा?</string>
+    <string name="tutorial_practice_wrong">यह सेल 8 नहीं है! फिर से कोशिश करें।</string>
+    <string name="tutorial_practice_correct">बिल्कुल सही! आप तैयार हैं!</string>
 </resources>

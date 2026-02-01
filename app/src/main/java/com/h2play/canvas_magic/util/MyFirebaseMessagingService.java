@@ -29,6 +29,8 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -38,6 +40,8 @@ import com.h2play.canvas_magic.R;
 import com.h2play.canvas_magic.features.menu.MenuActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
+    private static final AtomicInteger notificationIdCounter = new AtomicInteger(521);
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -129,6 +133,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(channel);
         }
 
-        notificationManager.notify(521 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(notificationIdCounter.getAndIncrement(), notificationBuilder.build());
     }
 }

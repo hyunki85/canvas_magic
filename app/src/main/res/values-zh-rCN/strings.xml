@@ -56,4 +56,19 @@
     <string name="line_thickness">线条粗细</string>
     <string name="opponent_chose_number">对手选择了 %1$d。双击该格子</string>
     <string name="menu_subtitle">轻松开始的画布技巧</string>
+
+    <string name="tutorial_character_name">观众</string>
+    <string name="tutorial_vn_step1">对他们说：\n"从0到9选一个数字"</string>
+    <string name="tutorial_vn_step2">问他们：\n"想好了吗？"</string>
+    <string name="tutorial_vn_step3">看着对方的眼睛。\n（假装在读他们的心）</string>
+    <string name="tutorial_vn_step4">假装在屏幕上画画。\n（任何手势都可以）</string>
+    <string name="tutorial_vn_step5">做得好！现在轮到你试试。</string>
+    <string name="tutorial_vn_step6">看起来像是屏幕关了对吧？\n把手机放在你和对方之间，\n在数字位置轻点两下。\n屏幕亮起，画就出现了！</string>
+    <string name="tutorial_quiz_question">如果对方选了9，\n你应该双击哪个格子？</string>
+    <string name="tutorial_quiz_correct">答对了！现在自己试试吧！</string>
+    <string name="tutorial_quiz_wrong">再想想！</string>
+    <string name="tutorial_practice_intro">这次观众选了8。\n不看提示，试着双击第8格！</string>
+    <string name="tutorial_practice_bubble">如果观众选了%d，\n你应该双击哪里？</string>
+    <string name="tutorial_practice_wrong">不是第8格！再试一次。</string>
+    <string name="tutorial_practice_correct">完美！你准备好了！</string>
 </resources>

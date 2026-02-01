@@ -56,4 +56,19 @@
     <string name="line_thickness">Espessura da linha</string>
     <string name="opponent_chose_number">O oponente escolheu %1$d. Toque duas vezes nessa casa</string>
     <string name="menu_subtitle">Truques de tela fáceis de começar</string>
+
+    <string name="tutorial_character_name">Público</string>
+    <string name="tutorial_vn_step1">Diga a eles:\n\"Escolha um número de 0 a 9\"</string>
+    <string name="tutorial_vn_step2">Pergunte:\n\"Já escolheu?\"</string>
+    <string name="tutorial_vn_step3">Olhe nos olhos deles.\n(Finja que está lendo a mente)</string>
+    <string name="tutorial_vn_step4">Finja desenhar na tela.\n(Qualquer gesto serve)</string>
+    <string name="tutorial_vn_step5">Muito bem! Agora é a sua vez.</string>
+    <string name="tutorial_vn_step6">Viu? A tela parece desligada.\nColoque o celular entre vocês,\ne toque duas vezes na posição do número.\nA tela acende e o desenho aparece!</string>
+    <string name="tutorial_quiz_question">Se escolheram 9,\nqual célula você deve tocar duas vezes?</string>
+    <string name="tutorial_quiz_correct">Correto! Agora tente você!</string>
+    <string name="tutorial_quiz_wrong">Pense de novo!</string>
+    <string name="tutorial_practice_intro">Desta vez o público escolheu 8.\nToque duas vezes na célula 8 sem ajuda!</string>
+    <string name="tutorial_practice_bubble">Se o público escolheu %d,\nonde você deve tocar duas vezes?</string>
+    <string name="tutorial_practice_wrong">Essa não é a célula 8! Tente de novo.</string>
+    <string name="tutorial_practice_correct">Perfeito! Você está pronto!</string>
 </resources>

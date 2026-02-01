@@ -50,4 +50,19 @@
     <string name="number_of_shapes">形状の数</string>
     <string name="exit_comment">あなたは出口が欲しいですか？</string>
     <string name="exit">出口</string>
+
+    <string name="tutorial_character_name">観客</string>
+    <string name="tutorial_vn_step1">相手に言いましょう:\n「0から9の中から数字を1つ選んで」</string>
+    <string name="tutorial_vn_step2">聞いてみましょう:\n「決まった？」</string>
+    <string name="tutorial_vn_step3">相手の目を見つめてください。\n（心を読むふりをしましょう）</string>
+    <string name="tutorial_vn_step4">画面に描くふりをしてください。\n（どんなジェスチャーでもOK）</string>
+    <string name="tutorial_vn_step5">よくできました！次はあなたの番です。</string>
+    <string name="tutorial_vn_step6">画面が消えているように見えますよね？\n相手との間にスマホを置いて\n数字の位置をトントンと2回タッチしてください。\n画面が点いて絵が現れます！</string>
+    <string name="tutorial_quiz_question">相手が9を選んだ場合、\nどのマスをダブルタップしますか？</string>
+    <string name="tutorial_quiz_correct">正解！では実際にやってみましょう！</string>
+    <string name="tutorial_quiz_wrong">もう一度考えてみてください！</string>
+    <string name="tutorial_practice_intro">今度は観客が8を選びました。\nガイドなしで8番のマスをダブルタップしてみましょう！</string>
+    <string name="tutorial_practice_bubble">観客が%d番を選んだら\nどこをダブルタップしますか？</string>
+    <string name="tutorial_practice_wrong">8番のマスではありません！もう一度やってみましょう。</string>
+    <string name="tutorial_practice_correct">完璧です！準備OKです！</string>
 </resources>

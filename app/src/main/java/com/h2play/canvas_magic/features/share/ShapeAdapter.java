@@ -43,7 +43,7 @@ public class ShapeAdapter extends RecyclerView.Adapter<ShapeAdapter.ShapeViewHol
 
     private List<ShapeOnline> shapeOnlines;
     private ClickListener mClickListener;
-    private Subject<ShapeOnline> subject = PublishSubject.create();
+    private Subject<Object> subject = PublishSubject.create();
     private int lastSize;
 
     @Inject
@@ -59,7 +59,7 @@ public class ShapeAdapter extends RecyclerView.Adapter<ShapeAdapter.ShapeViewHol
         mClickListener = clickListener;
     }
 
-    public Subject<ShapeOnline> getNextPage() {
+    public Subject<Object> getNextPage() {
         return subject;
     }
 
@@ -92,7 +92,7 @@ public class ShapeAdapter extends RecyclerView.Adapter<ShapeAdapter.ShapeViewHol
 
         if((position == shapeOnlines.size() - 1) && lastSize != shapeOnlines.size()) {
             lastSize =  shapeOnlines.size();
-            subject.onNext(shapeOnlines.get(position));
+            subject.onNext(new Object());
         }
 
     }

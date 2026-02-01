@@ -45,4 +45,8 @@ public class MenuPresenter extends BasePresenter<MenuMvpView> {
         dataManager.enableGuide();
         getView().startTutorial();
     }
+
+    public void cancelTutorial() {
+        dataManager.setNoMoreGuide();
+    }
 }

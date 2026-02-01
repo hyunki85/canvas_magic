@@ -103,10 +103,26 @@ public class SpotlightGuideOverlay extends View {
 
     public void show() {
         if (getParent() == null && parent != null) {
-            parent.addView(this, new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
+            setPadding(0, 0, 0, 0);
+            setFitsSystemWindows(false);
+            // elevation이 있는 뷰(FAB, CardView) 위에 표시하기 위해
+            // DecorView의 content 영역(android.R.id.content)에 추가
+            ViewGroup decor = (ViewGroup) parent.getRootView().findViewById(android.R.id.content);
+            if (decor != null) {
+                decor.addView(this, new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+            } else {
+                parent.addView(this, new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+            }
         }
+        // 레이아웃 완료 후 좌표 재계산
+        post(() -> {
+            computeTargetRect();
+            invalidate();
+        });
         startRipple();
     }
 
@@ -124,16 +140,13 @@ public class SpotlightGuideOverlay extends View {
         this.guideText = text;
         this.customRect = null;
         this.touchForwardView = target;
-        // 타깃 뷰가 아직 레이아웃되지 않았다면 레이아웃 이후에 계산
-        if (target.getWidth() == 0 || target.getHeight() == 0) {
-            target.post(() -> {
-                computeTargetRect();
-                invalidate();
-            });
-        } else {
+        // show() 이후 post()에서 computeTargetRect()를 호출하므로 여기선 생략 가능
+        // 단, 이미 화면에 붙어있는 경우에만 즉시 계산
+        if (getParent() != null && getWidth() > 0 && getHeight() > 0) {
             computeTargetRect();
             invalidate();
         }
+        // 아직 화면에 없으면 show()의 post()에서 처리됨
     }
         private int insetTop = 0;
         private int insetBottom = 0;
@@ -158,16 +171,16 @@ public class SpotlightGuideOverlay extends View {
 
     private void computeTargetRect() {
         if (targetView == null) return;
-        // 전역 스크린 좌표에서 오버레이 로컬 좌표로 변환 (부모 패딩/인셋 영향 제거)
-        Rect global = new Rect();
-        if (!targetView.getGlobalVisibleRect(global)) return;
+        // 타깃 뷰와 오버레이 모두 getLocationOnScreen으로 절대 좌표 구한 뒤 변환
+        int[] targetLoc = new int[2];
+        targetView.getLocationOnScreen(targetLoc);
         int[] overlayLoc = new int[2];
         getLocationOnScreen(overlayLoc);
 
-        float left = global.left - overlayLoc[0] - paddingPx;
-        float top = global.top - overlayLoc[1] - paddingPx;
-        float right = global.right - overlayLoc[0] + paddingPx;
-        float bottom = global.bottom - overlayLoc[1] + paddingPx;
+        float left = targetLoc[0] - overlayLoc[0] - paddingPx;
+        float top = targetLoc[1] - overlayLoc[1] - paddingPx;
+        float right = left + targetView.getWidth() + paddingPx * 2;
+        float bottom = top + targetView.getHeight() + paddingPx * 2;
         targetRect.set(left, top, right, bottom);
     }
 

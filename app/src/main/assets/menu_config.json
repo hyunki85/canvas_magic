@@ -1,15 +1,10 @@
 {
-  "version": 1,
+  "version": 4,
   "experiment": null,
   "items": [
-  { "id": "start", "title": "시작하기", "icon": null, "imageUrl": null, "bgColor": "#3F51B5", "action": "start_tutorial", "payload": null },
-  { "id": "edit", "title": "편집", "icon": "ic_edit", "bgColor": "#009688", "action": "shape_list", "payload": null },
-  { "id": "promo1", "title": "특가 프로모션", "icon": null, "imageUrl": "https://picsum.photos/seed/promo/640/360", "bgColor": "#34495E", "action": "open_url", "payload": "https://h2play.com/promo", "span": 2, "promo": true },
-  { "id": "share", "title": "공유", "icon": "ic_share", "imageUrl": null, "bgColor": "#FF5722", "action": "open_share", "payload": null },
-  { "id": "help", "title": "튜토리얼", "icon": "ic_help", "bgColor": "#607D8B", "action": "open_help", "payload": null },
-  { "id": "restart_tutorial", "title": "튜토리얼 다시하기", "icon": "ic_help", "bgColor": "#9C27B0", "action": "restart_tutorial", "payload": null },
-  { "id": "rate", "title": "평가하기", "icon": null, "imageUrl": null, "bgColor": "#795548", "action": "rate", "payload": null },
-  { "id": "art", "title": "아트 배지", "icon": null, "imageUrl": "https://picsum.photos/seed/canvas_magic/128", "bgColor": "#34495E", "action": "open_url", "payload": "https://h2play.com" },
-  { "id": "more", "title": "더보기", "icon": null, "imageUrl": null, "bgColor": "#2E7D32", "action": "more_apps", "payload": "https://play.google.com/store/apps/dev?id=8030976532724501230" }
+  { "id": "help", "title": "튜토리얼", "description": "사용법 알아보기", "icon": "ic_help", "bgColor": "#546E7A", "action": "open_help", "small": true },
+  { "id": "restart_tutorial", "title": "다시 연습", "description": "처음부터 다시 배우기", "icon": "ic_help", "bgColor": "#7B1FA2", "action": "restart_tutorial", "small": true },
+  { "id": "rate", "title": "평가하기", "description": "별점으로 응원해주세요", "bgColor": "#5D4037", "action": "rate", "small": true },
+  { "id": "more", "title": "더 많은 앱", "description": "다른 앱도 구경하기", "bgColor": "#2E7D32", "action": "more_apps", "payload": "https://play.google.com/store/apps/dev?id=8030976532724501230", "small": true }
   ]
 }

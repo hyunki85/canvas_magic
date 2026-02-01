@@ -56,4 +56,19 @@
     <string name="line_thickness">Ketebalan garis</string>
     <string name="opponent_chose_number">Lawan memilih %1$d. Ketuk dua kali kotak tersebut</string>
     <string name="menu_subtitle">Trik kanvas yang mudah dimulai</string>
+
+    <string name="tutorial_character_name">Penonton</string>
+    <string name="tutorial_vn_step1">Katakan pada mereka:\n\"Pilih angka dari 0 sampai 9\"</string>
+    <string name="tutorial_vn_step2">Tanyakan:\n\"Sudah pilih?\"</string>
+    <string name="tutorial_vn_step3">Tatap mata mereka.\n(Pura-pura membaca pikiran)</string>
+    <string name="tutorial_vn_step4">Pura-pura menggambar di layar.\n(Gerakan apa saja boleh)</string>
+    <string name="tutorial_vn_step5">Bagus! Sekarang giliran kamu.</string>
+    <string name="tutorial_vn_step6">Lihat? Layar terlihat seperti mati.\nLetakkan HP di antara kalian,\nketuk dua kali di posisi angka.\nLayar menyala dan gambar muncul!</string>
+    <string name="tutorial_quiz_question">Jika mereka memilih 9,\nsel mana yang harus kamu ketuk dua kali?</string>
+    <string name="tutorial_quiz_correct">Benar! Sekarang coba sendiri!</string>
+    <string name="tutorial_quiz_wrong">Coba pikirkan lagi!</string>
+    <string name="tutorial_practice_intro">Kali ini penonton memilih 8.\nKetuk dua kali sel 8 tanpa panduan!</string>
+    <string name="tutorial_practice_bubble">Jika penonton memilih %d,\ndi mana harus ketuk dua kali?</string>
+    <string name="tutorial_practice_wrong">Itu bukan sel 8! Coba lagi.</string>
+    <string name="tutorial_practice_correct">Sempurna! Kamu sudah siap!</string>
 </resources>

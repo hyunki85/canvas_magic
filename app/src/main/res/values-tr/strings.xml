@@ -50,4 +50,19 @@
     <string name="number_of_shapes">Şekil Sayısı</string>
     <string name="exit_comment">Çıkış Mı Istiyorsun?</string>
     <string name="exit">Çıkış</string>
+
+    <string name="tutorial_character_name">Seyirci</string>
+    <string name="tutorial_vn_step1">Onlara söyleyin:\n\"0\'dan 9\'a kadar bir sayı seç\"</string>
+    <string name="tutorial_vn_step2">Sorun:\n\"Seçtin mi?\"</string>
+    <string name="tutorial_vn_step3">Gözlerinin içine bakın.\n(Aklını okuyormuş gibi yapın)</string>
+    <string name="tutorial_vn_step4">Ekranda çiziyormuş gibi yapın.\n(Herhangi bir hareket olur)</string>
+    <string name="tutorial_vn_step5">Harika! Şimdi sıra sizde.</string>
+    <string name="tutorial_vn_step6">Gördünüz mü? Ekran kapalı gibi görünüyor.\nTelefonu aranıza koyun,\nsayı konumuna iki kez dokunun.\nEkran yanacak ve çizim görünecek!</string>
+    <string name="tutorial_quiz_question">9 seçtilerse,\nhangi hücreye iki kez dokunmalısınız?</string>
+    <string name="tutorial_quiz_correct">Doğru! Şimdi kendiniz deneyin!</string>
+    <string name="tutorial_quiz_wrong">Tekrar düşünün!</string>
+    <string name="tutorial_practice_intro">Bu sefer seyirci 8\'i seçti.\nYardım almadan 8. hücreye iki kez dokunun!</string>
+    <string name="tutorial_practice_bubble">Seyirci %d\'i seçtiyse,\nnereye iki kez dokunmalısınız?</string>
+    <string name="tutorial_practice_wrong">Burası 8. hücre değil! Tekrar deneyin.</string>
+    <string name="tutorial_practice_correct">Mükemmel! Hazırsınız!</string>
 </resources>

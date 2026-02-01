@@ -65,5 +65,28 @@
     <string name="long_press_hint">💡 OK 버튼을 길게 누르면 자동 그리기 모드!</string>
     <string name="opponent_chose_number">상대가 %1$d을(를) 선택했어요. 해당 칸을 더블탭하세요</string>
     <string name="menu_subtitle">쉽게 시작하는 캔버스 트릭</string>
+    <string name="menu_desc_edit">나만의 모양 세트 만들기</string>
+    <string name="menu_desc_share">친구들과 작품 나누기</string>
+    <string name="rate_short">평가하기</string>
     <string name="undo">되돌리기</string>
+    <string name="tutorial_character_name">Audience</string>
+    <string name="tutorial_vn_step1">Say to them:\n\"Pick a number from 0 to 9\"</string>
+    <string name="tutorial_vn_step2">Ask them:\n\"Got one?\"</string>
+    <string name="tutorial_vn_step3">Look into their eyes.\n(Pretend to read their mind)</string>
+    <string name="tutorial_vn_step4">Pretend to draw on the screen.\n(Any gesture will do)</string>
+    <string name="tutorial_vn_step5">Great job! Now it\'s your turn to try.</string>
+    <string name="tutorial_quiz_question">If they picked 9,\nwhich cell should you double-tap?</string>
+    <string name="tutorial_quiz_correct">Correct! Now try it yourself!</string>
+    <string name="tutorial_quiz_wrong">Think again!</string>
+
+    <string name="tutorial_practice_intro">This time the audience picked 8.\nTry double-tapping cell 8 without any guide!</string>
+    <string name="tutorial_practice_bubble">If the audience picked %d,\nwhere should you double-tap?</string>
+    <string name="tutorial_practice_wrong">That\'s not cell 8! Try again.</string>
+    <string name="tutorial_practice_correct">Perfect! You\'re ready!</string>
+    <string name="tutorial_vn_step6">See? The screen looks like it\'s off.\nPlace the phone between you and them,\nthen tap the number spot twice.\nThe screen lights up and the drawing appears!</string>
+    <string name="reminder_channel_name">Reminders</string>
+    <string name="reminder_title_3day">Canvas Trick misses you!</string>
+    <string name="reminder_body_3day">Come draw something amazing today!</string>
+    <string name="reminder_title_7day">New patterns are waiting!</string>
+    <string name="reminder_body_7day">It\'s been a while. Check out what\'s new!</string>
 </resources>

@@ -56,4 +56,19 @@
     <string name="line_thickness">Grubość linii</string>
     <string name="opponent_chose_number">Przeciwnik wybrał %1$d. Dotknij dwukrotnie to pole</string>
     <string name="menu_subtitle">Łatwe do rozpoczęcia sztuczki na płótnie</string>
+
+    <string name="tutorial_character_name">Widz</string>
+    <string name="tutorial_vn_step1">Powiedz im:\n\"Wybierz liczbę od 0 do 9\"</string>
+    <string name="tutorial_vn_step2">Zapytaj:\n\"Masz już?\"</string>
+    <string name="tutorial_vn_step3">Spójrz im w oczy.\n(Udawaj, że czytasz w myślach)</string>
+    <string name="tutorial_vn_step4">Udawaj, że rysujesz na ekranie.\n(Dowolny gest wystarczy)</string>
+    <string name="tutorial_vn_step5">Świetnie! Teraz twoja kolej.</string>
+    <string name="tutorial_vn_step6">Widzisz? Ekran wygląda jakby był wyłączony.\nPołóż telefon między wami,\ni dotknij dwa razy pozycji liczby.\nEkran się zaświeci i pojawi się rysunek!</string>
+    <string name="tutorial_quiz_question">Jeśli wybrali 9,\nktórą komórkę musisz dotknąć dwa razy?</string>
+    <string name="tutorial_quiz_correct">Dobrze! Teraz spróbuj sam!</string>
+    <string name="tutorial_quiz_wrong">Pomyśl jeszcze raz!</string>
+    <string name="tutorial_practice_intro">Tym razem widz wybrał 8.\nDotknij dwa razy komórki 8 bez podpowiedzi!</string>
+    <string name="tutorial_practice_bubble">Jeśli widz wybrał %d,\ngdzie musisz dotknąć dwa razy?</string>
+    <string name="tutorial_practice_wrong">To nie komórka 8! Spróbuj ponownie.</string>
+    <string name="tutorial_practice_correct">Doskonale! Jesteś gotowy!</string>
 </resources>

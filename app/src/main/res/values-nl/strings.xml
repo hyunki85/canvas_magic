@@ -56,4 +56,19 @@
     <string name="line_thickness">Lijndikte</string>
     <string name="opponent_chose_number">De tegenstander koos %1$d. Tik tweemaal op dat vakje</string>
     <string name="menu_subtitle">Makkelijk te starten canvas trucs</string>
+
+    <string name="tutorial_character_name">Publiek</string>
+    <string name="tutorial_vn_step1">Zeg tegen hen:\n\"Kies een getal van 0 tot 9\"</string>
+    <string name="tutorial_vn_step2">Vraag:\n\"Heb je er een?\"</string>
+    <string name="tutorial_vn_step3">Kijk ze in de ogen.\n(Doe alsof je gedachten leest)</string>
+    <string name="tutorial_vn_step4">Doe alsof je op het scherm tekent.\n(Elk gebaar is goed)</string>
+    <string name="tutorial_vn_step5">Goed gedaan! Nu ben jij aan de beurt.</string>
+    <string name="tutorial_vn_step6">Zie je? Het scherm lijkt uit te staan.\nLeg de telefoon tussen jullie in,\nen tik twee keer op de nummerpositie.\nHet scherm licht op en de tekening verschijnt!</string>
+    <string name="tutorial_quiz_question">Als ze 9 kozen,\nop welke cel moet je dubbeltikken?</string>
+    <string name="tutorial_quiz_correct">Juist! Probeer het nu zelf!</string>
+    <string name="tutorial_quiz_wrong">Denk nog eens na!</string>
+    <string name="tutorial_practice_intro">Dit keer koos het publiek 8.\nDubbeltik op cel 8 zonder hulp!</string>
+    <string name="tutorial_practice_bubble">Als het publiek %d koos,\nwaar moet je dubbeltikken?</string>
+    <string name="tutorial_practice_wrong">Dat is niet cel 8! Probeer opnieuw.</string>
+    <string name="tutorial_practice_correct">Perfect! Je bent klaar!</string>
 </resources>

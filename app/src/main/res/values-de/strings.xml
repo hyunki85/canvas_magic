@@ -56,4 +56,19 @@
     <string name="line_thickness">Linienstärke</string>
     <string name="opponent_chose_number">Der Gegner hat %1$d gewählt. Tippen Sie zweimal auf dieses Feld</string>
     <string name="menu_subtitle">Einfach zu startende Canvas-Tricks</string>
+
+    <string name="tutorial_character_name">Publikum</string>
+    <string name="tutorial_vn_step1">Sag ihnen:\n\"Wähle eine Zahl von 0 bis 9\"</string>
+    <string name="tutorial_vn_step2">Frag sie:\n\"Hast du eine?\"</string>
+    <string name="tutorial_vn_step3">Schau ihnen in die Augen.\n(Tu so, als würdest du Gedanken lesen)</string>
+    <string name="tutorial_vn_step4">Tu so, als würdest du auf dem Bildschirm zeichnen.\n(Jede Geste ist okay)</string>
+    <string name="tutorial_vn_step5">Gut gemacht! Jetzt bist du dran.</string>
+    <string name="tutorial_vn_step6">Siehst du? Der Bildschirm sieht aus wie ausgeschaltet.\nLeg das Handy zwischen euch,\nund tippe zweimal auf die Zahlenposition.\nDer Bildschirm leuchtet auf und die Zeichnung erscheint!</string>
+    <string name="tutorial_quiz_question">Wenn sie 9 gewählt haben,\nwelches Feld musst du doppelt antippen?</string>
+    <string name="tutorial_quiz_correct">Richtig! Probier es jetzt selbst!</string>
+    <string name="tutorial_quiz_wrong">Denk nochmal nach!</string>
+    <string name="tutorial_practice_intro">Diesmal hat das Publikum 8 gewählt.\nTippe ohne Hilfe doppelt auf Feld 8!</string>
+    <string name="tutorial_practice_bubble">Wenn das Publikum %d gewählt hat,\nwo musst du doppelt tippen?</string>
+    <string name="tutorial_practice_wrong">Das ist nicht Feld 8! Versuch es nochmal.</string>
+    <string name="tutorial_practice_correct">Perfekt! Du bist bereit!</string>
 </resources>

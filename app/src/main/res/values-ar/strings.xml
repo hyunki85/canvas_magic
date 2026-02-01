@@ -56,4 +56,19 @@
     <string name="line_thickness">سمك الخط</string>
     <string name="opponent_chose_number">اختار الخصم %1$d. انقر مرتين على تلك الخانة</string>
     <string name="menu_subtitle">حيل لوحة سهلة البدء</string>
+
+    <string name="tutorial_character_name">الجمهور</string>
+    <string name="tutorial_vn_step1">قل لهم:\n\"اختر رقماً من 0 إلى 9\"</string>
+    <string name="tutorial_vn_step2">اسألهم:\n\"اخترت؟\"</string>
+    <string name="tutorial_vn_step3">انظر في عيونهم.\n(تظاهر بقراءة أفكارهم)</string>
+    <string name="tutorial_vn_step4">تظاهر بالرسم على الشاشة.\n(أي حركة ستفي بالغرض)</string>
+    <string name="tutorial_vn_step5">أحسنت! الآن دورك للتجربة.</string>
+    <string name="tutorial_vn_step6">أرأيت؟ الشاشة تبدو مطفأة.\nضع الهاتف بينك وبينهم،\nثم انقر مرتين على موضع الرقم.\nستضيء الشاشة ويظهر الرسم!</string>
+    <string name="tutorial_quiz_question">إذا اختاروا 9،\nأي خانة يجب أن تنقر عليها مرتين؟</string>
+    <string name="tutorial_quiz_correct">صحيح! الآن جرّب بنفسك!</string>
+    <string name="tutorial_quiz_wrong">فكّر مرة أخرى!</string>
+    <string name="tutorial_practice_intro">هذه المرة اختار الجمهور 8.\nانقر مرتين على الخانة 8 بدون مساعدة!</string>
+    <string name="tutorial_practice_bubble">إذا اختار الجمهور %d،\nأين يجب أن تنقر مرتين؟</string>
+    <string name="tutorial_practice_wrong">هذه ليست الخانة 8! حاول مرة أخرى.</string>
+    <string name="tutorial_practice_correct">ممتاز! أنت جاهز!</string>
 </resources>

@@ -17,6 +17,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.h2play.canvas_magic.features.menu.MenuActivity;
 import com.h2play.canvas_magic.util.AppOpenAdManager;
 import com.h2play.canvas_magic.util.FileUtil;
+import com.h2play.canvas_magic.util.ReminderScheduler;
 import com.singhajit.sherlock.core.Sherlock;
 //import com.tspoon.traceur.Traceur;
 
@@ -61,6 +62,9 @@ public class MvpStarterApplication extends Application {
         MobileAds.initialize(this);
         RequestConfiguration aa = new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("73431CF5ECC2ECB14BBF5CFE4DD450C0")).build();
         MobileAds.setRequestConfiguration(aa);
+
+        // Schedule reminder notifications
+        ReminderScheduler.schedule(this);
 
         // Moving this after Firebase is initialized
         if(getComponent().dataManager().getShapeList().size() <= 0) {

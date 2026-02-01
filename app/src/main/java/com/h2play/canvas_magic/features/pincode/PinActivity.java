@@ -27,6 +27,8 @@ import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
 import com.h2play.canvas_magic.features.preview.PreviewActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
+import androidx.activity.OnBackPressedCallback;
+
 import com.h2play.canvas_magic.util.GridGuideView;
 import com.h2play.canvas_magic.util.GuideView; // GuideView 클래스 임포트 추가
 import com.h2play.canvas_magic.util.SpotlightGuideOverlay;
@@ -39,6 +41,9 @@ import static android.util.TypedValue.COMPLEX_UNIT_DIP;
 public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.ErrorListener {
 
     public static final String PIN = "pin";
+    public static final String EXTRA_NO_GUIDE = "no_guide";
+    public static final String EXTRA_PRACTICE_TARGET = "practice_target";
+    public static final String EXTRA_SHOW_GRID = "show_grid";
     @InjectExtra
     Integer count;
     @Inject
@@ -119,12 +124,20 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
             }
         });
 
-        pinPresenter.needGuide();
+        int practiceTarget = getIntent().getIntExtra(EXTRA_PRACTICE_TARGET, -1);
+        if (practiceTarget >= 0) {
+            showPracticeBubble(practiceTarget);
+        } else if (!getIntent().getBooleanExtra(EXTRA_NO_GUIDE, false)) {
+            pinPresenter.needGuide();
+        }
 
-    }
-
-    @Override
-    public void onBackPressed() {
+        // Block back button - user must tap a pin to proceed
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // intentionally empty — back is disabled
+            }
+        });
 
     }
 
@@ -203,6 +216,38 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
     // 이 오버레이는 영역 내부 터치를 fl_main으로 전달 -> 더블탭 로직(onMainClick) 그대로 동작
     }
     
+    private void showPracticeBubble(int targetNumber) {
+        FrameLayout layout = findViewById(R.id.fl_main);
+
+        // 그리드 가이드: EXTRA_SHOW_GRID가 true일 때만 표시
+        if (getIntent().getBooleanExtra(EXTRA_SHOW_GRID, false)) {
+            GridGuideView gridGuideView = new GridGuideView(this);
+            gridGuideView.setGridCount(count);
+            gridGuideView.setOnTouchListener((v, event) -> false);
+            layout.addView(gridGuideView, new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+
+        // 말풍선 텍스트
+        TextView bubble = new TextView(this);
+        bubble.setText(getString(R.string.tutorial_practice_bubble, targetNumber));
+        bubble.setTextColor(Color.WHITE);
+        bubble.setTextSize(COMPLEX_UNIT_DIP, 18);
+        bubble.setBackground(getResources().getDrawable(R.drawable.speech_bubble_bg));
+        bubble.setPadding(dpToPx(20), dpToPx(16), dpToPx(20), dpToPx(16));
+        bubble.setGravity(Gravity.CENTER);
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+        params.topMargin = dpToPx(60);
+        params.leftMargin = dpToPx(24);
+        params.rightMargin = dpToPx(24);
+        layout.addView(bubble, params);
+    }
+
     // dp를 px로 변환하는 유틸리티 메서드
     private int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;

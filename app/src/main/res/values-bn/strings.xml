@@ -50,4 +50,19 @@
     <string name="number_of_shapes">আকারের সংখ্যা</string>
     <string name="exit_comment">আপনি প্রস্থান চান?</string>
     <string name="exit">প্রস্থান</string>
+
+    <string name="tutorial_character_name">দর্শক</string>
+    <string name="tutorial_vn_step1">তাদের বলুন:\n\"0 থেকে 9 এর মধ্যে একটি সংখ্যা বেছে নাও\"</string>
+    <string name="tutorial_vn_step2">জিজ্ঞেস করুন:\n\"বেছে নিয়েছ?\"</string>
+    <string name="tutorial_vn_step3">তাদের চোখে তাকান।\n(মন পড়ার ভান করুন)</string>
+    <string name="tutorial_vn_step4">স্ক্রিনে আঁকার ভান করুন।\n(যেকোনো অঙ্গভঙ্গি চলবে)</string>
+    <string name="tutorial_vn_step5">দারুণ! এবার আপনার পালা।</string>
+    <string name="tutorial_vn_step6">দেখলেন? স্ক্রিন বন্ধ মনে হচ্ছে।\nফোনটি আপনার ও তাদের মাঝে রাখুন,\nসংখ্যার জায়গায় দুবার ট্যাপ করুন।\nস্ক্রিন জ্বলে উঠবে আর ছবি দেখা যাবে!</string>
+    <string name="tutorial_quiz_question">যদি তারা 9 বেছে নেয়,\nকোন ঘরে ডাবল ট্যাপ করতে হবে?</string>
+    <string name="tutorial_quiz_correct">সঠিক! এবার নিজে চেষ্টা করুন!</string>
+    <string name="tutorial_quiz_wrong">আবার ভাবুন!</string>
+    <string name="tutorial_practice_intro">এবার দর্শক 8 বেছে নিয়েছে।\nসাহায্য ছাড়াই ঘর 8-এ ডাবল ট্যাপ করুন!</string>
+    <string name="tutorial_practice_bubble">দর্শক যদি %d বেছে নেয়,\nকোথায় ডাবল ট্যাপ করবেন?</string>
+    <string name="tutorial_practice_wrong">এটি ঘর 8 নয়! আবার চেষ্টা করুন।</string>
+    <string name="tutorial_practice_correct">চমৎকার! আপনি প্রস্তুত!</string>
 </resources>

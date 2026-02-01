@@ -56,4 +56,19 @@
     <string name="line_thickness">Толщина линии</string>
     <string name="opponent_chose_number">Противник выбрал %1$d. Дважды нажмите на эту клетку</string>
     <string name="menu_subtitle">Простые трюки с холстом</string>
+
+    <string name="tutorial_character_name">Зритель</string>
+    <string name="tutorial_vn_step1">Скажите им:\n\"Выбери число от 0 до 9\"</string>
+    <string name="tutorial_vn_step2">Спросите:\n\"Выбрал?\"</string>
+    <string name="tutorial_vn_step3">Посмотрите им в глаза.\n(Сделайте вид, что читаете мысли)</string>
+    <string name="tutorial_vn_step4">Сделайте вид, что рисуете на экране.\n(Любой жест подойдёт)</string>
+    <string name="tutorial_vn_step5">Отлично! Теперь ваша очередь.</string>
+    <string name="tutorial_vn_step6">Видите? Экран выглядит выключенным.\nПоложите телефон между вами,\nи дважды коснитесь позиции числа.\nЭкран загорится и появится рисунок!</string>
+    <string name="tutorial_quiz_question">Если выбрали 9,\nкакую ячейку нужно нажать дважды?</string>
+    <string name="tutorial_quiz_correct">Правильно! Теперь попробуйте сами!</string>
+    <string name="tutorial_quiz_wrong">Подумайте ещё!</string>
+    <string name="tutorial_practice_intro">На этот раз зритель выбрал 8.\nНажмите дважды на ячейку 8 без подсказки!</string>
+    <string name="tutorial_practice_bubble">Если зритель выбрал %d,\nкуда нужно нажать дважды?</string>
+    <string name="tutorial_practice_wrong">Это не ячейка 8! Попробуйте ещё раз.</string>
+    <string name="tutorial_practice_correct">Отлично! Вы готовы!</string>
 </resources>

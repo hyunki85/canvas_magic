@@ -73,11 +73,11 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
         mPokemonRecycler.setLayoutManager(new LinearLayoutManager(this));
         mPokemonRecycler.setAdapter(shapeAdapter);
 
-        menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.FEATURED, null);
+        menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.FEATURED);
 
         Disposable nextPageDisposable = shapeAdapter.getNextPage()
                 .subscribe(o -> {
-                    menuPresenter.getShapeOnline( SharePresenter.SORT_TYPE.values()[tabLayout.getSelectedTabPosition()], o );
+                    menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.values()[tabLayout.getSelectedTabPosition()]);
                 });
         disposables.add(nextPageDisposable);
 
@@ -85,7 +85,7 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 menuPresenter.resetArray();
-                menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.values()[tab.getPosition()], null);
+                menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.values()[tab.getPosition()]);
             }
 
             @Override
@@ -158,7 +158,7 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
         Toast.makeText(this, getResources().getString(R.string.upload_complete), Toast.LENGTH_SHORT).show();
         menuPresenter.resetArray();
         tabLayout.selectTab(tabLayout.getTabAt(2),true);
-        menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.RECENT,null);
+        menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.RECENT);
     }
 
     @Override

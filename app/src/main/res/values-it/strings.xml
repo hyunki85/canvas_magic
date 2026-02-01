@@ -56,4 +56,19 @@
     <string name="line_thickness">Spessore linea</string>
     <string name="opponent_chose_number">L\'avversario ha scelto %1$d. Tocca due volte quella casella</string>
     <string name="menu_subtitle">Trucchi su tela facili da iniziare</string>
+
+    <string name="tutorial_character_name">Pubblico</string>
+    <string name="tutorial_vn_step1">Di\' loro:\n\"Scegli un numero da 0 a 9\"</string>
+    <string name="tutorial_vn_step2">Chiedi:\n\"Hai scelto?\"</string>
+    <string name="tutorial_vn_step3">Guardali negli occhi.\n(Fingi di leggere la mente)</string>
+    <string name="tutorial_vn_step4">Fingi di disegnare sullo schermo.\n(Qualsiasi gesto va bene)</string>
+    <string name="tutorial_vn_step5">Ben fatto! Ora tocca a te.</string>
+    <string name="tutorial_vn_step6">Vedi? Lo schermo sembra spento.\nAppoggia il telefono tra voi,\ne tocca due volte sulla posizione del numero.\nLo schermo si accende e appare il disegno!</string>
+    <string name="tutorial_quiz_question">Se hanno scelto 9,\nquale cella devi toccare due volte?</string>
+    <string name="tutorial_quiz_correct">Corretto! Ora prova tu!</string>
+    <string name="tutorial_quiz_wrong">Pensaci ancora!</string>
+    <string name="tutorial_practice_intro">Questa volta il pubblico ha scelto 8.\nTocca due volte la cella 8 senza aiuto!</string>
+    <string name="tutorial_practice_bubble">Se il pubblico ha scelto %d,\ndove devi toccare due volte?</string>
+    <string name="tutorial_practice_wrong">Quella non è la cella 8! Riprova.</string>
+    <string name="tutorial_practice_correct">Perfetto! Sei pronto!</string>
 </resources>

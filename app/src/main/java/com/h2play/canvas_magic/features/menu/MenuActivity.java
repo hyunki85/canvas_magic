@@ -10,7 +10,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,6 +39,8 @@ import com.h2play.canvas_magic.features.main.MainActivity;
 import com.h2play.canvas_magic.features.share.ShareActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.AdDialog;
+import com.h2play.canvas_magic.util.ReminderScheduler;
+import com.h2play.canvas_magic.util.TopicManager;
 import com.vorlonsoft.android.rate.AppRate;
 
 import com.h2play.canvas_magic.features.menu.config.MenuConfig;
@@ -58,8 +62,9 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     private ErrorView errorView;
     private ProgressBar progressBar;
-    private Button startButton;
-    private Button moreButton;
+    private View startButton;
+    private TextView tvStartLabel;
+    private View moreButton;
     private View btnChannel;
     private View btnHelp;
     private View imgRate;
@@ -81,11 +86,6 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         if (currentUser == null) {
             signInAnonymously();
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        mCustomDialog.show();
     }
 
     private void signInAnonymously() {
@@ -115,6 +115,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         errorView = findViewById(R.id.view_error);
         progressBar = findViewById(R.id.progress);
         startButton = findViewById(R.id.btn_start);
+        tvStartLabel = findViewById(R.id.tv_start_label);
         moreButton = findViewById(R.id.btn_more);
         btnChannel = findViewById(R.id.btn_channel);
         btnHelp = findViewById(R.id.btn_help);
@@ -155,8 +156,27 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
                     finish();
                 });
 
-        Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(this, R.anim.blink);
-    moreButton.startAnimation(hyperspaceJumpAnimation);
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                mCustomDialog.show();
+            }
+        });
+
+        Animation pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
+        startButton.startAnimation(pulseAnimation);
+
+        // Hero section fade-in
+        View heroSection = findViewById(R.id.hero_section);
+        if (heroSection != null) {
+            heroSection.setAlpha(0f);
+            heroSection.animate().alpha(1f).setDuration(600).setStartDelay(100).start();
+        }
+
+        // Sparkle floating animations
+        animateSparkle(findViewById(R.id.sparkle1), 3000, 8f);
+        animateSparkle(findViewById(R.id.sparkle2), 2500, -6f);
+        animateSparkle(findViewById(R.id.sparkle3), 3500, 7f);
 
         AppRate.with(this)
                 .setInstallDays((byte) 0)
@@ -170,8 +190,11 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     @Override
     protected void onResume() {
         super.onResume();
-        startButton.setText(R.string.start_trick);
+        tvStartLabel.setText(R.string.start_trick);
         menuPresenter.checkNeedGuidE();
+
+        ReminderScheduler.recordVisit(this);
+        TopicManager.updateTopics(this);
     }
 
     @Override
@@ -269,12 +292,11 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         });
         dynamicAdapter.submit(cfg.items);
 
-        // Hide fallback static views we replace (start/grid/card)
+        // Hide fallback static views (grid/card) but keep hero start button
         View grid = findViewById(R.id.grid_actions);
         View card = findViewById(R.id.card_actions);
         if (grid != null) grid.setVisibility(View.GONE);
         if (card != null) card.setVisibility(View.GONE);
-        if (startButton != null) startButton.setVisibility(View.GONE);
 
         rvDynamicMenu.setVisibility(View.VISIBLE);
     }
@@ -336,10 +358,27 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
                 .show();
     }
 
+    private static final int REQUEST_TUTORIAL_DIALOGUE = 2001;
+
     @Override
     public void startTutorial() {
-        Intent intent = MainActivity.getStartIntent(MenuActivity.this, 0);
-        startActivity(intent);
+        Intent intent = com.h2play.canvas_magic.features.tutorial.TutorialDialogueActivity
+                .getStartIntent(this, com.h2play.canvas_magic.features.tutorial.TutorialDialogueActivity.PHASE_PRE_DRAW);
+        startActivityForResult(intent, REQUEST_TUTORIAL_DIALOGUE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_TUTORIAL_DIALOGUE) {
+            if (resultCode == RESULT_OK) {
+                Intent intent = MainActivity.getStartIntent(this, 0);
+                startActivity(intent);
+            } else {
+                // 튜토리얼 중간 이탈 시 가이드 해제하여 "시작하기" 상태로 복귀
+                menuPresenter.cancelTutorial();
+            }
+        }
     }
 
     @Override
@@ -376,11 +415,26 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     @Override
     public void showTutorial() {
-        startButton.setText(R.string.start_tutorial);
+        tvStartLabel.setText(R.string.start_tutorial);
     }
 
     @Override
     public void onReloadData() {
         // Implementation
+    }
+
+    private void animateSparkle(View v, long duration, float drift) {
+        if (v == null) return;
+        v.animate()
+                .translationYBy(drift)
+                .alpha(0.3f)
+                .setDuration(duration)
+                .withEndAction(() -> v.animate()
+                        .translationYBy(-drift)
+                        .alpha(1f)
+                        .setDuration(duration)
+                        .withEndAction(() -> animateSparkle(v, duration, drift))
+                        .start())
+                .start();
     }
 }

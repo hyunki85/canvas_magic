@@ -36,5 +36,28 @@
     <string name="need_one_item">적어도 한개의 모양세트는 필요합니다</string>
     <string name="exit_comment">종료하시겠습니까?</string>
     <string name="exit">종료하기</string>
+    <string name="menu_desc_edit">나만의 모양 세트 만들기</string>
+    <string name="menu_desc_share">친구들과 작품 나누기</string>
+    <string name="rate_short">평가하기</string>
     <string name="opponent_chose_number">상대가 %1$d을(를) 선택했어요. 해당 칸을 더블탭하세요</string>
+    <string name="tutorial_character_name">관객</string>
+    <string name="tutorial_vn_step1">상대에게 말하세요:\n\"0에서 9까지 숫자 중 하나를 골라봐\"</string>
+    <string name="tutorial_vn_step2">물어보세요:\n\"다 생각했어?\"</string>
+    <string name="tutorial_vn_step3">상대의 눈을 쳐다보세요.\n(마음을 읽는 척 해보세요)</string>
+    <string name="tutorial_vn_step4">화면에 그리는 시늉을 하세요.\n(아무 제스처나 괜찮아요)</string>
+    <string name="tutorial_vn_step5">잘했어요! 이번엔 직접 해볼 차례에요.</string>
+    <string name="tutorial_quiz_question">만약 상대가 9를 선택했다면\n몇 번 칸을 더블탭해야 할까요?</string>
+    <string name="tutorial_quiz_correct">정답! 그럼 직접 해보세요!</string>
+    <string name="tutorial_quiz_wrong">다시 생각해보세요!</string>
+
+    <string name="tutorial_practice_intro">이번엔 관객이 8을 골랐어요.\n가이드 없이 직접 8번 칸을 더블탭해보세요!</string>
+    <string name="tutorial_practice_bubble">관객이 %d번을 골랐다면\n어디를 더블탭해야 할까요?</string>
+    <string name="tutorial_practice_wrong">8번 칸이 아니에요! 다시 해보세요.</string>
+    <string name="tutorial_practice_correct">완벽해요! 이제 준비됐어요!</string>
+    <string name="tutorial_vn_step6">화면이 꺼진 것처럼 보이죠?\n상대와 나 사이에 핸드폰을 내려놓고\n숫자 위치를 톡톡 두 번 터치하세요.\n화면이 켜지면서 그림이 나타나요!</string>
+    <string name="reminder_channel_name">리마인더</string>
+    <string name="reminder_title_3day">그림 그리러 오세요!</string>
+    <string name="reminder_body_3day">캔버스 트릭에서 멋진 그림을 그려보세요!</string>
+    <string name="reminder_title_7day">새로운 도안이 기다리고 있어요!</string>
+    <string name="reminder_body_7day">오랜만이에요. 새로운 기능을 확인해보세요!</string>
 </resources>

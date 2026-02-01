@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -40,6 +41,7 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
     private final DataManager dataManager;
     private final FirebaseFirestore db;
     private ArrayList<ShapeOnline> shapeOnlines = new ArrayList<>();
+    private DocumentSnapshot lastDocumentSnapshot;
     public enum SORT_TYPE {
         FEATURED,
         STAR,
@@ -55,6 +57,7 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
 
     public void resetArray() {
         shapeOnlines.clear();
+        lastDocumentSnapshot = null;
     }
 
     @Override
@@ -62,60 +65,54 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
         super.attachView(mvpView);
     }
 
-    public void getShapeOnline(SORT_TYPE sortType, ShapeOnline lastObj) {
+    public void getShapeOnline(SORT_TYPE sortType) {
         if (!isViewAttached()) return;
         getView().showProgress(true);
 
         CollectionReference ref = db.collection("shapes");
-            Query query = ref.limit(9);
-            if(sortType == SORT_TYPE.FEATURED) {
-                query = query.whereEqualTo("featured",Boolean.valueOf(true)).orderBy("star", Query.Direction.DESCENDING);
-            } else {
-                if(sortType == SORT_TYPE.RECENT) {
-                    query = query.orderBy("date", Query.Direction.DESCENDING);
-                } else {
-                    query = query.orderBy("star", Query.Direction.DESCENDING);
-                }
-            }
-            if(lastObj != null) {
-                if(sortType == SORT_TYPE.RECENT) {
-                    query = query.startAfter(lastObj.date);
-                } else if(sortType == SORT_TYPE.STAR) {
-                    query = query.startAfter(lastObj.star);
-                } else if(sortType == SORT_TYPE.FEATURED) {
-                    query = query.startAfter(lastObj.star);
-                }
-            }
-            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        // View가 detach되었으면 무시
-                        if (!isViewAttached()) return;
-                        
-                        if (task.isSuccessful()) {
-                            Observable<ShapeOnline> shapeOnlineObservable = Observable.fromIterable(task.getResult())
-                                    .map(queryDocumentSnapshot -> {
-                                        ShapeOnline shape = queryDocumentSnapshot.toObject(ShapeOnline.class);
-                                        shape.id = queryDocumentSnapshot.getId();
-                                        if (dataManager.alreadyStarId(shape.id)) {
-                                            shape.alreadyStar = true;
-                                        }
-                                        return shape;
-                                    });
+        Query query = ref.limit(9);
+        if (sortType == SORT_TYPE.FEATURED) {
+            query = query.whereEqualTo("featured", Boolean.valueOf(true)).orderBy("star", Query.Direction.DESCENDING);
+        } else if (sortType == SORT_TYPE.RECENT) {
+            query = query.orderBy("date", Query.Direction.DESCENDING);
+        } else {
+            query = query.orderBy("star", Query.Direction.DESCENDING);
+        }
 
-                                    shapeOnlineObservable.toList()
-                                            .subscribe(queryDocumentSnapshots -> {
-                                        if (!isViewAttached()) return;
-                                        shapeOnlines.addAll(queryDocumentSnapshots);
-                                        getView().showShapes(shapeOnlines);
+        if (lastDocumentSnapshot != null) {
+            query = query.startAfter(lastDocumentSnapshot);
+        }
 
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (!isViewAttached()) return;
+
+                if (task.isSuccessful()) {
+                    QuerySnapshot snapshot = task.getResult();
+                    if (snapshot != null && !snapshot.isEmpty()) {
+                        lastDocumentSnapshot = snapshot.getDocuments().get(snapshot.size() - 1);
+                    }
+
+                    Observable<ShapeOnline> shapeOnlineObservable = Observable.fromIterable(snapshot)
+                            .map(queryDocumentSnapshot -> {
+                                ShapeOnline shape = queryDocumentSnapshot.toObject(ShapeOnline.class);
+                                shape.id = queryDocumentSnapshot.getId();
+                                if (dataManager.alreadyStarId(shape.id)) {
+                                    shape.alreadyStar = true;
+                                }
+                                return shape;
                             });
 
-                        } else {
-
-                        }
-                    }
-                });
+                    shapeOnlineObservable.toList()
+                            .subscribe(queryDocumentSnapshots -> {
+                                if (!isViewAttached()) return;
+                                shapeOnlines.addAll(queryDocumentSnapshots);
+                                getView().showShapes(shapeOnlines);
+                            });
+                }
+            }
+        });
     }
 
     public void upload(Context context, int shapeIndex) {

@@ -56,4 +56,19 @@
     <string name="line_thickness">Épaisseur de ligne</string>
     <string name="opponent_chose_number">L\'adversaire a choisi %1$d. Appuyez deux fois sur cette case</string>
     <string name="menu_subtitle">Tours de toile faciles à démarrer</string>
+
+    <string name="tutorial_character_name">Public</string>
+    <string name="tutorial_vn_step1">Dites-leur :\n\"Choisis un chiffre de 0 à 9\"</string>
+    <string name="tutorial_vn_step2">Demandez :\n\"Tu as choisi ?\"</string>
+    <string name="tutorial_vn_step3">Regardez-les dans les yeux.\n(Faites semblant de lire dans leurs pensées)</string>
+    <string name="tutorial_vn_step4">Faites semblant de dessiner sur l\'écran.\n(N\'importe quel geste fera l\'affaire)</string>
+    <string name="tutorial_vn_step5">Bien joué ! À vous d\'essayer maintenant.</string>
+    <string name="tutorial_vn_step6">Vous voyez ? L\'écran semble éteint.\nPosez le téléphone entre vous et eux,\npuis tapez deux fois sur la position du chiffre.\nL\'écran s\'allume et le dessin apparaît !</string>
+    <string name="tutorial_quiz_question">S\'ils ont choisi 9,\nsur quelle case devez-vous taper deux fois ?</string>
+    <string name="tutorial_quiz_correct">Correct ! Essayez par vous-même !</string>
+    <string name="tutorial_quiz_wrong">Réfléchissez encore !</string>
+    <string name="tutorial_practice_intro">Cette fois le public a choisi 8.\nTapez deux fois sur la case 8 sans aide !</string>
+    <string name="tutorial_practice_bubble">Si le public a choisi %d,\noù devez-vous taper deux fois ?</string>
+    <string name="tutorial_practice_wrong">Ce n\'est pas la case 8 ! Réessayez.</string>
+    <string name="tutorial_practice_correct">Parfait ! Vous êtes prêt !</string>
 </resources>

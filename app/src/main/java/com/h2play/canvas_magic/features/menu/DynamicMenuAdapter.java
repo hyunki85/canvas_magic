@@ -38,6 +38,7 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private static final int TYPE_DEFAULT = 0;
     private static final int TYPE_PROMO = 1;
+    private static final int TYPE_SMALL = 2;
 
     public DynamicMenuAdapter(Context ctx, OnItemClickListener listener) {
         this.inflater = LayoutInflater.from(ctx);
@@ -55,6 +56,10 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             View v = inflater.inflate(R.layout.item_dynamic_menu_promo, parent, false);
             return new PromoVH(v);
         }
+        if (viewType == TYPE_SMALL) {
+            View v = inflater.inflate(R.layout.item_dynamic_menu_small, parent, false);
+            return new VH(v);
+        }
         View v = inflater.inflate(R.layout.item_dynamic_menu, parent, false);
         return new VH(v);
     }
@@ -70,12 +75,24 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private void bindDefault(@NonNull VH h, MenuItemConfig item, int position) {
         h.title.setText(item.title);
-    // Background and content colors
-    int bg = resolveBackgroundColor(item, position);
-    h.card.setCardBackgroundColor(bg);
-    int content = ColorUtils.calculateLuminance(bg) < 0.5 ? Color.WHITE : Color.parseColor("#111111");
-    h.title.setTextColor(content);
-        boolean shown = false; 
+        // Background and content colors
+        int content = Color.WHITE;
+        if (h.card != null) {
+            int bg = resolveBackgroundColor(item, position);
+            h.card.setCardBackgroundColor(bg);
+            content = ColorUtils.calculateLuminance(bg) < 0.5 ? Color.WHITE : Color.parseColor("#111111");
+            h.title.setTextColor(content);
+        }
+        // Description
+        if (item.description != null && !item.description.isEmpty()) {
+            h.description.setText(item.description);
+            h.description.setTextColor(content);
+            h.description.setVisibility(View.VISIBLE);
+        } else {
+            h.description.setVisibility(View.GONE);
+        }
+        boolean shown = false;
+        final int iconTint = content;
         if (item.imageUrl != null && !item.imageUrl.isEmpty()) {
             String url = item.imageUrl;
             try {
@@ -83,10 +100,10 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(url);
                     ref.getDownloadUrl().addOnSuccessListener(u -> {
                         h.icon.setVisibility(View.VISIBLE);
-                        ImageViewCompat.setImageTintList(h.icon, null); // keep original colors for remote image
+                        ImageViewCompat.setImageTintList(h.icon, null);
                         Glide.with(h.itemView).load(u).into(h.icon);
                     }).addOnFailureListener(e -> h.icon.setVisibility(View.GONE));
-                    shown = true; // async but intent to show
+                    shown = true;
                 } else if (url.startsWith("http")) {
                     h.icon.setVisibility(View.VISIBLE);
                     ImageViewCompat.setImageTintList(h.icon, null);
@@ -100,8 +117,7 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 int resId = h.itemView.getContext().getResources().getIdentifier(item.icon, "drawable", h.itemView.getContext().getPackageName());
                 if (resId != 0) {
                     h.icon.setImageResource(resId);
-                    // Apply content color tint for local vector/icon to match background
-                    ColorStateList tint = ColorStateList.valueOf(content);
+                    ColorStateList tint = ColorStateList.valueOf(iconTint);
                     ImageViewCompat.setImageTintList(h.icon, tint);
                     h.icon.setVisibility(View.VISIBLE);
                     shown = true;
@@ -120,6 +136,13 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         h.card.setCardBackgroundColor(bg);
         int content = ColorUtils.calculateLuminance(bg) < 0.5 ? Color.WHITE : Color.parseColor("#111111");
         h.title.setTextColor(content);
+        // Description
+        if (item.description != null && !item.description.isEmpty()) {
+            h.description.setText(item.description);
+            h.description.setVisibility(View.VISIBLE);
+        } else {
+            h.description.setVisibility(View.GONE);
+        }
 
         boolean shown = false;
         if (item.imageUrl != null && !item.imageUrl.isEmpty()) {
@@ -167,24 +190,27 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         MenuItemConfig item = items.get(position);
         int span = item.span <= 0 ? 1 : item.span;
         if (item.promo || span >= 2) return TYPE_PROMO;
+        if (item.small) return TYPE_SMALL;
         return TYPE_DEFAULT;
     }
 
     static class VH extends RecyclerView.ViewHolder {
-        TextView title; ImageView icon; CardView card;
+        TextView title; TextView description; ImageView icon; CardView card;
         VH(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.tv_title);
+            description = itemView.findViewById(R.id.tv_description);
             icon = itemView.findViewById(R.id.iv_icon);
-            card = (CardView) itemView;
+            card = itemView instanceof CardView ? (CardView) itemView : null;
         }
     }
 
     static class PromoVH extends RecyclerView.ViewHolder {
-        TextView title; ImageView image; CardView card;
+        TextView title; TextView description; ImageView image; CardView card;
         PromoVH(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.tv_title);
+            description = itemView.findViewById(R.id.tv_description);
             image = itemView.findViewById(R.id.iv_image);
             card = (CardView) itemView;
         }

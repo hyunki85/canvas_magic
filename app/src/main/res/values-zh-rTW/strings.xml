@@ -50,4 +50,19 @@
     <string name="number_of_shapes">形狀數</string>
     <string name="exit_comment">你要出口嗎？</string>
     <string name="exit">出口</string>
+
+    <string name="tutorial_character_name">觀眾</string>
+    <string name="tutorial_vn_step1">對他們說：\n「從0到9選一個數字」</string>
+    <string name="tutorial_vn_step2">問他們：\n「想好了嗎？」</string>
+    <string name="tutorial_vn_step3">看著對方的眼睛。\n（假裝在讀他們的心）</string>
+    <string name="tutorial_vn_step4">假裝在螢幕上畫畫。\n（任何手勢都可以）</string>
+    <string name="tutorial_vn_step5">做得好！現在換你試試。</string>
+    <string name="tutorial_vn_step6">看起來像是螢幕關了對吧？\n把手機放在你和對方之間，\n在數字位置輕點兩下。\n螢幕亮起，畫就出現了！</string>
+    <string name="tutorial_quiz_question">如果對方選了9，\n你應該雙擊哪個格子？</string>
+    <string name="tutorial_quiz_correct">答對了！現在自己試試吧！</string>
+    <string name="tutorial_quiz_wrong">再想想！</string>
+    <string name="tutorial_practice_intro">這次觀眾選了8。\n不看提示，試著雙擊第8格！</string>
+    <string name="tutorial_practice_bubble">如果觀眾選了%d，\n你應該雙擊哪裡？</string>
+    <string name="tutorial_practice_wrong">不是第8格！再試一次。</string>
+    <string name="tutorial_practice_correct">完美！你準備好了！</string>
 </resources>

@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
 import com.google.gson.Gson;
@@ -90,36 +92,26 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
             }
         });
 
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        if (needSave) {
-            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-            alertDialog.setTitle(getResources().getString(R.string.app_name));
-            alertDialog.setMessage(getResources().getString(R.string.need_save));
-            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,
-                    getResources().getString(android.R.string.no),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE,
-                    getResources().getString(android.R.string.yes),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    });
-
-            alertDialog.show();
-        } else {
-            super.onBackPressed();
-        }
-
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (needSave) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(MakeActivity.this).create();
+                    alertDialog.setTitle(getResources().getString(R.string.app_name));
+                    alertDialog.setMessage(getResources().getString(R.string.need_save));
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,
+                            getResources().getString(android.R.string.no),
+                            (dialog, which) -> {});
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE,
+                            getResources().getString(android.R.string.yes),
+                            (dialog, which) -> finish());
+                    alertDialog.show();
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                }
+            }
+        });
 
     }
 

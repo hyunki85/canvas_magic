@@ -56,4 +56,19 @@
     <string name="line_thickness">Grosor de línea</string>
     <string name="opponent_chose_number">El oponente eligió %1$d. Toca dos veces esa casilla</string>
     <string name="menu_subtitle">Trucos de lienzo fáciles de comenzar</string>
+
+    <string name="tutorial_character_name">Público</string>
+    <string name="tutorial_vn_step1">Diles:\n\"Elige un número del 0 al 9\"</string>
+    <string name="tutorial_vn_step2">Pregúntales:\n\"¿Ya lo tienes?\"</string>
+    <string name="tutorial_vn_step3">Míralos a los ojos.\n(Finge que lees su mente)</string>
+    <string name="tutorial_vn_step4">Finge dibujar en la pantalla.\n(Cualquier gesto vale)</string>
+    <string name="tutorial_vn_step5">¡Bien hecho! Ahora te toca a ti.</string>
+    <string name="tutorial_vn_step6">¿Ves? La pantalla parece apagada.\nPon el teléfono entre tú y ellos,\ny toca dos veces en la posición del número.\n¡La pantalla se enciende y aparece el dibujo!</string>
+    <string name="tutorial_quiz_question">Si eligieron el 9,\n¿qué celda debes tocar dos veces?</string>
+    <string name="tutorial_quiz_correct">¡Correcto! ¡Ahora inténtalo tú!</string>
+    <string name="tutorial_quiz_wrong">¡Piénsalo de nuevo!</string>
+    <string name="tutorial_practice_intro">Esta vez el público eligió el 8.\n¡Toca dos veces la celda 8 sin guía!</string>
+    <string name="tutorial_practice_bubble">Si el público eligió el %d,\n¿dónde debes tocar dos veces?</string>
+    <string name="tutorial_practice_wrong">¡Esa no es la celda 8! Inténtalo de nuevo.</string>
+    <string name="tutorial_practice_correct">¡Perfecto! ¡Estás listo!</string>
 </resources>

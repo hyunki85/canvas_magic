@@ -3,230 +3,338 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
     android:fitsSystemWindows="true">
 
-    <!-- Gradient background -->
+    <!-- Dark gradient background -->
     <View
         android:id="@+id/background_gradient"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background_gradient"/>
 
-    <!-- App title -->
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Subtitle -->
-    <TextView
-        android:id="@+id/tv_subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/menu_subtitle"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:alpha="0.9"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- Original btn_start but with improved styling (fallback) -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_start"
-        android:layout_width="0dp"
-        android:layout_height="64dp"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="64dp"
-        android:text="@string/start_trick"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:backgroundTint="@color/primary_color"
-        app:cornerRadius="16dp"
-        app:elevation="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title" />
-
-    <!-- Static fallback grid (hidden when dynamic menu is available) -->
-    <androidx.gridlayout.widget.GridLayout
-        android:id="@+id/grid_actions"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="24dp"
-        app:columnCount="2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_start"
-        app:rowCount="2"
-        app:useDefaultMargins="true">
-
-        <!-- Original btn_channel but with improved styling -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_channel"
-            android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:text="@string/edit"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:backgroundTint="@color/secondary_color"
-            app:cornerRadius="16dp"
-            app:elevation="4dp"
-            app:icon="@drawable/ic_edit"
-            app:iconGravity="top"
-            app:iconPadding="8dp"
-            app:iconSize="32dp"
-            app:iconTint="@color/white"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1" />
-
-        <!-- Original btn_share but with improved styling -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_share"
-            android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:text="@string/share"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:backgroundTint="@color/secondary_color"
-            app:cornerRadius="16dp"
-            app:elevation="4dp"
-            app:icon="@drawable/ic_share"
-            app:iconGravity="top"
-            app:iconPadding="8dp"
-            app:iconSize="32dp"
-            app:iconTint="@color/white"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1" />
-
-        <!-- Original btn_help but with improved styling -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_help"
-            android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:text="@string/start_tutorial"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:backgroundTint="@color/tertiary_color"
-            app:cornerRadius="16dp"
-            app:elevation="4dp"
-            app:icon="@drawable/ic_help"
-            app:iconGravity="top"
-            app:iconPadding="8dp"
-            app:iconSize="32dp"
-            app:iconTint="@color/white"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1" />
-            
-        <!-- 튜토리얼 다시하기 버튼 추가 -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_restart_tutorial"
-            android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:text="@string/restart_tutorial"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:backgroundTint="@color/accent_blue"
-            app:cornerRadius="16dp"
-            app:elevation="4dp"
-            app:icon="@drawable/ic_help"
-            app:iconGravity="top"
-            app:iconPadding="8dp"
-            app:iconSize="32dp"
-            app:iconTint="@color/white"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1" />
-    </androidx.gridlayout.widget.GridLayout>
-
-    <!-- Dynamic menu RecyclerView (shown when JSON config present) -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_dynamic_menu"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"
-        android:layoutAnimation="@anim/layout_animation_fade_in_up"
-        app:layout_constraintTop_toBottomOf="@id/tv_subtitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/adView"/>
-
-    <!-- Bottom action bar with original IDs (fallback) -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_actions"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
-        app:cardBackgroundColor="@color/card_background"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:layout_constraintBottom_toTopOf="@id/adView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/adView">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/linearLayout"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="24dp">
 
-            <ImageView
-                android:id="@+id/img_rate"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/star"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/img_share"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/accent_yellow" />
+            <!-- Hero section -->
+            <FrameLayout
+                android:id="@+id/hero_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="40dp"
+                android:paddingBottom="28dp">
 
+                <!-- Decorative sparkles -->
+                <TextView
+                    android:id="@+id/sparkle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="✦"
+                    android:textColor="#4D7C4DFF"
+                    android:textSize="28sp"
+                    android:layout_gravity="start|top"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:id="@+id/sparkle2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="✦"
+                    android:textColor="#4DB388FF"
+                    android:textSize="16sp"
+                    android:layout_gravity="end|top"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginTop="32dp" />
+
+                <TextView
+                    android:id="@+id/sparkle3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="✧"
+                    android:textColor="#3380CBC4"
+                    android:textSize="22sp"
+                    android:layout_gravity="end|bottom"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="60dp" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <!-- App icon -->
+                    <ImageView
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:src="@mipmap/ic_launcher"
+                        android:contentDescription="@string/app_name" />
+
+                    <!-- App title -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="@string/app_name"
+                        android:textColor="@android:color/white"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.03" />
+
+                    <TextView
+                        android:id="@+id/tv_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/menu_subtitle"
+                        android:textColor="#80FFFFFF"
+                        android:textSize="13sp"
+                        android:letterSpacing="0.04" />
+
+                    <!-- Hero CTA button with gradient -->
+                    <FrameLayout
+                        android:id="@+id/btn_start"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:layout_marginTop="24dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_hero_bg" />
+
+                        <TextView
+                            android:id="@+id/tv_start_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/start_trick"
+                            android:textColor="@android:color/white"
+                            android:textSize="19sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.04"
+                            android:drawableStart="@android:drawable/ic_media_play"
+                            android:drawablePadding="8dp"
+                            android:drawableTint="@android:color/white" />
+                    </FrameLayout>
+
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- 핵심 기능 카드 2개 -->
+            <LinearLayout
+                android:id="@+id/primary_actions"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false">
+
+                <!-- 편집 카드: 글래스 + 틸 악센트 -->
+                <FrameLayout
+                    android:id="@+id/btn_channel"
+                    android:layout_width="0dp"
+                    android:layout_height="130dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/glass_card_accent1" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginBottom="10dp"
+                            android:src="@drawable/ic_edit"
+                            app:tint="#80CBC4" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/edit"
+                            android:textColor="@android:color/white"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/menu_desc_edit"
+                            android:textColor="#99FFFFFF"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <!-- 공유 카드: 글래스 + 오렌지 악센트 -->
+                <FrameLayout
+                    android:id="@+id/btn_share"
+                    android:layout_width="0dp"
+                    android:layout_height="130dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/glass_card_accent2" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginBottom="10dp"
+                            android:src="@drawable/ic_share"
+                            app:tint="#FFAB91" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/share"
+                            android:textColor="@android:color/white"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/menu_desc_share"
+                            android:textColor="#99FFFFFF"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- 부가 기능: JSON 동적 메뉴 -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_dynamic_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                android:nestedScrollingEnabled="false"
+                android:layoutAnimation="@anim/layout_animation_fade_in_up" />
+
+            <!-- Static fallback grid -->
+            <androidx.gridlayout.widget.GridLayout
+                android:id="@+id/grid_actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:columnCount="2"
+                app:rowCount="2"
+                app:useDefaultMargins="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_help"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:text="@string/start_tutorial"
+                    android:textColor="#B0AECF"
+                    android:textSize="13sp"
+                    android:background="@drawable/glass_card_bg"
+                    app:backgroundTint="@null"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_restart_tutorial"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:text="@string/restart_tutorial"
+                    android:textColor="#B0AECF"
+                    android:textSize="13sp"
+                    android:background="@drawable/glass_card_bg"
+                    app:backgroundTint="@null"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/img_rate"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:text="@string/rate_short"
+                    android:textColor="#B0AECF"
+                    android:textSize="13sp"
+                    android:background="@drawable/glass_card_bg"
+                    app:backgroundTint="@null"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_more"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:text="@string/more"
+                    android:textColor="#B0AECF"
+                    android:textSize="13sp"
+                    android:background="@drawable/glass_card_bg"
+                    app:backgroundTint="@null"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+            </androidx.gridlayout.widget.GridLayout>
+
+            <!-- Hidden views for code compatibility -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_actions"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
             <ImageView
                 android:id="@+id/img_share"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/share"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btn_more"
-                app:layout_constraintStart_toEndOf="@id/img_rate"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/accent_blue" />
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
 
-            <!-- Original btn_more but with improved styling -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/more"
-                android:textColor="@color/white"
-                app:backgroundTint="@color/accent_green"
-                app:cornerRadius="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/img_share"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    <!-- Ad view with original ID -->
+    <!-- Ad view -->
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="match_parent"
@@ -234,11 +342,17 @@
         android:minHeight="90dp"
         app:adSize="SMART_BANNER"
         app:adUnitId="ca-app-pub-9937617798998725/6628693119"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Hidden tv_title for code compatibility -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Error view with original ID -->
     <com.h2play.canvas_magic.features.common.ErrorView
         android:id="@+id/view_error"
         android:layout_width="wrap_content"
@@ -249,7 +363,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Progress indicator with original ID -->
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="wrap_content"

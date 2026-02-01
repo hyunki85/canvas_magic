@@ -39,4 +39,8 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         }
     }
 
+    public boolean isGuideMode() {
+        return dataManager.needGuide();
+    }
+
 }
