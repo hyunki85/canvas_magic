@@ -4,30 +4,22 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
-import com.flask.colorpicker.ColorPickerView;
-import com.flask.colorpicker.OnColorSelectedListener;
-import com.flask.colorpicker.builder.ColorPickerClickListener;
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -44,9 +36,10 @@ import com.h2play.canvas_magic.features.common.ErrorView;
 import com.h2play.canvas_magic.features.pincode.PinActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.AdDialog;
+import com.h2play.canvas_magic.util.ColorPickerBottomSheet;
 import com.h2play.canvas_magic.util.FabricView;
 import com.h2play.canvas_magic.util.FileUtil;
-import com.h2play.canvas_magic.util.GuideView;
+import com.h2play.canvas_magic.util.LongPressProgressView;
 import com.h2play.canvas_magic.util.SpotlightGuideOverlay;
 
 public class MainActivity extends BaseActivity implements MainMvpView, ErrorView.ErrorListener {
@@ -59,19 +52,19 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     MainPresenter mainPresenter;
 
     private FabricView fabricView;
-    private ImageButton imageButton;
-    private ImageButton thicknessButton;
-    private ImageButton clearButton;
-    private ImageButton eraseButton;
+    private FloatingActionButton colorButton;
+    private View undoButton;
+    private View clearButton;
+    private View eraseButton;
 
     private int selectedColor;
     private ShapeInfo selectedShape;
-    private TextView guideTextView; // 추가된 변수
 
     private AdView adView;
     private AdDialog mCustomDialog;
-    private GuideView activeGuideView; // 기존 카드형 가이드 (현재는 미사용 유지)
-    private SpotlightGuideOverlay spotlightOverlay; // 스포트라이트 가이드 오버레이
+    private SpotlightGuideOverlay spotlightOverlay;
+    private LongPressProgressView longPressProgress;
+    private boolean isTutorialMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,141 +72,185 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
         Dart.inject(this);
 
-        // Initialize views using findViewById instead of ButterKnife
+        // 뷰 초기화
         fabricView = findViewById(R.id.fabricView);
-        imageButton = findViewById(R.id.btn_start);
-        thicknessButton = findViewById(R.id.ib_thickness);
+        colorButton = findViewById(R.id.btn_start);
+        undoButton = findViewById(R.id.ib_undo);
         clearButton = findViewById(R.id.ib_clear);
         eraseButton = findViewById(R.id.ib_erase);
+        longPressProgress = findViewById(R.id.long_press_progress);
 
-        // Set click listeners (replacing @OnClick annotations)
-        imageButton.setOnClickListener(v -> onStartClick());
-        imageButton.setOnLongClickListener(v -> onStartLongClick());
-        thicknessButton.setOnClickListener(v -> onThicknessClick());
+        // 롱프레스 프로그레스 완료 시 콜백
+        longPressProgress.setOnCompleteListener(this::onLongPressComplete);
+
+        // 클릭 리스너 설정
+        colorButton.setOnClickListener(v -> onStartClick());
+        setupLongPressWithProgress();
+        undoButton.setOnClickListener(v -> fabricView.undo());
         clearButton.setOnClickListener(v -> onClearClick());
         eraseButton.setOnClickListener(v -> onEraseClick());
 
+        // 초기 색상 설정
         selectedColor = Color.RED;
-        GradientDrawable drawable = (GradientDrawable) imageButton.getBackground();
-        drawable.setColor(selectedColor);
+        colorButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(selectedColor));
         fabricView.setColor(selectedColor);
+        fabricView.setSize(10);
 
         mainPresenter.getShape(shapeIndex);
-
         mainPresenter.checkNeedGuide();
 
+        // 광고 초기화
         adView = new AdView(this);
         adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
         adView.setAdUnitId("ca-app-pub-9937617798998725/8292313909");
         adView.loadAd(new AdRequest.Builder().build());
-        // [END load_banner_ad]
 
         mCustomDialog = new AdDialog(this,
                 adView,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mCustomDialog.dismiss();
-                    }
-                },
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mCustomDialog.dismiss();
-                        finish();
-                    }
+                view -> mCustomDialog.dismiss(),
+                view -> {
+                    mCustomDialog.dismiss();
+                    finish();
                 });
-
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            // Ensure we are not in immersive/fullscreen modes
             View decor = getWindow().getDecorView();
             decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
     }
 
     public void onStartClick() {
-        ColorPickerDialogBuilder
-                .with(this)
-                .setTitle(getResources().getString(R.string.select_color))
-                .initialColor(Color.RED)
-                .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                .density(12)
-                .setOnColorSelectedListener(new OnColorSelectedListener() {
-                    @Override
-                    public void onColorSelected(int selectedColor) {
+        showColorPicker();
+    }
 
-                    }
-                })
-                .setPositiveButton("ok", new ColorPickerClickListener() {
+    /**
+     * 현대적인 BottomSheet 색상 선택기 표시
+     * - Pikolo HSL 컬러 피커
+     * - 선 굵기/투명도 조절 가능
+     * - 최근 사용 색상 저장
+     * - OK 버튼 롱프레스 = 숨은 기능 (자동 그리기 모드)
+     */
+    private void showColorPicker() {
+        ColorPickerBottomSheet bottomSheet = ColorPickerBottomSheet.newInstance(
+                selectedColor, 
+                fabricView.getSize()
+        );
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
-                        GradientDrawable drawable = (GradientDrawable) imageButton.getBackground();
-                        drawable.setColor(selectedColor);
-                        fabricView.setColor(selectedColor);
-                        MainActivity.this.selectedColor = selectedColor;
-                        fabricView.setSize(10);
-                    }
-                })
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .build()
-                .show();
+        bottomSheet.setOnColorSelectedListener((color, thickness) -> {
+            // 색상 적용
+            selectedColor = color;
+            colorButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(selectedColor));
+            fabricView.setColor(selectedColor);
+            fabricView.setSize(thickness);
+        });
+
+        // 숨은 기능: OK 버튼 롱프레스 시 자동 그리기 모드
+        bottomSheet.setOnLongPressListener(() -> {
+            // 기존 onStartLongClick() 동작 수행
+            fabricView.setColor(selectedColor);
+            Toast.makeText(this, R.string.good_job, Toast.LENGTH_SHORT).show();
+            
+            if (spotlightOverlay != null) {
+                spotlightOverlay.hide();
+                spotlightOverlay = null;
+            }
+            
+            Intent intent = PinActivity.getStartIntent(this, selectedShape.count);
+            startActivityForResult(intent, REQUEST_CODE);
+        });
+
+        bottomSheet.show(getSupportFragmentManager(), "color_picker");
     }
 
     @Override
     public void showLongPressGuide() {
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.rootView);
-        // 레이아웃이 완료된 뒤에 하이라이트를 표시하여 좌표 오차 방지
+        ViewGroup layout = findViewById(R.id.rootView);
         layout.post(() -> {
             if (isFinishing() || isDestroyed()) return;
-            // 스포트라이트 오버레이로 직접 타깃(팔레트 버튼)을 강조
             spotlightOverlay = new SpotlightGuideOverlay(this, layout);
             String tip = getString(R.string.long_press_description);
-            spotlightOverlay.highlight(imageButton, 8, tip);
+            spotlightOverlay.highlight(colorButton, 8, tip);
             spotlightOverlay.setListener(() -> spotlightOverlay = null);
             spotlightOverlay.show();
         });
         
-        // 버튼 위치를 강조하기 위해 버튼에 애니메이션 효과 추가
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageButton, "scaleX", 1f, 1.2f, 1f);
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageButton, "scaleY", 1f, 1.2f, 1f);
+        // 버튼 강조 애니메이션
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(colorButton, "scaleX", 1f, 1.2f, 1f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(colorButton, "scaleY", 1f, 1.2f, 1f);
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(scaleX, scaleY);
         animatorSet.setDuration(1000);
         animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
-        animatorSet.setStartDelay(1500); // 가이드 뷰가 표시된 후 시작
+        animatorSet.setStartDelay(1500);
         
-        // setRepeatCount가 AnimatorSet에 없으므로 ValueAnimator 사용 또는 다른 방식으로 반복
         ValueAnimator repeatAnimator = ValueAnimator.ofInt(0, 1);
-        repeatAnimator.setDuration(2000); // 한 번의 애니메이션 + 딜레이 시간
+        repeatAnimator.setDuration(2000);
         repeatAnimator.setRepeatCount(1);
         repeatAnimator.addUpdateListener(animation -> {
-            if(animation.getAnimatedFraction() == 0f) {
-                // 애니메이션 시작할 때마다 버튼 애니메이션 실행
+            if (animation.getAnimatedFraction() == 0f) {
                 animatorSet.start();
             }
         });
-    repeatAnimator.start();
+        repeatAnimator.start();
         
-    // 카드형 가이드 콜백은 사용하지 않음
+        // 튜토리얼 모드 활성화
+        isTutorialMode = true;
+    }
+
+    /**
+     * 롱프레스 + 프로그레스바 설정
+     * 튜토리얼 모드에서는 프로그레스바가 표시되며, 꽉 채우면 다음 단계로 진행
+     */
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
+    private void setupLongPressWithProgress() {
+        colorButton.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case android.view.MotionEvent.ACTION_DOWN:
+                    // 롱프레스 시작 - 튜토리얼 모드일 때만 프로그레스 표시
+                    if (isTutorialMode) {
+                        longPressProgress.setProgressColor(selectedColor);
+                        longPressProgress.show();
+                    }
+                    return false; // 기본 롱클릭 이벤트도 처리되도록
+                    
+                case android.view.MotionEvent.ACTION_UP:
+                case android.view.MotionEvent.ACTION_CANCEL:
+                    // 터치 종료 - 프로그레스 숨기기
+                    if (longPressProgress.isAnimating()) {
+                        longPressProgress.hide();
+                    }
+                    return false;
+            }
+            return false;
+        });
+        
+        // 기존 롱클릭 리스너 (튜토리얼 모드가 아닐 때 동작)
+        colorButton.setOnLongClickListener(v -> {
+            if (!isTutorialMode) {
+                return onStartLongClick();
+            }
+            // 튜토리얼 모드에서는 프로그레스 완료 시 처리
+            return true;
+        });
+    }
+
+    /**
+     * 롱프레스 프로그레스 완료 시 호출
+     */
+    private void onLongPressComplete() {
+        longPressProgress.hide();
+        isTutorialMode = false; // 튜토리얼 완료
+        onStartLongClick();
     }
 
     public boolean onStartLongClick() {
         fabricView.setColor(selectedColor);
-        
-        // 가이드 텍스트 업데이트 대신 새로운 방식의 피드백 제공
         Toast.makeText(this, R.string.good_job, Toast.LENGTH_SHORT).show();
 
-        // 가이드가 떠있다면 닫기
         if (spotlightOverlay != null) {
             spotlightOverlay.hide();
             spotlightOverlay = null;
@@ -224,10 +261,6 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         return true;
     }
 
-    public void onThicknessClick() {
-        fabricView.setSize(fabricView.getSize() == 20 ? 10 : 20);
-        fabricView.setColor(selectedColor);
-    }
 
     public void onClearClick() {
         fabricView.cleanPage();
