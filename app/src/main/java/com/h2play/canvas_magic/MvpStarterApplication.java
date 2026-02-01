@@ -64,35 +64,43 @@ public class MvpStarterApplication extends Application {
 
         // Moving this after Firebase is initialized
         if(getComponent().dataManager().getShapeList().size() <= 0) {
-
-            String name = "Number";
-            if(Locale.getDefault().getDisplayLanguage().equalsIgnoreCase(Locale.KOREAN.getDisplayLanguage())) {
-                name = "숫자";
-            }
-
-            getComponent().dataManager().addFileList(name,"file.txt",9);
-            File fl = new File(getFilesDir(), "file.txt");
-
-            InputStream inputStream = getResources().openRawResource(R.raw.base_pattern);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-            try {
-                FileOutputStream outputStream = new FileOutputStream(fl);
-                int i = inputStream.read();
-                while (i != -1) {
-                    byteArrayOutputStream.write(i);
-                    outputStream.write(i);
-                    i = inputStream.read();
-                }
-
-                inputStream.close();
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            initializeDefaultShapePacks();
         }
 
+    }
+    
+    /**
+     * 기본 도형 팩을 초기화하는 메서드
+     * 숫자 도형 팩을 앱 최초 실행 시 추가합니다.
+     */
+    private void initializeDefaultShapePacks() {
+        boolean isKorean = Locale.getDefault().getDisplayLanguage()
+                .equalsIgnoreCase(Locale.KOREAN.getDisplayLanguage());
+        
+        // 숫자 도형 팩
+        String numberName = isKorean ? "숫자" : "Number";
+        getComponent().dataManager().addFileList(numberName, "file.txt", 9);
+        copyRawToFile(R.raw.base_pattern, "file.txt");
+    }
+    
+    /**
+     * raw 리소스를 내부 저장소 파일로 복사하는 헬퍼 메서드
+     * @param rawResourceId raw 리소스 ID
+     * @param fileName 저장할 파일 이름
+     */
+    private void copyRawToFile(int rawResourceId, String fileName) {
+        File file = new File(getFilesDir(), fileName);
+        try (InputStream inputStream = getResources().openRawResource(rawResourceId);
+             FileOutputStream outputStream = new FileOutputStream(file)) {
+            
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            Timber.e(e, "Failed to copy raw resource to file: %s", fileName);
+        }
     }
 
     public AppComponent getComponent() {

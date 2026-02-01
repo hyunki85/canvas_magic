@@ -63,7 +63,7 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
     }
 
     public void getShapeOnline(SORT_TYPE sortType, ShapeOnline lastObj) {
-        checkViewAttached();
+        if (!isViewAttached()) return;
         getView().showProgress(true);
 
         CollectionReference ref = db.collection("shapes");
@@ -89,6 +89,9 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        // View가 detach되었으면 무시
+                        if (!isViewAttached()) return;
+                        
                         if (task.isSuccessful()) {
                             Observable<ShapeOnline> shapeOnlineObservable = Observable.fromIterable(task.getResult())
                                     .map(queryDocumentSnapshot -> {
@@ -102,6 +105,7 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
 
                                     shapeOnlineObservable.toList()
                                             .subscribe(queryDocumentSnapshots -> {
+                                        if (!isViewAttached()) return;
                                         shapeOnlines.addAll(queryDocumentSnapshots);
                                         getView().showShapes(shapeOnlines);
 
@@ -150,6 +154,9 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
         shapeMap.put("count", count);
         shapeMap.put("name", name);
         shapes.add(shapeMap).addOnCompleteListener(task -> {
+            // View가 detach되었으면 무시
+            if (!isViewAttached()) return;
+            
             if (task.isSuccessful()) {
                 CollectionReference shapesInfo = db.collection("shapesInfo");
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -164,6 +171,9 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
                 shapeInfoMap.put("json", firstShapeJson);
                 shapeInfoMap.put("md5", getmd5hashfromstring(jsonText));
                 shapesInfo.add(shapeInfoMap).addOnCompleteListener(task1 -> {
+                    // View가 detach되었으면 무시
+                    if (!isViewAttached()) return;
+                    
                     if (task1.isSuccessful()) {
                         getView().onShareComplete();
                     }
@@ -179,14 +189,17 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
     }
 
     public void addLike(ShapeOnline shapeOnline) {
-
+        if (!isViewAttached()) return;
+        
         if(!shapeOnline.alreadyStar) {
             DocumentReference shapeRef = db.collection("shapes").document(shapeOnline.id);
             shapeRef.update("star", shapeOnline.star +1);
             dataManager.giveStarId(shapeOnline.id);
             shapeOnline.alreadyStar = true;
             shapeOnline.star += 1;
-            getView().updateShape(shapeOnline);
+            if (isViewAttached()) {
+                getView().updateShape(shapeOnline);
+            }
         }
 
     }

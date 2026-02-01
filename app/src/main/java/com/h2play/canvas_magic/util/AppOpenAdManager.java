@@ -14,20 +14,16 @@ import android.util.Log;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import androidx.annotation.IntDef;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * App Open Ad Manager - 최신 Google Mobile Ads SDK에 맞게 업데이트됨
+ * orientation 파라미터는 최신 SDK에서 제거되어 자동으로 화면 방향에 맞춰짐
+ */
 public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback
         implements Application.ActivityLifecycleCallbacks {
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
-            AppOpenAd.APP_OPEN_AD_ORIENTATION_LANDSCAPE})
-    public @interface AdOrientation {
-
-    }
 
     @Retention(RetentionPolicy.SOURCE)
     @IntRange(from = 0L, to = MAX_AD_EXPIRY_DURATION)
@@ -41,9 +37,6 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback
 
         private final String adUnitId;
 
-        @AdOrientation
-        private int orientation = AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT;
-
         @AdExpiryDuration
         private long adExpiryDuration = MAX_AD_EXPIRY_DURATION;
 
@@ -52,11 +45,6 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback
         public Builder(@NonNull Application application, @NonNull String adUnitId) {
             this.application = application;
             this.adUnitId = adUnitId;
-        }
-
-        public Builder setOrientation(@AdOrientation int orientation) {
-            this.orientation = orientation;
-            return this;
         }
 
         public Builder setAdExpiryDuration(@AdExpiryDuration long duration) {
@@ -74,7 +62,7 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback
         }
     }
 
-    public static final String TEST_AD_UNIT_ID = "ca-app-pub-3940256099942544/1033173712";
+    public static final String TEST_AD_UNIT_ID = "ca-app-pub-3940256099942544/9257395921";
 
     public static final long MAX_AD_EXPIRY_DURATION = 3600000 * 4;
 
@@ -83,8 +71,6 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback
     private final Application application;
 
     private final String adUnitId;
-
-    private final int orientation;
 
     private final long adExpiryDuration;
 
@@ -101,7 +87,6 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback
     private AppOpenAdManager(Builder builder) {
         this.application = builder.application;
         this.adUnitId = builder.adUnitId;
-        this.orientation = builder.orientation;
         this.adExpiryDuration = builder.adExpiryDuration;
         this.adRequest = builder.adRequest;
 
@@ -160,7 +145,8 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback
             return;
         }
 
-        AppOpenAd.load(application, adUnitId, adRequest, orientation, this);
+        // 최신 SDK에서는 orientation 파라미터가 제거됨
+        AppOpenAd.load(application, adUnitId, adRequest, this);
     }
 
     private boolean isAdAvailable() {

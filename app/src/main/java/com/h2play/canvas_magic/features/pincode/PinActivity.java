@@ -27,6 +27,7 @@ import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
 import com.h2play.canvas_magic.features.preview.PreviewActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
+import com.h2play.canvas_magic.util.GridGuideView;
 import com.h2play.canvas_magic.util.GuideView; // GuideView 클래스 임포트 추가
 import com.h2play.canvas_magic.util.SpotlightGuideOverlay;
 import com.h2play.canvas_magic.util.ViewUtil;
@@ -161,19 +162,18 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
     public void showGuide() {
     FrameLayout layout = (FrameLayout) findViewById(R.id.fl_main);
 
-    // 예전 방식 복구: 가이드 그리드 이미지를 전체 화면에 깔아주기 (오버레이 아래에 위치)
+    // 프로그래밍 방식으로 그리드 가이드 표시 (이미지 대신 동적 뷰 사용)
     final String GUIDE_GRID_TAG = "guide_grid_bg";
     if (layout.findViewWithTag(GUIDE_GRID_TAG) == null) {
-        ImageView imageView = new ImageView(this);
-        imageView.setTag(GUIDE_GRID_TAG);
-        imageView.setImageResource(R.drawable.guide_grid);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageView.setOnTouchListener((v, event) -> false); // 터치 소비하지 않음
+        GridGuideView gridGuideView = new GridGuideView(this);
+        gridGuideView.setTag(GUIDE_GRID_TAG);
+        gridGuideView.setGridCount(count); // count에 맞게 그리드 개수 설정
+        gridGuideView.setOnTouchListener((v, event) -> false); // 터치 소비하지 않음
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
         );
-        layout.addView(imageView, params);
+        layout.addView(gridGuideView, params);
     }
 
     // 시나리오: 상대가 6을 선택했다는 메시지와 함께, 숫자 6 위치를 강조

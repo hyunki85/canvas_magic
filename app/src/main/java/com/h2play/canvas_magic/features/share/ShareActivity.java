@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +28,8 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorView.ErrorListener, ShapeAdapter.ClickListener {
@@ -44,6 +45,8 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
     private TabLayout tabLayout;
     private RecyclerView mPokemonRecycler;
     private FloatingActionButton fabUpload;
+    
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     public static Intent getStartIntent(Context context) {
         Intent intent = new Intent(context, ShareActivity.class);
@@ -69,14 +72,14 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
         shapeAdapter.setClickListener(this);
         mPokemonRecycler.setLayoutManager(new LinearLayoutManager(this));
         mPokemonRecycler.setAdapter(shapeAdapter);
-        mPokemonRecycler.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
 
         menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.FEATURED, null);
 
-        shapeAdapter.getNextPage()
+        Disposable nextPageDisposable = shapeAdapter.getNextPage()
                 .subscribe(o -> {
                     menuPresenter.getShapeOnline( SharePresenter.SORT_TYPE.values()[tabLayout.getSelectedTabPosition()], o );
                 });
+        disposables.add(nextPageDisposable);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -95,6 +98,12 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
 
             }
         });
+    }
+    
+    @Override
+    protected void onDestroy() {
+        disposables.clear();
+        super.onDestroy();
     }
 
     @Override
