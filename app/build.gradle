@@ -4,6 +4,12 @@ apply plugin: 'jacoco'
 apply plugin: 'com.github.ben-manes.versions'
 //apply plugin: 'io.fabric'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     compileSdkVersion 36
     buildToolsVersion '36.0.0'
@@ -32,6 +38,16 @@ android {
         buildConfigField("String", "POKEAPI_API_URL",
                 "\"${PokeapiApiUrl}\"")
     }
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                storeFile rootProject.file("key/upload.jks")
+                storePassword keystoreProperties.getProperty('storePassword')
+                keyAlias keystoreProperties.getProperty('keyAlias')
+                keyPassword keystoreProperties.getProperty('keyPassword')
+            }
+        }
+    }
     buildTypes {
         debug {
             minifyEnabled false
@@ -40,6 +56,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 

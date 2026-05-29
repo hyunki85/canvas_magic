@@ -13,3 +13,6 @@ canvas.zip
 mcp-playstore/
 .playwright-mcp/
 canvas-db0bc-*.json
+
+# signing creds (never commit)
+keystore.properties
