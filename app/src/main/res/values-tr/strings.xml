@@ -65,4 +65,20 @@
     <string name="tutorial_practice_bubble">Seyirci %d\'i seçtiyse,\nnereye iki kez dokunmalısınız?</string>
     <string name="tutorial_practice_wrong">Burası 8. hücre değil! Tekrar deneyin.</string>
     <string name="tutorial_practice_correct">Mükemmel! Hazırsınız!</string>
+
+    <string name="cross_promo_badge">Önerilen uygulama</string>
+    <string name="cross_promo_cta">Ücretsiz indir</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">Flaş ve titreşimle sayısını ortaya çıkar.</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">Gizlice seçtiği rengi oku.</string>
+    <string name="dynamic_menu_help_desc">Numarayı nasıl yapacağını öğren</string>
+    <string name="dynamic_menu_restart_tutorial_desc">Baştan tekrar çalış</string>
+    <string name="dynamic_menu_rate_desc">Bizi puanlayarak destekle</string>
+    <string name="dynamic_menu_more_apps_desc">Daha fazla sihir uygulaması keşfet</string>
+
+    <string name="dynamic_menu_help_title">Eğitim</string>
+    <string name="dynamic_menu_restart_tutorial_title">Tekrar çalış</string>
+    <string name="dynamic_menu_rate_title">Puan ver</string>
+    <string name="dynamic_menu_more_apps_title">Daha fazla uygulama</string>
 </resources>

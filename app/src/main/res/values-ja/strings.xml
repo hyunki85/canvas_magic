@@ -65,4 +65,20 @@
     <string name="tutorial_practice_bubble">観客が%d番を選んだら\nどこをダブルタップしますか？</string>
     <string name="tutorial_practice_wrong">8番のマスではありません！もう一度やってみましょう。</string>
     <string name="tutorial_practice_correct">完璧です！準備OKです！</string>
+
+    <string name="cross_promo_badge">おすすめアプリ</string>
+    <string name="cross_promo_cta">無料で入手</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">フラッシュと振動で相手の数字を当てます。</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">相手がこっそり選んだ色を読み取ります。</string>
+    <string name="dynamic_menu_help_desc">トリックのやり方を見る</string>
+    <string name="dynamic_menu_restart_tutorial_desc">最初から練習し直す</string>
+    <string name="dynamic_menu_rate_desc">評価で応援してください</string>
+    <string name="dynamic_menu_more_apps_desc">他のマジックアプリを見る</string>
+
+    <string name="dynamic_menu_help_title">チュートリアル</string>
+    <string name="dynamic_menu_restart_tutorial_title">もう一度練習</string>
+    <string name="dynamic_menu_rate_title">評価する</string>
+    <string name="dynamic_menu_more_apps_title">他のアプリ</string>
 </resources>

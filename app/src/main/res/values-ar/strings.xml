@@ -71,4 +71,20 @@
     <string name="tutorial_practice_bubble">إذا اختار الجمهور %d،\nأين يجب أن تنقر مرتين؟</string>
     <string name="tutorial_practice_wrong">هذه ليست الخانة 8! حاول مرة أخرى.</string>
     <string name="tutorial_practice_correct">ممتاز! أنت جاهز!</string>
+
+    <string name="cross_promo_badge">تطبيق مقترح</string>
+    <string name="cross_promo_cta">احصل عليه مجانًا</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">اكشف الرقم بالفلاش والاهتزاز.</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">اعرف اللون الذي اختاره سرًا.</string>
+    <string name="dynamic_menu_help_desc">تعلّم طريقة الخدعة</string>
+    <string name="dynamic_menu_restart_tutorial_desc">ابدأ من جديد</string>
+    <string name="dynamic_menu_rate_desc">ادعمنا بتقييم</string>
+    <string name="dynamic_menu_more_apps_desc">اكتشف المزيد من تطبيقات السحر</string>
+
+    <string name="dynamic_menu_help_title">الدليل</string>
+    <string name="dynamic_menu_restart_tutorial_title">تدرّب مجددًا</string>
+    <string name="dynamic_menu_rate_title">قيّم التطبيق</string>
+    <string name="dynamic_menu_more_apps_title">المزيد من التطبيقات</string>
 </resources>

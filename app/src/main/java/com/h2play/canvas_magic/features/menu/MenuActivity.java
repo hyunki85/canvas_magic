@@ -268,7 +268,11 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     private void setupDynamicMenu() {
         boolean devMode = BuildConfig.DEBUG;
-        MenuConfig cfg = MenuConfigLoader.loadFromRemoteConfig(this, devMode);
+        MenuConfig cfg = MenuConfigLoader.loadFromRemoteConfig(this, devMode, remoteConfig -> {
+            if (remoteConfig != null && remoteConfig.items != null && !remoteConfig.items.isEmpty()) {
+                renderDynamicMenu(remoteConfig);
+            }
+        });
         if (cfg == null) {
             cfg = MenuConfigLoader.loadFromAssets(this);
         }
@@ -277,19 +281,25 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
             return;
         }
 
+        renderDynamicMenu(cfg);
+    }
+
+    private void renderDynamicMenu(MenuConfig cfg) {
         // Configure Recycler
-        GridLayoutManager glm = new GridLayoutManager(this, 2);
-        rvDynamicMenu.setLayoutManager(glm);
-        dynamicAdapter = new DynamicMenuAdapter(this, this::handleDynamicAction);
-        rvDynamicMenu.setAdapter(dynamicAdapter);
-        glm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override public int getSpanSize(int position) {
-                if (dynamicAdapter == null) return 1;
-                int vt = dynamicAdapter.getItemViewType(position);
-                // promo 타입은 두 칸을 차지
-                return vt == 1 ? 2 : 1;
-            }
-        });
+        if (dynamicAdapter == null) {
+            GridLayoutManager glm = new GridLayoutManager(this, 2);
+            rvDynamicMenu.setLayoutManager(glm);
+            dynamicAdapter = new DynamicMenuAdapter(this, this::handleDynamicAction);
+            rvDynamicMenu.setAdapter(dynamicAdapter);
+            glm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override public int getSpanSize(int position) {
+                    if (dynamicAdapter == null) return 1;
+                    int vt = dynamicAdapter.getItemViewType(position);
+                    // promo 타입은 두 칸을 차지
+                    return vt == 1 ? 2 : 1;
+                }
+            });
+        }
         dynamicAdapter.submit(cfg.items);
 
         // Hide fallback static views (grid/card) but keep hero start button

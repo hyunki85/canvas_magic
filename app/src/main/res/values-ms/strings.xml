@@ -65,4 +65,20 @@
     <string name="tutorial_practice_bubble">Jika penonton memilih %d,\ndi mana perlu anda ketuk dua kali?</string>
     <string name="tutorial_practice_wrong">Itu bukan sel 8! Cuba lagi.</string>
     <string name="tutorial_practice_correct">Sempurna! Anda sudah bersedia!</string>
+
+    <string name="cross_promo_badge">Aplikasi disyorkan</string>
+    <string name="cross_promo_cta">Dapatkan percuma</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">Teka nombor mereka dengan flash dan getaran.</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">Baca warna yang dipilih secara rahsia.</string>
+    <string name="dynamic_menu_help_desc">Pelajari cara membuat helah</string>
+    <string name="dynamic_menu_restart_tutorial_desc">Mula semula dari awal</string>
+    <string name="dynamic_menu_rate_desc">Sokong kami dengan penilaian</string>
+    <string name="dynamic_menu_more_apps_desc">Terokai lagi aplikasi magik</string>
+
+    <string name="dynamic_menu_help_title">Tutorial</string>
+    <string name="dynamic_menu_restart_tutorial_title">Berlatih lagi</string>
+    <string name="dynamic_menu_rate_title">Nilai kami</string>
+    <string name="dynamic_menu_more_apps_title">Lagi aplikasi</string>
 </resources>

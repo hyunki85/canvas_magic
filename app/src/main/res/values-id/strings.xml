@@ -71,4 +71,20 @@
     <string name="tutorial_practice_bubble">Jika penonton memilih %d,\ndi mana harus ketuk dua kali?</string>
     <string name="tutorial_practice_wrong">Itu bukan sel 8! Coba lagi.</string>
     <string name="tutorial_practice_correct">Sempurna! Kamu sudah siap!</string>
+
+    <string name="cross_promo_badge">Aplikasi rekomendasi</string>
+    <string name="cross_promo_cta">Dapatkan gratis</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">Tebak angka mereka dengan flash dan getaran.</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">Baca warna yang mereka pilih diam-diam.</string>
+    <string name="dynamic_menu_help_desc">Pelajari cara melakukan trik</string>
+    <string name="dynamic_menu_restart_tutorial_desc">Mulai latihan dari awal</string>
+    <string name="dynamic_menu_rate_desc">Dukung kami dengan rating</string>
+    <string name="dynamic_menu_more_apps_desc">Temukan aplikasi sulap lainnya</string>
+
+    <string name="dynamic_menu_help_title">Tutorial</string>
+    <string name="dynamic_menu_restart_tutorial_title">Latihan lagi</string>
+    <string name="dynamic_menu_rate_title">Beri rating</string>
+    <string name="dynamic_menu_more_apps_title">Aplikasi lainnya</string>
 </resources>

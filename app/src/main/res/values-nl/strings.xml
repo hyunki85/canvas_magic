@@ -71,4 +71,20 @@
     <string name="tutorial_practice_bubble">Als het publiek %d koos,\nwaar moet je dubbeltikken?</string>
     <string name="tutorial_practice_wrong">Dat is niet cel 8! Probeer opnieuw.</string>
     <string name="tutorial_practice_correct">Perfect! Je bent klaar!</string>
+
+    <string name="cross_promo_badge">Aanbevolen app</string>
+    <string name="cross_promo_cta">Gratis downloaden</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">Raad het getal met flits en trilling.</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">Lees de kleur die geheim is gekozen.</string>
+    <string name="dynamic_menu_help_desc">Leer hoe je de truc doet</string>
+    <string name="dynamic_menu_restart_tutorial_desc">Begin opnieuw met oefenen</string>
+    <string name="dynamic_menu_rate_desc">Steun ons met een beoordeling</string>
+    <string name="dynamic_menu_more_apps_desc">Ontdek meer goochel-apps</string>
+
+    <string name="dynamic_menu_help_title">Tutorial</string>
+    <string name="dynamic_menu_restart_tutorial_title">Opnieuw oefenen</string>
+    <string name="dynamic_menu_rate_title">Beoordeel ons</string>
+    <string name="dynamic_menu_more_apps_title">Meer apps</string>
 </resources>

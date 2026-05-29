@@ -71,4 +71,20 @@
     <string name="tutorial_practice_bubble">Nếu khán giả chọn %d,\nbạn cần chạm hai lần ở đâu?</string>
     <string name="tutorial_practice_wrong">Đó không phải ô 8! Thử lại nhé.</string>
     <string name="tutorial_practice_correct">Hoàn hảo! Bạn đã sẵn sàng!</string>
+
+    <string name="cross_promo_badge">Ứng dụng đề xuất</string>
+    <string name="cross_promo_cta">Tải miễn phí</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">Đoán số bằng đèn flash và rung.</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">Đọc màu họ bí mật chọn.</string>
+    <string name="dynamic_menu_help_desc">Tìm hiểu cách biểu diễn trò ảo thuật</string>
+    <string name="dynamic_menu_restart_tutorial_desc">Luyện lại từ đầu</string>
+    <string name="dynamic_menu_rate_desc">Ủng hộ chúng tôi bằng đánh giá</string>
+    <string name="dynamic_menu_more_apps_desc">Khám phá thêm ứng dụng ảo thuật</string>
+
+    <string name="dynamic_menu_help_title">Hướng dẫn</string>
+    <string name="dynamic_menu_restart_tutorial_title">Luyện lại</string>
+    <string name="dynamic_menu_rate_title">Đánh giá</string>
+    <string name="dynamic_menu_more_apps_title">Ứng dụng khác</string>
 </resources>

@@ -1,10 +1,65 @@
 {
-  "version": 4,
-  "experiment": null,
+  "version": 5,
+  "experiment": "resource_localized",
   "items": [
-  { "id": "help", "title": "튜토리얼", "description": "사용법 알아보기", "icon": "ic_help", "bgColor": "#546E7A", "action": "open_help", "small": true },
-  { "id": "restart_tutorial", "title": "다시 연습", "description": "처음부터 다시 배우기", "icon": "ic_help", "bgColor": "#7B1FA2", "action": "restart_tutorial", "small": true },
-  { "id": "rate", "title": "평가하기", "description": "별점으로 응원해주세요", "bgColor": "#5D4037", "action": "rate", "small": true },
-  { "id": "more", "title": "더 많은 앱", "description": "다른 앱도 구경하기", "bgColor": "#2E7D32", "action": "more_apps", "payload": "https://play.google.com/store/apps/dev?id=8030976532724501230", "small": true }
+    {
+      "id": "promo_magic_number_flash",
+      "title": "@string/cross_promo_magic_number_flash_title",
+      "description": "@string/cross_promo_magic_number_flash_desc",
+      "icon": "cross_promo_magic_number_flash",
+      "bgColor": "#111827",
+      "action": "open_url",
+      "payload": "https://play.google.com/store/apps/details?id=com.h2play.magicnf",
+      "span": 2,
+      "promo": true,
+      "imageUrl": "https://pub-a022f727a3b24352bfc5887e8576c534.r2.dev/canvas-magic/cross-promo/magic-number-flash-gpt-image-2-v1.jpg"
+    },
+    {
+      "id": "promo_mind_reader_magic",
+      "title": "@string/cross_promo_mind_reader_magic_title",
+      "description": "@string/cross_promo_mind_reader_magic_desc",
+      "icon": "cross_promo_mind_reader_magic",
+      "bgColor": "#0F172A",
+      "action": "open_url",
+      "payload": "https://play.google.com/store/apps/details?id=com.h2play.remoteMagic",
+      "span": 2,
+      "promo": true,
+      "imageUrl": "https://pub-a022f727a3b24352bfc5887e8576c534.r2.dev/canvas-magic/cross-promo/mind-reader-magic-gpt-image-2-v1.jpg"
+    },
+    {
+      "id": "help",
+      "title": "@string/dynamic_menu_help_title",
+      "description": "@string/dynamic_menu_help_desc",
+      "icon": "ic_help",
+      "bgColor": "#546E7A",
+      "action": "open_help",
+      "small": true
+    },
+    {
+      "id": "restart_tutorial",
+      "title": "@string/dynamic_menu_restart_tutorial_title",
+      "description": "@string/dynamic_menu_restart_tutorial_desc",
+      "icon": "ic_help",
+      "bgColor": "#7B1FA2",
+      "action": "restart_tutorial",
+      "small": true
+    },
+    {
+      "id": "rate",
+      "title": "@string/dynamic_menu_rate_title",
+      "description": "@string/dynamic_menu_rate_desc",
+      "bgColor": "#5D4037",
+      "action": "rate",
+      "small": true
+    },
+    {
+      "id": "more",
+      "title": "@string/dynamic_menu_more_apps_title",
+      "description": "@string/dynamic_menu_more_apps_desc",
+      "bgColor": "#2E7D32",
+      "action": "more_apps",
+      "payload": "https://play.google.com/store/apps/dev?id=8030976532724501230",
+      "small": true
+    }
   ]
 }

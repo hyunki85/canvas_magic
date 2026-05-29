@@ -71,4 +71,20 @@
     <string name="tutorial_practice_bubble">Si le public a choisi %d,\noù devez-vous taper deux fois ?</string>
     <string name="tutorial_practice_wrong">Ce n\'est pas la case 8 ! Réessayez.</string>
     <string name="tutorial_practice_correct">Parfait ! Vous êtes prêt !</string>
+
+    <string name="cross_promo_badge">App recommandée</string>
+    <string name="cross_promo_cta">Gratuit</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">Révélez son nombre avec flash et vibration.</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">Devinez la couleur choisie en secret.</string>
+    <string name="dynamic_menu_help_desc">Apprenez à faire le tour</string>
+    <string name="dynamic_menu_restart_tutorial_desc">Recommencer depuis le début</string>
+    <string name="dynamic_menu_rate_desc">Soutenez-nous avec une note</string>
+    <string name="dynamic_menu_more_apps_desc">Découvrez plus d\'apps de magie</string>
+
+    <string name="dynamic_menu_help_title">Tutoriel</string>
+    <string name="dynamic_menu_restart_tutorial_title">Réessayer</string>
+    <string name="dynamic_menu_rate_title">Noter l\'app</string>
+    <string name="dynamic_menu_more_apps_title">Plus d\'apps</string>
 </resources>

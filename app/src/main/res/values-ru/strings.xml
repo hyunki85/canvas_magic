@@ -71,4 +71,20 @@
     <string name="tutorial_practice_bubble">Если зритель выбрал %d,\nкуда нужно нажать дважды?</string>
     <string name="tutorial_practice_wrong">Это не ячейка 8! Попробуйте ещё раз.</string>
     <string name="tutorial_practice_correct">Отлично! Вы готовы!</string>
+
+    <string name="cross_promo_badge">Рекомендуем</string>
+    <string name="cross_promo_cta">Бесплатно</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">Угадайте число с помощью вспышки и вибрации.</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">Узнайте цвет, выбранный тайно.</string>
+    <string name="dynamic_menu_help_desc">Узнайте, как выполнить фокус</string>
+    <string name="dynamic_menu_restart_tutorial_desc">Начать сначала</string>
+    <string name="dynamic_menu_rate_desc">Поддержите нас оценкой</string>
+    <string name="dynamic_menu_more_apps_desc">Больше приложений с фокусами</string>
+
+    <string name="dynamic_menu_help_title">Обучение</string>
+    <string name="dynamic_menu_restart_tutorial_title">Повторить</string>
+    <string name="dynamic_menu_rate_title">Оценить</string>
+    <string name="dynamic_menu_more_apps_title">Больше приложений</string>
 </resources>

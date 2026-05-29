@@ -68,6 +68,8 @@
     <string name="menu_desc_edit">나만의 모양 세트 만들기</string>
     <string name="menu_desc_share">친구들과 작품 나누기</string>
     <string name="rate_short">평가하기</string>
+    <string name="cross_promo_badge">Recommended</string>
+    <string name="cross_promo_cta">Get it free</string>
     <string name="undo">되돌리기</string>
     <string name="tutorial_character_name">Audience</string>
     <string name="tutorial_vn_step1">Say to them:\n\"Pick a number from 0 to 9\"</string>
@@ -89,4 +91,18 @@
     <string name="reminder_body_3day">Come draw something amazing today!</string>
     <string name="reminder_title_7day">New patterns are waiting!</string>
     <string name="reminder_body_7day">It\'s been a while. Check out what\'s new!</string>
+
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">Reveal their number with flash and vibration.</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">Read the color they secretly choose.</string>
+    <string name="dynamic_menu_help_desc">Learn how to perform the trick</string>
+    <string name="dynamic_menu_restart_tutorial_desc">Restart from the beginning</string>
+    <string name="dynamic_menu_rate_desc">Support us with a rating</string>
+    <string name="dynamic_menu_more_apps_desc">Discover more magic apps</string>
+
+    <string name="dynamic_menu_help_title">Tutorial</string>
+    <string name="dynamic_menu_restart_tutorial_title">Practice Again</string>
+    <string name="dynamic_menu_rate_title">Rate Us</string>
+    <string name="dynamic_menu_more_apps_title">More Apps</string>
 </resources>

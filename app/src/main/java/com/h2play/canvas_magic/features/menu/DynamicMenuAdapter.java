@@ -74,7 +74,7 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private void bindDefault(@NonNull VH h, MenuItemConfig item, int position) {
-        h.title.setText(item.title);
+        h.title.setText(resolveText(h.itemView.getContext(), item.title));
         // Background and content colors
         int content = Color.WHITE;
         if (h.card != null) {
@@ -85,7 +85,7 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         // Description
         if (item.description != null && !item.description.isEmpty()) {
-            h.description.setText(item.description);
+            h.description.setText(resolveText(h.itemView.getContext(), item.description));
             h.description.setTextColor(content);
             h.description.setVisibility(View.VISIBLE);
         } else {
@@ -131,14 +131,14 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private void bindPromo(@NonNull PromoVH h, MenuItemConfig item, int position) {
-        h.title.setText(item.title);
+        h.title.setText(resolveText(h.itemView.getContext(), item.title));
         int bg = resolveBackgroundColor(item, position);
         h.card.setCardBackgroundColor(bg);
         int content = ColorUtils.calculateLuminance(bg) < 0.5 ? Color.WHITE : Color.parseColor("#111111");
         h.title.setTextColor(content);
         // Description
         if (item.description != null && !item.description.isEmpty()) {
-            h.description.setText(item.description);
+            h.description.setText(resolveText(h.itemView.getContext(), item.description));
             h.description.setVisibility(View.VISIBLE);
         } else {
             h.description.setVisibility(View.GONE);
@@ -163,6 +163,16 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             } catch (Exception ignored) { }
         }
         if (!shown) {
+            if (item.icon != null) {
+                int resId = h.itemView.getContext().getResources().getIdentifier(item.icon, "drawable", h.itemView.getContext().getPackageName());
+                if (resId != 0) {
+                    h.image.setImageResource(resId);
+                    h.image.setVisibility(View.VISIBLE);
+                    shown = true;
+                }
+            }
+        }
+        if (!shown) {
             h.image.setVisibility(View.GONE);
         }
         h.itemView.setOnClickListener(v -> listener.onItemClick(item));
@@ -182,6 +192,21 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 Color.parseColor("#9C27B0")
         };
         return palette[position % palette.length];
+    }
+
+    private CharSequence resolveText(Context context, String value) {
+        if (value == null) {
+            return "";
+        }
+        if (!value.startsWith("@string/")) {
+            return value;
+        }
+        String resourceName = value.substring("@string/".length());
+        int resId = context.getResources().getIdentifier(resourceName, "string", context.getPackageName());
+        if (resId == 0) {
+            return value;
+        }
+        return context.getString(resId);
     }
 
     @Override public int getItemCount() { return items.size(); }

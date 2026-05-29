@@ -60,4 +60,20 @@
     <string name="reminder_body_3day">캔버스 트릭에서 멋진 그림을 그려보세요!</string>
     <string name="reminder_title_7day">새로운 도안이 기다리고 있어요!</string>
     <string name="reminder_body_7day">오랜만이에요. 새로운 기능을 확인해보세요!</string>
+
+    <string name="cross_promo_badge">추천 앱</string>
+    <string name="cross_promo_cta">무료로 받기</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">플래시와 진동으로 상대의 숫자를 맞히는 마술</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">상대가 몰래 고른 색을 읽어내는 마술</string>
+    <string name="dynamic_menu_help_desc">사용법 알아보기</string>
+    <string name="dynamic_menu_restart_tutorial_desc">처음부터 다시 배우기</string>
+    <string name="dynamic_menu_rate_desc">별점으로 응원해주세요</string>
+    <string name="dynamic_menu_more_apps_desc">다른 마술앱도 구경하기</string>
+
+    <string name="dynamic_menu_help_title">튜토리얼</string>
+    <string name="dynamic_menu_restart_tutorial_title">다시 연습</string>
+    <string name="dynamic_menu_rate_title">평가하기</string>
+    <string name="dynamic_menu_more_apps_title">더 많은 앱</string>
 </resources>

@@ -65,4 +65,20 @@
     <string name="tutorial_practice_bubble">अगर दर्शक ने %d चुना,\nतो कहाँ डबल टैप करना होगा?</string>
     <string name="tutorial_practice_wrong">यह सेल 8 नहीं है! फिर से कोशिश करें।</string>
     <string name="tutorial_practice_correct">बिल्कुल सही! आप तैयार हैं!</string>
+
+    <string name="cross_promo_badge">सुझाया गया ऐप</string>
+    <string name="cross_promo_cta">मुफ्त पाएं</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">फ्लैश और कंपन से उनका नंबर बताएं।</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">उनके चुने हुए रंग को पढ़ें।</string>
+    <string name="dynamic_menu_help_desc">ट्रिक करना सीखें</string>
+    <string name="dynamic_menu_restart_tutorial_desc">शुरू से फिर अभ्यास करें</string>
+    <string name="dynamic_menu_rate_desc">रेटिंग देकर समर्थन करें</string>
+    <string name="dynamic_menu_more_apps_desc">और मैजिक ऐप खोजें</string>
+
+    <string name="dynamic_menu_help_title">ट्यूटोरियल</string>
+    <string name="dynamic_menu_restart_tutorial_title">फिर अभ्यास करें</string>
+    <string name="dynamic_menu_rate_title">रेट करें</string>
+    <string name="dynamic_menu_more_apps_title">और ऐप्स</string>
 </resources>

@@ -71,4 +71,20 @@
     <string name="tutorial_practice_bubble">如果观众选了%d，\n你应该双击哪里？</string>
     <string name="tutorial_practice_wrong">不是第8格！再试一次。</string>
     <string name="tutorial_practice_correct">完美！你准备好了！</string>
+
+    <string name="cross_promo_badge">推荐应用</string>
+    <string name="cross_promo_cta">免费获取</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">用闪光和振动猜中对方的数字。</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">读出对方偷偷选择的颜色。</string>
+    <string name="dynamic_menu_help_desc">学习如何表演魔术</string>
+    <string name="dynamic_menu_restart_tutorial_desc">从头开始练习</string>
+    <string name="dynamic_menu_rate_desc">给我们评分支持一下</string>
+    <string name="dynamic_menu_more_apps_desc">发现更多魔术应用</string>
+
+    <string name="dynamic_menu_help_title">教程</string>
+    <string name="dynamic_menu_restart_tutorial_title">重新练习</string>
+    <string name="dynamic_menu_rate_title">评分</string>
+    <string name="dynamic_menu_more_apps_title">更多应用</string>
 </resources>

@@ -65,4 +65,20 @@
     <string name="tutorial_practice_bubble">দর্শক যদি %d বেছে নেয়,\nকোথায় ডাবল ট্যাপ করবেন?</string>
     <string name="tutorial_practice_wrong">এটি ঘর 8 নয়! আবার চেষ্টা করুন।</string>
     <string name="tutorial_practice_correct">চমৎকার! আপনি প্রস্তুত!</string>
+
+    <string name="cross_promo_badge">প্রস্তাবিত অ্যাপ</string>
+    <string name="cross_promo_cta">ফ্রি নিন</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">ফ্ল্যাশ ও কম্পনে তাদের সংখ্যা জানান।</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">তারা গোপনে যে রং বেছে নিয়েছে তা পড়ুন।</string>
+    <string name="dynamic_menu_help_desc">ট্রিকটি কীভাবে করবেন শিখুন</string>
+    <string name="dynamic_menu_restart_tutorial_desc">শুরু থেকে আবার অনুশীলন করুন</string>
+    <string name="dynamic_menu_rate_desc">রেটিং দিয়ে সমর্থন করুন</string>
+    <string name="dynamic_menu_more_apps_desc">আরও ম্যাজিক অ্যাপ দেখুন</string>
+
+    <string name="dynamic_menu_help_title">টিউটোরিয়াল</string>
+    <string name="dynamic_menu_restart_tutorial_title">আবার অনুশীলন</string>
+    <string name="dynamic_menu_rate_title">রেট করুন</string>
+    <string name="dynamic_menu_more_apps_title">আরও অ্যাপ</string>
 </resources>

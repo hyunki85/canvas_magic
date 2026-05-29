@@ -71,4 +71,20 @@
     <string name="tutorial_practice_bubble">ถ้าผู้ชมเลือก %d\nต้องแตะสองครั้งที่ไหน?</string>
     <string name="tutorial_practice_wrong">ไม่ใช่ช่อง 8! ลองอีกครั้ง</string>
     <string name="tutorial_practice_correct">เยี่ยม! คุณพร้อมแล้ว!</string>
+
+    <string name="cross_promo_badge">แอปแนะนำ</string>
+    <string name="cross_promo_cta">รับฟรี</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">ทายตัวเลขด้วยแฟลชและการสั่น</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">อ่านสีที่อีกฝ่ายแอบเลือก</string>
+    <string name="dynamic_menu_help_desc">เรียนรู้วิธีเล่นกล</string>
+    <string name="dynamic_menu_restart_tutorial_desc">เริ่มฝึกใหม่ตั้งแต่ต้น</string>
+    <string name="dynamic_menu_rate_desc">สนับสนุนเราด้วยการให้คะแนน</string>
+    <string name="dynamic_menu_more_apps_desc">ค้นพบแอปมายากลเพิ่มเติม</string>
+
+    <string name="dynamic_menu_help_title">บทช่วยสอน</string>
+    <string name="dynamic_menu_restart_tutorial_title">ฝึกอีกครั้ง</string>
+    <string name="dynamic_menu_rate_title">ให้คะแนน</string>
+    <string name="dynamic_menu_more_apps_title">แอปเพิ่มเติม</string>
 </resources>

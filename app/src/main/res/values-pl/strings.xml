@@ -71,4 +71,20 @@
     <string name="tutorial_practice_bubble">Jeśli widz wybrał %d,\ngdzie musisz dotknąć dwa razy?</string>
     <string name="tutorial_practice_wrong">To nie komórka 8! Spróbuj ponownie.</string>
     <string name="tutorial_practice_correct">Doskonale! Jesteś gotowy!</string>
+
+    <string name="cross_promo_badge">Polecana aplikacja</string>
+    <string name="cross_promo_cta">Pobierz za darmo</string>
+    <string name="cross_promo_magic_number_flash_title">Magic Number Flash</string>
+    <string name="cross_promo_magic_number_flash_desc">Odgadnij liczbę za pomocą błysku i wibracji.</string>
+    <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
+    <string name="cross_promo_mind_reader_magic_desc">Odczytaj kolor wybrany w tajemnicy.</string>
+    <string name="dynamic_menu_help_desc">Dowiedz się, jak wykonać sztuczkę</string>
+    <string name="dynamic_menu_restart_tutorial_desc">Ćwicz od początku</string>
+    <string name="dynamic_menu_rate_desc">Wesprzyj nas oceną</string>
+    <string name="dynamic_menu_more_apps_desc">Odkryj więcej aplikacji magicznych</string>
+
+    <string name="dynamic_menu_help_title">Samouczek</string>
+    <string name="dynamic_menu_restart_tutorial_title">Ćwicz ponownie</string>
+    <string name="dynamic_menu_rate_title">Oceń nas</string>
+    <string name="dynamic_menu_more_apps_title">Więcej aplikacji</string>
 </resources>
