@@ -155,6 +155,8 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
 
     @Override
     public void onShareComplete() {
+        com.h2play.canvas_magic.util.Analytics.log(this,
+                com.h2play.canvas_magic.util.Analytics.COMMUNITY_UPLOAD);
         Toast.makeText(this, getResources().getString(R.string.upload_complete), Toast.LENGTH_SHORT).show();
         menuPresenter.resetArray();
         tabLayout.selectTab(tabLayout.getTabAt(2),true);

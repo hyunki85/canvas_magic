@@ -118,6 +118,8 @@ public class MakeActivity extends BaseActivity implements MakeMvpView, ErrorView
     public void onSaveClick() {
         needSave = false;
         saveJson();
+        com.h2play.canvas_magic.util.Analytics.log(this,
+                com.h2play.canvas_magic.util.Analytics.SHAPE_CREATED);
         Toast.makeText(this, R.string.save_complete, Toast.LENGTH_SHORT).show();
     }
 

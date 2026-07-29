@@ -67,10 +67,17 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
         int x = (int) motionEvent.getX();
         int y = (int) motionEvent.getY();
 
-        int indexX = x / (width / 3);
-        int indexY = y / (height / (count / 3));
+        // 몰입형 전체화면이라 fl_main의 실제 높이가 display.getSize()보다 클 수 있다.
+        // 클램프하지 않으면 화면 끝 터치에서 index가 count를 넘어
+        // MainActivity의 shapes.get(numPin-1)이 IndexOutOfBounds로 죽는다(공연 도중 크래시).
+        int rows = Math.max(1, count / 3);
+        int indexX = clamp(x / Math.max(1, width / 3), 0, 2);
+        int indexY = clamp(y / Math.max(1, height / rows), 0, rows - 1);
 
         int index = indexY * 3 + indexX;
+        if (index >= count) {
+            index = count - 1;
+        }
 
         if (System.currentTimeMillis() - lastTouchTime < 400) {
 
@@ -246,6 +253,10 @@ public class PinActivity extends BaseActivity implements PinMvpView, ErrorView.E
         params.leftMargin = dpToPx(24);
         params.rightMargin = dpToPx(24);
         layout.addView(bubble, params);
+    }
+
+    private static int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
     }
 
     // dp를 px로 변환하는 유틸리티 메서드

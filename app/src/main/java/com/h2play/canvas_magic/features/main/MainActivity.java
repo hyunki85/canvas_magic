@@ -38,6 +38,7 @@ import com.h2play.canvas_magic.features.common.ErrorView;
 import com.h2play.canvas_magic.features.pincode.PinActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.AdDialog;
+import com.h2play.canvas_magic.util.Analytics;
 import com.h2play.canvas_magic.util.ColorPickerBottomSheet;
 import com.h2play.canvas_magic.util.FabricView;
 import com.h2play.canvas_magic.util.FileUtil;
@@ -163,19 +164,8 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         });
 
         // 숨은 기능: OK 버튼 롱프레스 시 자동 그리기 모드
-        bottomSheet.setOnLongPressListener(() -> {
-            // 기존 onStartLongClick() 동작 수행
-            fabricView.setColor(selectedColor);
-            Toast.makeText(this, R.string.good_job, Toast.LENGTH_SHORT).show();
-            
-            if (spotlightOverlay != null) {
-                spotlightOverlay.hide();
-                spotlightOverlay = null;
-            }
-            
-            Intent intent = PinActivity.getStartIntent(this, selectedShape.count);
-            startActivityForResult(intent, REQUEST_CODE);
-        });
+        // onStartLongClick()에 위임해야 가이드 모드 판정(wasGuideMode)이 항상 최신 값으로 갱신된다.
+        bottomSheet.setOnLongPressListener(() -> onStartLongClick());
 
         bottomSheet.show(getSupportFragmentManager(), "color_picker");
     }
@@ -213,6 +203,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         
         // 튜토리얼 모드 활성화
         isTutorialMode = true;
+        Analytics.log(this, Analytics.TUTORIAL_GUIDE_SHOWN);
 
         // longPressProgress를 android.R.id.content로 옮겨서 스포트라이트 오버레이 위에 표시
         layout.post(() -> {
@@ -273,6 +264,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     private void onLongPressComplete() {
         longPressProgress.hide();
         isTutorialMode = false; // 튜토리얼 완료
+        Analytics.log(this, Analytics.TUTORIAL_LONGPRESS_DONE);
         onStartLongClick();
     }
 
@@ -281,10 +273,11 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     private static final int PRACTICE_TARGET_PIN = 8;
     private Intent pendingPinData = null;
     private boolean wasGuideMode = false;
+    private int practiceAttempts = 0;
+    private boolean justFinishedTutorial = false;
 
     public boolean onStartLongClick() {
         fabricView.setColor(selectedColor);
-        Toast.makeText(this, R.string.good_job, Toast.LENGTH_SHORT).show();
 
         if (spotlightOverlay != null) {
             spotlightOverlay.hide();
@@ -293,6 +286,10 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
         wasGuideMode = mainPresenter.isGuideMode();
         if (wasGuideMode) {
+            // 칭찬 토스트는 튜토리얼 진행 중에만 노출한다.
+            // (튜토리얼 완료 후에는 실제 마술 중이므로 토스트가 뜨면 트릭이 노출된다)
+            Toast.makeText(this, R.string.good_job, Toast.LENGTH_SHORT).show();
+
             Intent intent = com.h2play.canvas_magic.features.tutorial.TutorialDialogueActivity
                     .getStartIntent(this, com.h2play.canvas_magic.features.tutorial.TutorialDialogueActivity.PHASE_PRE_PIN);
             startActivityForResult(intent, REQUEST_TUTORIAL_PRE_PIN);
@@ -326,8 +323,15 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         // 연습용 PinActivity에서 돌아옴 → 8번을 탭했는지 검증
         if (requestCode == REQUEST_PRACTICE_PIN && resultCode == RESULT_OK) {
             int tappedPin = data.getIntExtra(PinActivity.PIN, -1);
+            practiceAttempts++;
             if (tappedPin != PRACTICE_TARGET_PIN) {
                 // 오답 → 다시 시도
+                Bundle wrong = new Bundle();
+                wrong.putString("result", "wrong");
+                wrong.putLong("attempt", practiceAttempts);
+                wrong.putLong("tapped_pin", tappedPin);
+                Analytics.log(this, Analytics.TUTORIAL_PRACTICE, wrong);
+
                 Toast.makeText(this, R.string.tutorial_practice_wrong, Toast.LENGTH_SHORT).show();
                 Intent retry = PinActivity.getStartIntent(this, selectedShape.count);
                 retry.putExtra(PinActivity.EXTRA_PRACTICE_TARGET, PRACTICE_TARGET_PIN);
@@ -336,8 +340,19 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
                 return;
             }
             // 정답 → 축하 후 8번 그리기 진행
+            Bundle ok = new Bundle();
+            ok.putString("result", "correct");
+            ok.putLong("attempt", practiceAttempts);
+            Analytics.log(this, Analytics.TUTORIAL_PRACTICE, ok);
+            Analytics.log(this, Analytics.TUTORIAL_COMPLETE);
+            Analytics.setTutorialDone(this, true);
+            justFinishedTutorial = true;
+
             Toast.makeText(this, R.string.tutorial_practice_correct, Toast.LENGTH_SHORT).show();
             pendingPinData = null;
+            // 튜토리얼 종료. 여기서 내리지 않으면 이후 일반 롱프레스마다
+            // 연습 PinActivity가 다시 뜨면서 "8번이 아니에요" 토스트가 계속 반복된다.
+            wasGuideMode = false;
             // data는 이미 PIN=8이므로 그대로 아래 그리기 로직으로 진행
         }
 
@@ -350,6 +365,12 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
             return;
         }
 
+        // 튜토리얼 대화/핀 화면을 뒤로가기로 빠져나오면 data가 null이다.
+        // 그대로 진행하면 아래 getIntExtra에서 NPE로 죽는다.
+        if (resultCode != RESULT_OK || data == null) {
+            return;
+        }
+
         fabricView.cleanPage();
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -358,6 +379,22 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         fabricView.cleanPage();
 
         int numPin = data.getIntExtra(PinActivity.PIN, 1);
+
+        // ★ 핵심 활성화 이벤트: 여기까지 왔다는 건 실제로 마술 1회를 수행했다는 뜻이다.
+        // 첫 수행까지의 이탈과, 첫 수행 이후의 재수행이 이 앱 리텐션의 전부다.
+        int trickCount = mainPresenter.recordTrickPerformed();
+        Bundle trick = new Bundle();
+        trick.putLong("pin", numPin);
+        trick.putLong("lifetime_count", trickCount);
+        trick.putString("is_first", String.valueOf(trickCount == 1));
+        trick.putString("from_tutorial", String.valueOf(justFinishedTutorial));
+        if (selectedShape != null && selectedShape.name != null) {
+            trick.putString("pack_name", selectedShape.name);
+        }
+        Analytics.log(this, Analytics.TRICK_PERFORMED, trick);
+        Analytics.setTrickCount(this, trickCount);
+        justFinishedTutorial = false;
+
         {
             String jsonText = FileUtil.getJsonFromFile(this, selectedShape.fileName);
 
@@ -429,6 +466,9 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     @Override
     public void setShapeFileName(ShapeInfo shapeInfo) {
         this.selectedShape = shapeInfo;
+        if (shapeInfo != null && shapeInfo.name != null) {
+            Analytics.log(this, Analytics.PACK_OPENED, "pack_name", shapeInfo.name);
+        }
     }
 
     @Override

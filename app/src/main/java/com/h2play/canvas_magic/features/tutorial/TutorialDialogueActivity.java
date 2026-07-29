@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.h2play.canvas_magic.R;
+import com.h2play.canvas_magic.util.Analytics;
 
 public class TutorialDialogueActivity extends AppCompatActivity {
 
@@ -40,6 +41,8 @@ public class TutorialDialogueActivity extends AppCompatActivity {
     private boolean isTyping = false;
     private boolean isQuizMode = false;
     private String currentFullText = "";
+    private int currentPhase = PHASE_PRE_DRAW;
+    private boolean finishedNormally = false;
     private final Handler typewriterHandler = new Handler(Looper.getMainLooper());
 
     public static Intent getStartIntent(Context context, int phase) {
@@ -67,7 +70,8 @@ public class TutorialDialogueActivity extends AppCompatActivity {
         blink.setInterpolator(new LinearInterpolator());
         blink.start();
 
-        int phase = getIntent().getIntExtra(EXTRA_PHASE, PHASE_PRE_DRAW);
+        currentPhase = getIntent().getIntExtra(EXTRA_PHASE, PHASE_PRE_DRAW);
+        int phase = currentPhase;
         initDialogues(phase);
 
         if (phase == PHASE_QUIZ) {
@@ -133,6 +137,11 @@ public class TutorialDialogueActivity extends AppCompatActivity {
     }
 
     private void onQuizAnswer(int number) {
+        Bundle qb = new Bundle();
+        qb.putLong("answer", number);
+        qb.putString("result", number == CORRECT_ANSWER ? "correct" : "wrong");
+        Analytics.log(this, Analytics.TUTORIAL_QUIZ, qb);
+
         if (number == CORRECT_ANSWER) {
             // 정답
             typewriterHandler.removeCallbacksAndMessages(null);
@@ -141,6 +150,7 @@ public class TutorialDialogueActivity extends AppCompatActivity {
 
             // 잠시 후 종료
             typewriterHandler.postDelayed(() -> {
+                finishedNormally = true;
                 setResult(RESULT_OK);
                 finish();
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -153,6 +163,7 @@ public class TutorialDialogueActivity extends AppCompatActivity {
 
     private void showStep(int step) {
         if (step >= dialogues.length) {
+            finishedNormally = true;
             setResult(RESULT_OK);
             finish();
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -160,6 +171,14 @@ public class TutorialDialogueActivity extends AppCompatActivity {
         }
         currentStep = step;
         currentFullText = dialogues[step];
+
+        // 대사 한 줄마다 기록해야 "몇 번째 문장에서 나갔는지"를 볼 수 있다
+        Bundle b = new Bundle();
+        b.putLong("phase", currentPhase);
+        b.putLong("step", step);
+        b.putLong("total_steps", dialogues.length);
+        Analytics.log(this, Analytics.TUTORIAL_STEP, b);
+
         startTypewriter(currentFullText);
     }
 
@@ -204,6 +223,14 @@ public class TutorialDialogueActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        // 정상 종료가 아니면 = 뒤로가기 등으로 중간 이탈. 어느 단계에서 나갔는지가 핵심 지표다.
+        if (!finishedNormally && isFinishing()) {
+            Bundle b = new Bundle();
+            b.putLong("phase", currentPhase);
+            b.putLong("step", currentStep);
+            b.putString("quiz_mode", String.valueOf(isQuizMode));
+            Analytics.log(this, Analytics.TUTORIAL_EXIT, b);
+        }
         typewriterHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }

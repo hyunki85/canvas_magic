@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.h2play.canvas_magic.features.menu.MenuActivity;
+import com.h2play.canvas_magic.util.Analytics;
 import com.h2play.canvas_magic.util.AppOpenAdManager;
 import com.h2play.canvas_magic.util.FileUtil;
 import com.h2play.canvas_magic.util.ReminderScheduler;
@@ -71,6 +72,12 @@ public class MvpStarterApplication extends Application {
             initializeDefaultShapePacks();
         }
 
+        // 계측 초기화 + 세션 시작 시점의 사용자 상태를 속성으로 고정.
+        // 이 두 속성이 있어야 GA4에서 "튜토리얼 완료자 vs 미완료자"의
+        // 재방문율을 나눠 볼 수 있다.
+        Analytics.init(this);
+        Analytics.setTutorialDone(this, !getComponent().dataManager().needGuide());
+        Analytics.setTrickCount(this, getComponent().dataManager().getTrickCount());
     }
     
     /**

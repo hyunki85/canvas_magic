@@ -43,4 +43,9 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         return dataManager.needGuide();
     }
 
+    /** 마술 1회 수행 기록. 누적 횟수를 반환한다. */
+    public int recordTrickPerformed() {
+        return dataManager.recordTrickPerformed();
+    }
+
 }

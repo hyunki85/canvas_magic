@@ -291,7 +291,8 @@ public class FabricView extends View {
             }
             case MotionEvent.ACTION_MOVE: {
 
-
+                // 화면 지우기 등으로 스트로크가 사라진 뒤 들어온 MOVE는 무시
+                if (currentPath == null) return true;
 
                 float dx = Math.abs(eventX - lastTouchX);
                 float dy = Math.abs(eventY - lastTouchY);
@@ -353,12 +354,13 @@ public class FabricView extends View {
     }
 
     public void actionUp(float x, float y) {
-
+        // cleanPage() 직후나 down 없이 시작된 재생 데이터에서는 currentPath가 null이다.
+        if (currentPath == null) return;
         currentPath.lineTo(x, y);
     }
 
     public void actionMove(float x1, float y1, float x2, float y2) {
-
+        if (currentPath == null) return;
         currentPath.quadTo(x1, y1, x2, y2);
         lastTouchX = x1;
         lastTouchY = y1;

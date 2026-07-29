@@ -21,6 +21,7 @@ public class DataManager {
     public static final String SHAPE_LIST_JSON = "shape_list_json";
     public static final String FILE_INDEX = "FILE_INDEX";
     public static final String NEED_GUIDE = "need_guide";
+    public static final String TRICK_COUNT = "trick_count";
     private PreferencesHelper preferencesHelper;
 
     @Inject
@@ -110,6 +111,21 @@ public class DataManager {
 
     public boolean needGuide() {
         return !preferencesHelper.getBoolean(NEED_GUIDE);
+    }
+
+    /**
+     * 마술을 실제로 1회 수행했을 때 호출. 누적 횟수를 반환한다.
+     * 이 앱의 활성화 지표이자, 이후 평점 요청·알림 권한 요청의 트리거 기준이 된다.
+     */
+    public int recordTrickPerformed() {
+        int next = getTrickCount() + 1;
+        preferencesHelper.putInt(TRICK_COUNT, next);
+        return next;
+    }
+
+    public int getTrickCount() {
+        int count = preferencesHelper.getInt(TRICK_COUNT);
+        return count < 0 ? 0 : count;
     }
 
     public void setNoMoreGuide() {

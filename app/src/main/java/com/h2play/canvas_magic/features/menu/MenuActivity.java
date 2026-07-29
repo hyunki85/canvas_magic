@@ -39,6 +39,7 @@ import com.h2play.canvas_magic.features.main.MainActivity;
 import com.h2play.canvas_magic.features.share.ShareActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.AdDialog;
+import com.h2play.canvas_magic.util.Analytics;
 import com.h2play.canvas_magic.util.ReminderScheduler;
 import com.h2play.canvas_magic.util.TopicManager;
 import com.vorlonsoft.android.rate.AppRate;
@@ -262,6 +263,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     }
 
     public void onShareClick() {
+        Analytics.log(this, Analytics.COMMUNITY_OPEN);
         Intent intent = ShareActivity.getStartIntent(MenuActivity.this);
         startActivity(intent);
     }
@@ -314,11 +316,21 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     private void handleDynamicAction(MenuItemConfig item) {
         if (item == null) return;
         String action = item.action == null ? "" : item.action;
+
+        Bundle mb = new Bundle();
+        mb.putString("action", action);
+        if (item.id != null) mb.putString("item_id", item.id);
+        Analytics.log(this, Analytics.MENU_ACTION, mb);
+
         switch (action) {
             case "open_url":
                 if (item.payload != null) {
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(item.payload));
-                    startActivity(i);
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.payload)));
+                    } catch (android.content.ActivityNotFoundException e) {
+                        // 플레이스토어/브라우저가 없는 기기 (일부 저가형·중국 ROM)
+                        Timber.w(e, "No activity to handle url: %s", item.payload);
+                    }
                 }
                 break;
             case "rate":
@@ -372,6 +384,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     @Override
     public void startTutorial() {
+        Analytics.log(this, Analytics.TUTORIAL_START);
         Intent intent = com.h2play.canvas_magic.features.tutorial.TutorialDialogueActivity
                 .getStartIntent(this, com.h2play.canvas_magic.features.tutorial.TutorialDialogueActivity.PHASE_PRE_DRAW);
         startActivityForResult(intent, REQUEST_TUTORIAL_DIALOGUE);

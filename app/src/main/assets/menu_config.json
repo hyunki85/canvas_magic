@@ -9,7 +9,7 @@
       "icon": "cross_promo_magic_number_flash",
       "bgColor": "#111827",
       "action": "open_url",
-      "payload": "https://play.google.com/store/apps/details?id=com.h2play.magicnf",
+      "payload": "https://play.google.com/store/apps/details?id=com.h2play.magicnf&utm_source=canvas_magic&utm_medium=cross_promo&utm_campaign=sofnet_magic",
       "span": 2,
       "promo": true,
       "imageUrl": "https://pub-a022f727a3b24352bfc5887e8576c534.r2.dev/canvas-magic/cross-promo/magic-number-flash-gpt-image-2-v1.jpg"
