@@ -54,8 +54,20 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="line_thickness">Толщина линии</string>
+    <string name="opacity">Непрозрачность</string>
+    <string name="recent_colors">Недавние цвета</string>
+    <string name="long_press_hint">💡 Удерживайте OK, чтобы включить режим авторисования!</string>
     <string name="opponent_chose_number">Противник выбрал %1$d. Дважды нажмите на эту клетку</string>
     <string name="menu_subtitle">Простые трюки с холстом</string>
+    <string name="menu_desc_edit">Создайте свой набор фигур</string>
+    <string name="menu_desc_share">Делитесь своими работами с друзьями</string>
+    <string name="rate_short">Оценить</string>
+    <string name="undo">Отменить</string>
+    <string name="create">Создать</string>
+    <string name="default_shape_set_name">Числа</string>
+    <string name="terms_agree">Принять</string>
+    <string name="cancel">Отмена</string>
+    <string name="guide_long_press_title">Нажмите и удерживайте, чтобы начать</string>
 
     <string name="tutorial_character_name">Зритель</string>
     <string name="tutorial_vn_step1">Скажите им:\n\"Выбери число от 0 до 9\"</string>
@@ -71,6 +83,12 @@
     <string name="tutorial_practice_bubble">Если зритель выбрал %d,\nкуда нужно нажать дважды?</string>
     <string name="tutorial_practice_wrong">Это не ячейка 8! Попробуйте ещё раз.</string>
     <string name="tutorial_practice_correct">Отлично! Вы готовы!</string>
+
+    <string name="reminder_channel_name">Напоминания</string>
+    <string name="reminder_title_3day">Canvas Trick скучает по вам!</string>
+    <string name="reminder_body_3day">Нарисуйте сегодня что-нибудь удивительное!</string>
+    <string name="reminder_title_7day">Вас ждут новые шаблоны!</string>
+    <string name="reminder_body_7day">Давно не виделись. Посмотрите, что нового!</string>
 
     <string name="cross_promo_badge">Рекомендуем</string>
     <string name="cross_promo_cta">Бесплатно</string>

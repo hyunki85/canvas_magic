@@ -1,19 +1,7 @@
 {
-  "version": 5,
-  "experiment": "resource_localized",
+  "version": 7,
+  "experiment": "resource_localized_tracked_v1_priority_remote_v1",
   "items": [
-    {
-      "id": "promo_magic_number_flash",
-      "title": "@string/cross_promo_magic_number_flash_title",
-      "description": "@string/cross_promo_magic_number_flash_desc",
-      "icon": "cross_promo_magic_number_flash",
-      "bgColor": "#111827",
-      "action": "open_url",
-      "payload": "https://play.google.com/store/apps/details?id=com.h2play.magicnf&utm_source=canvas_magic&utm_medium=cross_promo&utm_campaign=sofnet_magic",
-      "span": 2,
-      "promo": true,
-      "imageUrl": "https://pub-a022f727a3b24352bfc5887e8576c534.r2.dev/canvas-magic/cross-promo/magic-number-flash-gpt-image-2-v1.jpg"
-    },
     {
       "id": "promo_mind_reader_magic",
       "title": "@string/cross_promo_mind_reader_magic_title",
@@ -21,7 +9,7 @@
       "icon": "cross_promo_mind_reader_magic",
       "bgColor": "#0F172A",
       "action": "open_url",
-      "payload": "https://play.google.com/store/apps/details?id=com.h2play.remoteMagic",
+      "payload": "https://play.google.com/store/apps/details?id=com.h2play.remoteMagic&utm_source=canvas_magic&utm_medium=in_app_cross_promo&utm_campaign=sofnet_magic_pack&utm_content=home_card_mind_reader_magic_v1&referrer=utm_source%3Dcanvas_magic%26utm_medium%3Din_app_cross_promo%26utm_campaign%3Dsofnet_magic_pack%26utm_content%3Dhome_card_mind_reader_magic_v1",
       "span": 2,
       "promo": true,
       "imageUrl": "https://pub-a022f727a3b24352bfc5887e8576c534.r2.dev/canvas-magic/cross-promo/mind-reader-magic-gpt-image-2-v1.jpg"
@@ -60,6 +48,18 @@
       "action": "more_apps",
       "payload": "https://play.google.com/store/apps/dev?id=8030976532724501230",
       "small": true
+    },
+    {
+      "id": "promo_magic_number_flash",
+      "title": "@string/cross_promo_magic_number_flash_title",
+      "description": "@string/cross_promo_magic_number_flash_desc",
+      "icon": "cross_promo_magic_number_flash",
+      "bgColor": "#111827",
+      "action": "open_url",
+      "payload": "https://play.google.com/store/apps/details?id=com.h2play.magicnf&utm_source=canvas_magic&utm_medium=in_app_cross_promo&utm_campaign=sofnet_magic_pack&utm_content=home_card_magic_number_flash_v1&referrer=utm_source%3Dcanvas_magic%26utm_medium%3Din_app_cross_promo%26utm_campaign%3Dsofnet_magic_pack%26utm_content%3Dhome_card_magic_number_flash_v1",
+      "span": 2,
+      "promo": true,
+      "imageUrl": "https://pub-a022f727a3b24352bfc5887e8576c534.r2.dev/canvas-magic/cross-promo/magic-number-flash-gpt-image-2-v1.jpg"
     }
   ]
 }

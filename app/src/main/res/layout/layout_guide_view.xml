@@ -23,7 +23,7 @@
             android:textColor="#333333"
             android:textStyle="bold"
             android:gravity="center"
-            android:text="롱 프레스하여 시작하세요"/>
+            android:text="@string/guide_long_press_title"/>
 
         <FrameLayout
             android:layout_width="120dp"
@@ -46,7 +46,7 @@
             android:textSize="14sp"
             android:textColor="#666666"
             android:gravity="center"
-            android:text="색상 버튼을 길게 눌러 다음 단계로 넘어가세요"/>
+            android:text="@string/long_press_description"/>
 
     </LinearLayout>
 

@@ -33,7 +33,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -85,11 +84,8 @@ public class MvpStarterApplication extends Application {
      * 숫자 도형 팩을 앱 최초 실행 시 추가합니다.
      */
     private void initializeDefaultShapePacks() {
-        boolean isKorean = Locale.getDefault().getDisplayLanguage()
-                .equalsIgnoreCase(Locale.KOREAN.getDisplayLanguage());
-        
         // 숫자 도형 팩
-        String numberName = isKorean ? "숫자" : "Number";
+        String numberName = getString(R.string.default_shape_set_name);
         getComponent().dataManager().addFileList(numberName, "file.txt", 9);
         copyRawToFile(R.raw.base_pattern, "file.txt");
     }

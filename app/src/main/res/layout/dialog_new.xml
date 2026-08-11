@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:enabled="false"
-            android:text="생성하기"
+            android:text="@string/create"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@+id/menu"
             app:layout_constraintStart_toStartOf="@+id/menu"

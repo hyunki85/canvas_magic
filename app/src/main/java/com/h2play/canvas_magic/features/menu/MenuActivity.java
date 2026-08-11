@@ -3,6 +3,7 @@ package com.h2play.canvas_magic.features.menu;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,7 +50,9 @@ import com.h2play.canvas_magic.features.menu.config.MenuConfig;
 import com.h2play.canvas_magic.features.menu.config.MenuConfigLoader;
 import com.h2play.canvas_magic.features.menu.config.MenuItemConfig;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -78,7 +82,11 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     // Dynamic menu
     private RecyclerView rvDynamicMenu;
+    private NestedScrollView scrollView;
     private DynamicMenuAdapter dynamicAdapter;
+    private int activeMenuConfigVersion;
+    private String activeMenuExperiment = "";
+    private final Set<String> impressedPromoKeys = new HashSet<>();
 
     @Override
     public void onStart() {
@@ -124,19 +132,22 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         imgShare = findViewById(R.id.img_share);
         btnShare = findViewById(R.id.btn_share);
         Button btnRestartTutorial = findViewById(R.id.btn_restart_tutorial);
-    rvDynamicMenu = findViewById(R.id.rv_dynamic_menu);
+        rvDynamicMenu = findViewById(R.id.rv_dynamic_menu);
+        scrollView = findViewById(R.id.scroll_view);
 
-    btnChannel.setOnClickListener(v -> onChannelClick());
-    btnHelp.setOnClickListener(v -> onHelpClick());
-    moreButton.setOnClickListener(v -> onMoreClick());
-    imgRate.setOnClickListener(v -> onRateClick());
-    imgShare.setOnClickListener(v -> onShareLinkClick());
-    startButton.setOnClickListener(v -> onStartClick());
-    btnShare.setOnClickListener(v -> onShareClick());
-    btnRestartTutorial.setOnClickListener(v -> onRestartTutorialClick());
+        btnChannel.setOnClickListener(v -> onChannelClick());
+        btnHelp.setOnClickListener(v -> onHelpClick());
+        moreButton.setOnClickListener(v -> onMoreClick());
+        imgRate.setOnClickListener(v -> onRateClick());
+        imgShare.setOnClickListener(v -> onShareLinkClick());
+        startButton.setOnClickListener(v -> onStartClick());
+        btnShare.setOnClickListener(v -> onShareClick());
+        btnRestartTutorial.setOnClickListener(v -> onRestartTutorialClick());
+        scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                (view, scrollX, scrollY, oldScrollX, oldScrollY) -> trackVisiblePromoImpressions());
 
-    // Try load dynamic menu from Remote Config first, then assets fallback
-    setupDynamicMenu();
+        // Try load dynamic menu from Remote Config first, then assets fallback
+        setupDynamicMenu();
 
         errorView.setErrorListener(this);
 
@@ -225,8 +236,16 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     public void onHelpClick() {
         // 튜토리얼 전용 웹 페이지로 이동 (로컬 에셋)
+        String language = getResources().getConfiguration().getLocales().get(0).getLanguage();
+        String tutorialAsset = "tutorial.html";
+        if ("ko".equals(language)) {
+            tutorialAsset = "tutorial_ko.html";
+        } else if ("ru".equals(language)) {
+            tutorialAsset = "tutorial_ru.html";
+        }
+
         Intent intent = new Intent(this, com.h2play.canvas_magic.features.web.WebViewActivity.class);
-        intent.putExtra("url", "file:///android_asset/tutorial.html");
+        intent.putExtra("url", "file:///android_asset/" + tutorialAsset);
         intent.putExtra("title", getString(R.string.start_tutorial));
         startActivity(intent);
     }
@@ -287,6 +306,8 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     }
 
     private void renderDynamicMenu(MenuConfig cfg) {
+        activeMenuConfigVersion = cfg.version;
+        activeMenuExperiment = cfg.experiment == null ? "" : cfg.experiment;
         // Configure Recycler
         if (dynamicAdapter == null) {
             GridLayoutManager glm = new GridLayoutManager(this, 2);
@@ -311,6 +332,120 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         if (card != null) card.setVisibility(View.GONE);
 
         rvDynamicMenu.setVisibility(View.VISIBLE);
+        rvDynamicMenu.post(this::trackVisiblePromoImpressions);
+    }
+
+    private void trackVisiblePromoImpressions() {
+        if (dynamicAdapter == null || rvDynamicMenu.getVisibility() != View.VISIBLE) {
+            return;
+        }
+        for (int index = 0; index < rvDynamicMenu.getChildCount(); index++) {
+            View child = rvDynamicMenu.getChildAt(index);
+            RecyclerView.ViewHolder holder = rvDynamicMenu.getChildViewHolder(child);
+            int position = holder.getBindingAdapterPosition();
+            MenuItemConfig item = dynamicAdapter.getItem(position);
+            if (item == null || !(item.promo || item.span >= 2)) {
+                continue;
+            }
+
+            Rect visibleRect = new Rect();
+            if (!child.getGlobalVisibleRect(visibleRect)) {
+                continue;
+            }
+            long totalArea = (long) child.getWidth() * child.getHeight();
+            long visibleArea = (long) visibleRect.width() * visibleRect.height();
+            if (totalArea <= 0 || visibleArea * 2 < totalArea) {
+                continue;
+            }
+
+            String itemId = item.id == null || item.id.isEmpty()
+                    ? "position_" + position
+                    : item.id;
+            String impressionKey = activeMenuConfigVersion + "|" + activeMenuExperiment + "|" + itemId;
+            if (impressedPromoKeys.add(impressionKey)) {
+                logCrossPromoEvent(Analytics.CROSS_PROMO_IMPRESSION, item);
+            }
+        }
+    }
+
+    private void logCrossPromoEvent(String event, MenuItemConfig item) {
+        Bundle params = new Bundle();
+        params.putString("placement", "home_menu");
+        params.putLong("config_version", activeMenuConfigVersion);
+        params.putString("experiment", activeMenuExperiment);
+        params.putString("source_package", BuildConfig.APPLICATION_ID);
+        if (item.id != null) {
+            params.putString("item_id", item.id);
+        }
+        if (item.payload != null) {
+            try {
+                String targetPackage = Uri.parse(item.payload).getQueryParameter("id");
+                if (targetPackage != null) {
+                    params.putString("target_package", targetPackage);
+                }
+            } catch (Exception ignored) {
+                // 잘못된 원격 URL이어도 메뉴 렌더링/클릭을 막지 않는다.
+            }
+        }
+        Analytics.log(this, event, params);
+    }
+
+    private void openConfiguredUrl(MenuItemConfig item) {
+        if (item.payload == null || item.payload.isEmpty()) {
+            return;
+        }
+        Uri webUri;
+        try {
+            webUri = Uri.parse(item.payload);
+        } catch (Exception error) {
+            Timber.w(error, "Invalid configured url");
+            return;
+        }
+
+        boolean promo = item.promo || item.span >= 2;
+        if (promo) {
+            if (!webUri.isHierarchical()) {
+                Timber.w("Blocked non-hierarchical cross-promo url: %s", item.payload);
+                return;
+            }
+            String targetPackage = webUri.getQueryParameter("id");
+            boolean allowedPackage = "com.h2play.magicnf".equals(targetPackage)
+                    || "com.h2play.remoteMagic".equals(targetPackage)
+                    || "com.todayscrossword.app".equals(targetPackage);
+            boolean allowedUrl = "https".equalsIgnoreCase(webUri.getScheme())
+                    && "play.google.com".equalsIgnoreCase(webUri.getHost())
+                    && "/store/apps/details".equals(webUri.getPath());
+            if (!allowedPackage || !allowedUrl) {
+                Timber.w("Blocked invalid cross-promo target: %s", item.payload);
+                return;
+            }
+
+            Uri.Builder marketUri = new Uri.Builder()
+                    .scheme("market")
+                    .authority("details")
+                    .appendQueryParameter("id", targetPackage);
+            String referrer = webUri.getQueryParameter("referrer");
+            if (referrer != null && !referrer.isEmpty()) {
+                marketUri.appendQueryParameter("referrer", referrer);
+            }
+            Intent playStoreIntent = new Intent(Intent.ACTION_VIEW, marketUri.build());
+            playStoreIntent.setPackage("com.android.vending");
+            try {
+                startActivity(playStoreIntent);
+                return;
+            } catch (android.content.ActivityNotFoundException error) {
+                Timber.i(error, "Google Play app unavailable; falling back to HTTPS");
+            }
+        } else if (!"https".equalsIgnoreCase(webUri.getScheme())) {
+            Timber.w("Blocked non-HTTPS configured url: %s", item.payload);
+            return;
+        }
+
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, webUri));
+        } catch (android.content.ActivityNotFoundException error) {
+            Timber.w(error, "No activity to handle url: %s", item.payload);
+        }
     }
 
     private void handleDynamicAction(MenuItemConfig item) {
@@ -321,17 +456,13 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         mb.putString("action", action);
         if (item.id != null) mb.putString("item_id", item.id);
         Analytics.log(this, Analytics.MENU_ACTION, mb);
+        if (item.promo || item.span >= 2) {
+            logCrossPromoEvent(Analytics.CROSS_PROMO_CLICK, item);
+        }
 
         switch (action) {
             case "open_url":
-                if (item.payload != null) {
-                    try {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.payload)));
-                    } catch (android.content.ActivityNotFoundException e) {
-                        // 플레이스토어/브라우저가 없는 기기 (일부 저가형·중국 ROM)
-                        Timber.w(e, "No activity to handle url: %s", item.payload);
-                    }
-                }
+                openConfiguredUrl(item);
                 break;
             case "rate":
                 onRateClick();

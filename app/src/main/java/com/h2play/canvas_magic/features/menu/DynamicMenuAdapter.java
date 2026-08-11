@@ -209,6 +209,13 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return context.getString(resId);
     }
 
+    public MenuItemConfig getItem(int position) {
+        if (position < 0 || position >= items.size()) {
+            return null;
+        }
+        return items.get(position);
+    }
+
     @Override public int getItemCount() { return items.size(); }
 
     @Override public int getItemViewType(int position) {

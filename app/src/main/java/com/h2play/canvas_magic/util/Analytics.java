@@ -37,6 +37,11 @@ public final class Analytics {
     public static final String COMMUNITY_UPLOAD = "community_upload";
     public static final String MENU_ACTION = "menu_action";
 
+    // ---- 자사 앱 교차 프로모션 ----
+    // impression은 promo 카드가 화면에 50% 이상 보일 때 세션당 설정/카드별 1회 기록한다.
+    public static final String CROSS_PROMO_IMPRESSION = "cross_promo_impression";
+    public static final String CROSS_PROMO_CLICK = "cross_promo_click";
+
     // ---- 사용자 속성 ----
     private static final String PROP_TRICK_COUNT = "trick_count_bucket";
     private static final String PROP_TUTORIAL_DONE = "tutorial_done";
