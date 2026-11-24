@@ -1,0 +1,24 @@
+<resources>
+    <string name="pen_settings">Настройки пера</string>
+    <string name="apply_brush">Применить</string>
+    <string name="custom_color">Другой</string>
+    <string name="color_drag_hint">Двигайте маркеры, чтобы менять тон, насыщенность и светлоту.</string>
+    <string name="no_recent_colors">Пока нет</string>
+    <string name="color_swatch_label">Цвет %1$s</string>
+    <string name="coach_colors_title">1 / 3 · Настройте перо</string>
+    <string name="coach_colors">Нажмите на палитру внизу, чтобы выбрать цвет и толщину линии.</string>
+    <string name="coach_adjust">Выберите цвет и толщину, затем нажмите «Применить». Попробуйте порисовать на холсте.</string>
+    <string name="coach_hold_title">2 / 3 · Секретный жест</string>
+    <string name="coach_hold">Немного порисуйте, затем удерживайте палитру внизу, пока кольцо не заполнится.</string>
+    <string name="tutorial_skip">Не сейчас</string>
+    <string name="tutorial_intro_title">Мысль становится рисунком</string>
+    <string name="tutorial_intro_pick">Попросите зрителя загадать цифру от 1 до 9. Сделайте вид, что рисуете, а затем покажите загаданную цифру на холсте.</string>
+    <string name="tutorial_intro_tools">Сначала настройте перо. Затем освойте секретное удержание и показ цифры. Во время настоящего фокуса эти подсказки не появляются.</string>
+    <string name="tutorial_pin_instruction">Следующий экран только выглядит выключенным: он реагирует на касания.\n\nДважды коснитесь области нужной цифры, чтобы показать рисунок. Сначала следуйте подсказке, затем найдите цифру 8 самостоятельно.</string>
+    <string name="tutorial_continue">Далее</string>
+    <string name="tutorial_start_practice">Попробовать</string>
+    <string name="tutorial_reveal_title">3 / 3 · Покажите цифру</string>
+    <string name="tutorial_intro_progress">Начало · %1$d / %2$d</string>
+    <string name="tutorial_finish">Готово</string>
+    <string name="tutorial_pin_heading">Секрет тёмного экрана</string>
+</resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_privacy_options">廣告隱私設定</string>
+    <string name="ad_privacy_options_unavailable">無法載入隱私設定，請稍後再試。</string>
+</resources>

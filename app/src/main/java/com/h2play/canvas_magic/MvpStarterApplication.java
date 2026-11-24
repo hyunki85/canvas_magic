@@ -8,15 +8,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.facebook.stetho.Stetho;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.RequestConfiguration;
-import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.h2play.canvas_magic.features.menu.MenuActivity;
 import com.h2play.canvas_magic.util.Analytics;
-import com.h2play.canvas_magic.util.AppOpenAdManager;
 import com.h2play.canvas_magic.util.FileUtil;
 import com.h2play.canvas_magic.util.ReminderScheduler;
 import com.singhajit.sherlock.core.Sherlock;
@@ -32,7 +28,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 import timber.log.Timber;
 
@@ -58,13 +53,10 @@ public class MvpStarterApplication extends Application {
             Sherlock.init(this);
         }
 
-        // Rest of the initialization code
-        MobileAds.initialize(this);
-        RequestConfiguration aa = new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("73431CF5ECC2ECB14BBF5CFE4DD450C0")).build();
-        MobileAds.setRequestConfiguration(aa);
+        // AdsConsentManager initializes Mobile Ads only after UMP permits ad requests.
 
-        // Schedule reminder notifications
-        ReminderScheduler.schedule(this);
+        // Retire previously scheduled inactivity reminders on upgrade.
+        ReminderScheduler.cancelRetiredReminders(this);
 
         // Moving this after Firebase is initialized
         if(getComponent().dataManager().getShapeList().size() <= 0) {

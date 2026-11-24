@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_privacy_options">বিজ্ঞাপনের গোপনীয়তার বিকল্প</string>
+    <string name="ad_privacy_options_unavailable">গোপনীয়তার বিকল্প লোড করা যায়নি। অনুগ্রহ করে পরে আবার চেষ্টা করুন।</string>
+</resources>

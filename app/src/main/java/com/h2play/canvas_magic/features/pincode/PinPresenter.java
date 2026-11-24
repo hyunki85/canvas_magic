@@ -28,8 +28,7 @@ public class PinPresenter extends BasePresenter<PinMvpView> {
         }
     }
 
-    public void noMoreGuide() {
-        dataManager.setNoMoreGuide();
-
+    public boolean isGuideMode() {
+        return dataManager.needGuide();
     }
 }

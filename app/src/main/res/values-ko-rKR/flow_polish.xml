@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="my_drawing_sets">내 그림 세트</string>
+    <string name="preview_drawing_set">그림 미리보기</string>
+    <string name="drawing_help_title">사용법</string>
+    <string name="community_description">다른 사용자가 공유한 그림 세트예요. 마술 방법은 같아요.</string>
+    <string name="community_empty">이 탭에는 아직 그림 세트가 없어요. 다른 탭을 확인해보세요.</string>
+    <string name="upload_drawing_set">그림 세트 공유하기</string>
+    <string name="save_drawing_set">이 그림 세트 저장</string>
+    <string name="add_drawing_set">그림 세트 추가</string>
+    <string name="drawing_set_options">그림 세트 관리</string>
+    <string name="edit_drawing_number">%1$d번 그림 수정</string>
+    <string name="preview_drawing_number">%1$d번 그림</string>
+    <string name="preview_empty_drawing">그림 없음</string>
+    <string name="preview_empty_set">미리 볼 그림이 없는 세트예요. 다른 세트를 선택해주세요.</string>
+    <string name="active_drawing_set">선택한 세트: %1$s</string>
+    <string name="perform_now">바로 시작</string>
+    <string name="preview_unavailable">미리보기 없음</string>
+    <string-array name="brush_color_names">
+        <item>검정</item>
+        <item>빨강</item>
+        <item>주황</item>
+        <item>노랑</item>
+        <item>초록</item>
+        <item>청록</item>
+        <item>파랑</item>
+        <item>보라</item>
+        <item>하양</item>
+    </string-array>
+    <string name="custom_color_name">사용자 색상 %1$s</string>
+    <string name="named_color_opacity">%1$s, 불투명도 %2$d%%</string>
+    <string name="pack_picker_title">이번 공연에 쓸 그림 선택</string>
+    <string name="pack_picker_subtitle">마술 방법은 그대로이고, 나타나는 그림만 달라져요.</string>
+    <string name="pack_picker_start">이 그림 세트로 시작</string>
+    <string name="pack_picker_included_count">제공 그림 · %1$d개 선택</string>
+    <string name="pack_picker_mine_count">내 그림 · %1$d개 선택</string>
+    <string name="pack_picker_selected_accessibility">%1$s, 선택된 그림 세트</string>
+    <string name="pack_picker_option_accessibility">%1$s, 그림 세트</string>
+    <string name="resume_practice">연습 이어서</string>
+    <string name="notification_opt_in_title">새 그림이 생기면 알려드릴까요?</string>
+    <string name="notification_opt_in_message">검수된 새 그림 세트가 준비됐을 때만 알려드려요. 매일 알림은 보내지 않아요.</string>
+    <string name="notification_opt_in_accept">알림 받기</string>
+    <string name="notification_opt_in_later">나중에</string>
+    <string name="new_drawing_notification_title">새 그림 세트가 준비됐어요</string>
+    <string name="new_drawing_notification_body">다음 공연에 쓸 검수된 그림을 미리 확인해보세요.</string>
+</resources>

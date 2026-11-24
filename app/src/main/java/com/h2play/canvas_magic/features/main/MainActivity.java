@@ -1,10 +1,8 @@
 package com.h2play.canvas_magic.features.main;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -12,40 +10,48 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
-import android.view.animation.AccelerateDecelerateInterpolator;
 
 import androidx.activity.OnBackPressedCallback;
 
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.button.MaterialButton;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import com.h2play.canvas_magic.R;
+import com.h2play.canvas_magic.data.model.TutorialProgress;
 import com.h2play.canvas_magic.data.model.response.ShapeInfo;
 import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
 import com.h2play.canvas_magic.features.pincode.PinActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
-import com.h2play.canvas_magic.util.AdDialog;
 import com.h2play.canvas_magic.util.Analytics;
-import com.h2play.canvas_magic.util.ColorPickerBottomSheet;
+import com.h2play.canvas_magic.util.ColorSettingsController;
+import com.h2play.canvas_magic.util.DrawingSettingsPreferences;
 import com.h2play.canvas_magic.util.FabricView;
+import com.h2play.canvas_magic.util.DrawingCatalog;
+import com.h2play.canvas_magic.util.DrawingExperience;
+import com.h2play.canvas_magic.util.DrawingArtworkView;
 import com.h2play.canvas_magic.util.FileUtil;
 import com.h2play.canvas_magic.util.LongPressProgressView;
-import com.h2play.canvas_magic.util.SpotlightGuideOverlay;
+import com.h2play.canvas_magic.util.NotificationPermissionManager;
+import com.h2play.canvas_magic.util.ads.ExitAdController;
 
 public class MainActivity extends BaseActivity implements MainMvpView, ErrorView.ErrorListener {
+
+    public static final String EXTRA_CUSTOM_PACK_ID = "custom_pack_id";
+    public static final String EXTRA_ENTRY_POINT = "entry_point";
+    private static final String TUTORIAL_FILE = "__tutorial_builtin__";
 
     @InjectExtra
     Integer shapeIndex;
@@ -55,17 +61,20 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     MainPresenter mainPresenter;
 
     private FabricView fabricView;
-    private FloatingActionButton colorButton;
+    private MaterialButton colorButton;
     private View undoButton;
     private View clearButton;
     private View eraseButton;
 
     private int selectedColor;
+    private float selectedThickness;
     private ShapeInfo selectedShape;
+    private int drawingPack = -1;
 
-    private AdView adView;
-    private AdDialog mCustomDialog;
-    private SpotlightGuideOverlay spotlightOverlay;
+    private ColorSettingsController colorSettings;
+    private FrameLayout settingsPanel;
+    private View settingsShield;
+    private int guideStage = 0;
     private LongPressProgressView longPressProgress;
     private boolean isTutorialMode = false;
 
@@ -83,47 +92,67 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         eraseButton = findViewById(R.id.ib_erase);
         longPressProgress = findViewById(R.id.long_press_progress);
 
+        settingsPanel = findViewById(R.id.inline_color_settings);
+        settingsShield = findViewById(R.id.settings_shield);
+        settingsShield.setOnClickListener(v -> applyOpenSettings());
+        findViewById(R.id.coach_skip).setOnClickListener(v -> skipGuide());
+
         // 롱프레스 프로그레스 완료 시 콜백
         longPressProgress.setOnCompleteListener(this::onLongPressComplete);
 
         // 클릭 리스너 설정
         colorButton.setOnClickListener(v -> onStartClick());
         setupLongPressWithProgress();
-        undoButton.setOnClickListener(v -> fabricView.undo());
+        undoButton.setOnClickListener(v -> { applyOpenSettings(); fabricView.undo(); });
         clearButton.setOnClickListener(v -> onClearClick());
         eraseButton.setOnClickListener(v -> onEraseClick());
 
-        // 초기 색상 설정
-        selectedColor = Color.RED;
-        colorButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(selectedColor));
-        fabricView.setColor(selectedColor);
-        fabricView.setSize(10);
+        // 마지막으로 적용한 그리기 설정 복원
+        selectedColor = DrawingSettingsPreferences.getColor(this);
+        selectedThickness = DrawingSettingsPreferences.getThickness(this);
+        applyDrawingSettings();
 
-        mainPresenter.getShape(shapeIndex);
-        mainPresenter.checkNeedGuide();
+        TutorialProgress tutorialProgress = mainPresenter.getTutorialProgress();
+        // Tutorial drawings always come from the immutable raw resource, never user storage.
+        drawingPack = tutorialProgress.isComplete()
+                ? DrawingCatalog.index(getIntent().getStringExtra(DrawingExperience.EXTRA_PACK)) : -1;
+        if (!tutorialProgress.isComplete()) {
+            selectedShape = new ShapeInfo(TUTORIAL_FILE,
+                    getString(R.string.default_shape_set_name), 9);
+        } else if (drawingPack >= 0) {
+            selectedShape = new ShapeInfo("builtin:" + DrawingCatalog.id(drawingPack),
+                    getResources().getStringArray(R.array.drawing_pack_titles)[drawingPack], 3);
+            DrawingExperience.rememberPack(this, DrawingCatalog.id(drawingPack));
+            mainPresenter.rememberBuiltInPack(DrawingCatalog.id(drawingPack));
+        } else {
+            DrawingExperience.rememberPack(this, null);
+            String customPackId = getIntent().getStringExtra(EXTRA_CUSTOM_PACK_ID);
+            if (customPackId == null || customPackId.isEmpty()) mainPresenter.getShape(shapeIndex);
+            else mainPresenter.getShape(customPackId);
+        }
+        if (savedInstanceState == null) {
+            mainPresenter.checkNeedGuide();
+        } else {
+            guideStage = savedInstanceState.getInt("guide_stage");
+            isTutorialMode = guideStage == 1 || guideStage == 2;
+            wasGuideMode = savedInstanceState.getBoolean("was_guide");
+            practiceAttempts = savedInstanceState.getInt("practice_attempts");
+            updateCoach();
+            Bundle draft = savedInstanceState.getBundle("brush_draft");
+            if (draft != null) showColorPicker(draft);
+        }
 
-        // 광고 초기화
-        adView = new AdView(this);
-        adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
-        adView.setAdUnitId("ca-app-pub-9937617798998725/8292313909");
-        adView.loadAd(new AdRequest.Builder().build());
-
-        mCustomDialog = new AdDialog(this,
-                adView,
-                view -> mCustomDialog.dismiss(),
-                view -> {
-                    mCustomDialog.dismiss();
-                    finish();
-                });
-
+        ExitAdController exitAd = mainPresenter.isGuideMode() ? null
+                : new ExitAdController(this, ExitAdController.Placement.CANVAS);
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (spotlightOverlay != null) {
-                    spotlightOverlay.hide();
-                    spotlightOverlay = null;
+                if (colorSettings != null) {
+                    applyOpenSettings();
+                    return;
                 }
-                mCustomDialog.show();
+                if (exitAd != null && !isTutorialMode) exitAd.onBack(MainActivity.this::finish);
+                else finish();
             }
         });
     }
@@ -133,92 +162,119 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             View decor = getWindow().getDecorView();
-            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            }
+            decor.setSystemUiVisibility(flags);
         }
     }
 
     public void onStartClick() {
-        if (isTutorialMode) return;
-        showColorPicker();
+        if (colorSettings != null) applyOpenSettings();
+        else showColorPicker(null);
     }
 
-    /**
-     * 현대적인 BottomSheet 색상 선택기 표시
-     * - Pikolo HSL 컬러 피커
-     * - 선 굵기/투명도 조절 가능
-     * - 최근 사용 색상 저장
-     * - OK 버튼 롱프레스 = 숨은 기능 (자동 그리기 모드)
-     */
-    private void showColorPicker() {
-        ColorPickerBottomSheet bottomSheet = ColorPickerBottomSheet.newInstance(
-                selectedColor, 
-                fabricView.getSize()
-        );
-
-        bottomSheet.setOnColorSelectedListener((color, thickness) -> {
-            // 색상 적용
-            selectedColor = color;
-            colorButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(selectedColor));
-            fabricView.setColor(selectedColor);
-            fabricView.setSize(thickness);
-        });
-
-        // 숨은 기능: OK 버튼 롱프레스 시 자동 그리기 모드
-        // onStartLongClick()에 위임해야 가이드 모드 판정(wasGuideMode)이 항상 최신 값으로 갱신된다.
-        bottomSheet.setOnLongPressListener(() -> onStartLongClick());
-
-        bottomSheet.show(getSupportFragmentManager(), "color_picker");
-    }
-
-    @Override
-    public void showLongPressGuide() {
-        ViewGroup layout = findViewById(R.id.rootView);
-        layout.post(() -> {
-            if (isFinishing() || isDestroyed()) return;
-            spotlightOverlay = new SpotlightGuideOverlay(this, layout);
-            String tip = getString(R.string.long_press_description);
-            spotlightOverlay.highlight(colorButton, 8, tip);
-            spotlightOverlay.setListener(() -> spotlightOverlay = null);
-            spotlightOverlay.show();
-        });
-        
-        // 버튼 강조 애니메이션
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(colorButton, "scaleX", 1f, 1.2f, 1f);
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(colorButton, "scaleY", 1f, 1.2f, 1f);
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(scaleX, scaleY);
-        animatorSet.setDuration(1000);
-        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
-        animatorSet.setStartDelay(1500);
-        
-        ValueAnimator repeatAnimator = ValueAnimator.ofInt(0, 1);
-        repeatAnimator.setDuration(2000);
-        repeatAnimator.setRepeatCount(1);
-        repeatAnimator.addUpdateListener(animation -> {
-            if (animation.getAnimatedFraction() == 0f) {
-                animatorSet.start();
+    private void showColorPicker(Bundle draft) {
+        View content = getLayoutInflater().inflate(R.layout.bottom_sheet_color_picker, settingsPanel, false);
+        settingsPanel.removeAllViews();
+        settingsPanel.addView(content);
+        colorSettings = new ColorSettingsController(content, selectedColor, selectedThickness, draft,
+                new ColorSettingsController.Listener() {
+            @Override public void onApply(int color, float thickness) {
+                selectedColor = color;
+                selectedThickness = thickness;
+                applyDrawingSettings();
+                if (isTutorialMode && guideStage == 1) {
+                    guideStage = 2;
+                    mainPresenter.setTutorialProgress(TutorialProgress.SECRET_SELECTION_GUIDE);
+                }
+                closeColorPicker();
             }
+            @Override public void onCancel() { closeColorPicker(); }
+            @Override public void onLongPress() { onStartLongClick(); }
         });
-        repeatAnimator.start();
-        
-        // 튜토리얼 모드 활성화
+        if (isTutorialMode) colorSettings.setHint(getString(R.string.coach_adjust));
+        settingsPanel.setVisibility(View.VISIBLE);
+        settingsShield.setVisibility(View.VISIBLE);
+        findViewById(R.id.tutorial_coach).setVisibility(View.GONE);
+        // Fit small/folded windows without resizing the drawing coordinate space.
+        View root = findViewById(R.id.rootView);
+        root.post(() -> {
+            if (isFinishing() || settingsPanel.getVisibility() != View.VISIBLE) return;
+            ViewGroup.LayoutParams params = settingsPanel.getLayoutParams();
+            int preferred = dp(isTutorialMode ? 390 : 320);
+            params.height = Math.min(preferred, Math.max(dp(160), root.getHeight() - dp(120)));
+            settingsPanel.setLayoutParams(params);
+        });
+    }
+
+    private void applyOpenSettings() {
+        if (colorSettings != null) colorSettings.apply();
+    }
+
+    private void closeColorPicker() {
+        colorSettings = null;
+        settingsPanel.setVisibility(View.GONE);
+        settingsShield.setVisibility(View.GONE);
+        settingsPanel.removeAllViews();
+        updateCoach();
+    }
+
+    private void applyDrawingSettings() {
+        eraseButton.setSelected(false);
+        colorButton.setSelected(true);
+        findViewById(R.id.current_color_indicator).setBackgroundTintList(
+                ColorStateList.valueOf(selectedColor));
+        findViewById(R.id.current_color_indicator).setBackgroundColor(selectedColor);
+        fabricView.setColor(selectedColor);
+        fabricView.setSize(selectedThickness);
+    }
+
+    @Override public void showLongPressGuide() {
+        TutorialProgress progress = mainPresenter.getTutorialProgress();
+        guideStage = progress == TutorialProgress.NOT_STARTED
+                || progress == TutorialProgress.DRAWING_GUIDE ? 1 : 2;
+        if (progress == TutorialProgress.NOT_STARTED) {
+            mainPresenter.setTutorialProgress(TutorialProgress.DRAWING_GUIDE);
+        }
         isTutorialMode = true;
+        updateCoach();
         Analytics.log(this, Analytics.TUTORIAL_GUIDE_SHOWN);
+    }
 
-        // longPressProgress를 android.R.id.content로 옮겨서 스포트라이트 오버레이 위에 표시
-        layout.post(() -> {
-            ViewGroup contentRoot = findViewById(android.R.id.content);
-            if (contentRoot != null && longPressProgress.getParent() != contentRoot) {
-                ViewGroup oldParent = (ViewGroup) longPressProgress.getParent();
-                if (oldParent != null) oldParent.removeView(longPressProgress);
-                android.widget.FrameLayout.LayoutParams params = new android.widget.FrameLayout.LayoutParams(
-                        (int) (80 * getResources().getDisplayMetrics().density),
-                        (int) (80 * getResources().getDisplayMetrics().density),
-                        android.view.Gravity.CENTER
-                );
-                contentRoot.addView(longPressProgress, params);
-            }
-        });
+    private void updateCoach() {
+        View coach = findViewById(R.id.tutorial_coach);
+        boolean visible = isTutorialMode && colorSettings == null;
+        coach.setVisibility(visible ? View.VISIBLE : View.GONE);
+        if (!visible) return;
+        ((TextView) findViewById(R.id.coach_step)).setText(
+                guideStage == 1 ? R.string.coach_colors_title : R.string.coach_hold_title);
+        ((TextView) findViewById(R.id.coach_message)).setText(
+                guideStage == 1 ? R.string.coach_colors : R.string.coach_hold);
+    }
+
+    private void skipGuide() {
+        longPressProgress.hide();
+        Analytics.log(this, Analytics.TUTORIAL_EXIT, "source", "canvas_skip");
+        finish();
+    }
+
+    @Override protected void onSaveInstanceState(Bundle state) {
+        if (colorSettings != null) state.putBundle("brush_draft", colorSettings.saveState());
+        state.putInt("guide_stage", guideStage);
+        state.putBoolean("was_guide", wasGuideMode);
+        state.putInt("practice_attempts", practiceAttempts);
+        super.onSaveInstanceState(state);
+    }
+
+    @Override protected void onStop() {
+        longPressProgress.hide();
+        super.onStop();
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
     }
 
     /**
@@ -231,8 +287,8 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
             switch (event.getAction()) {
                 case android.view.MotionEvent.ACTION_DOWN:
                     // 롱프레스 시작 - 튜토리얼 모드일 때만 프로그레스 표시
-                    if (isTutorialMode) {
-                        longPressProgress.setProgressColor(selectedColor);
+                    if (isTutorialMode && guideStage == 2 && colorSettings == null) {
+                        longPressProgress.setProgressColor(getColor(R.color.primary_color));
                         longPressProgress.show();
                     }
                     return false; // 기본 롱클릭 이벤트도 처리되도록
@@ -253,7 +309,8 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
             if (!isTutorialMode) {
                 return onStartLongClick();
             }
-            // 튜토리얼 모드에서는 프로그레스 완료 시 처리
+            if (guideStage == 1) onStartClick();
+            // In step 2 the completed hold ring advances the guide.
             return true;
         });
     }
@@ -263,7 +320,9 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
      */
     private void onLongPressComplete() {
         longPressProgress.hide();
-        isTutorialMode = false; // 튜토리얼 완료
+        isTutorialMode = false;
+        guideStage = 3;
+        updateCoach();
         Analytics.log(this, Analytics.TUTORIAL_LONGPRESS_DONE);
         onStartLongClick();
     }
@@ -271,21 +330,26 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     private static final int REQUEST_TUTORIAL_PRE_PIN = 2002;
     private static final int REQUEST_PRACTICE_PIN = 2005;
     private static final int PRACTICE_TARGET_PIN = 8;
-    private Intent pendingPinData = null;
     private boolean wasGuideMode = false;
     private int practiceAttempts = 0;
-    private boolean justFinishedTutorial = false;
+    private boolean pendingTutorialCompletion = false;
 
     public boolean onStartLongClick() {
-        fabricView.setColor(selectedColor);
+        applyOpenSettings();
+        if (selectedShape == null) return true;
+        isTutorialMode = false;
+        updateCoach();
+        // 지우개가 임시로 바꾼 흰색/두께 50 대신 사용자가 저장한 설정을 사용한다.
+        applyDrawingSettings();
 
-        if (spotlightOverlay != null) {
-            spotlightOverlay.hide();
-            spotlightOverlay = null;
-        }
-
-        wasGuideMode = mainPresenter.isGuideMode();
+        TutorialProgress tutorialProgress = mainPresenter.getTutorialProgress();
+        wasGuideMode = !tutorialProgress.isComplete();
         if (wasGuideMode) {
+            guideStage = 3;
+            if (tutorialProgress == TutorialProgress.PRACTICE) {
+                launchPractice(false);
+                return true;
+            }
             // 칭찬 토스트는 튜토리얼 진행 중에만 노출한다.
             // (튜토리얼 완료 후에는 실제 마술 중이므로 토스트가 뜨면 트릭이 노출된다)
             Toast.makeText(this, R.string.good_job, Toast.LENGTH_SHORT).show();
@@ -294,6 +358,12 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
                     .getStartIntent(this, com.h2play.canvas_magic.features.tutorial.TutorialDialogueActivity.PHASE_PRE_PIN);
             startActivityForResult(intent, REQUEST_TUTORIAL_PRE_PIN);
         } else {
+            Bundle performance = new Bundle();
+            performance.putString("pack_kind", drawingPack >= 0 ? "built_in" : "custom");
+            performance.putString("entry_point", getIntent().getStringExtra(EXTRA_ENTRY_POINT) == null
+                    ? "canvas" : getIntent().getStringExtra(EXTRA_ENTRY_POINT));
+            performance.putLong("choice_count", selectedShape.count);
+            Analytics.log(this, Analytics.PERFORMANCE_START, performance);
             Intent intent = PinActivity.getStartIntent(this, selectedShape.count);
             startActivityForResult(intent, REQUEST_CODE);
         }
@@ -302,10 +372,14 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
 
     public void onClearClick() {
+        applyOpenSettings();
         fabricView.cleanPage();
     }
 
     public void onEraseClick() {
+        applyOpenSettings();
+        colorButton.setSelected(false);
+        eraseButton.setSelected(true);
         fabricView.setSize(50);
         fabricView.setColor(Color.WHITE);
     }
@@ -313,15 +387,26 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (selectedShape == null) return;
+        if (resultCode != RESULT_OK && (requestCode == REQUEST_TUTORIAL_PRE_PIN
+                || requestCode == REQUEST_PRACTICE_PIN || (requestCode == REQUEST_CODE && wasGuideMode))) {
+            mainPresenter.setTutorialProgress(requestCode == REQUEST_PRACTICE_PIN
+                    ? TutorialProgress.PRACTICE : TutorialProgress.SECRET_SELECTION_GUIDE);
+            guideStage = 2;
+            isTutorialMode = true;
+            updateCoach();
+            return;
+        }
 
         if (requestCode == REQUEST_TUTORIAL_PRE_PIN && resultCode == RESULT_OK) {
-            Intent intent = PinActivity.getStartIntent(this, selectedShape.count);
+            mainPresenter.setTutorialProgress(TutorialProgress.SECRET_SELECTION_GUIDE);
+            Intent intent = PinActivity.getStartIntent(this, 9);
             startActivityForResult(intent, REQUEST_CODE);
             return;
         }
 
         // 연습용 PinActivity에서 돌아옴 → 8번을 탭했는지 검증
-        if (requestCode == REQUEST_PRACTICE_PIN && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_PRACTICE_PIN && resultCode == RESULT_OK && data != null) {
             int tappedPin = data.getIntExtra(PinActivity.PIN, -1);
             practiceAttempts++;
             if (tappedPin != PRACTICE_TARGET_PIN) {
@@ -329,39 +414,27 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
                 Bundle wrong = new Bundle();
                 wrong.putString("result", "wrong");
                 wrong.putLong("attempt", practiceAttempts);
-                wrong.putLong("tapped_pin", tappedPin);
+                wrong.putString("tutorial_stage", TutorialProgress.PRACTICE.name().toLowerCase(Locale.ROOT));
                 Analytics.log(this, Analytics.TUTORIAL_PRACTICE, wrong);
 
                 Toast.makeText(this, R.string.tutorial_practice_wrong, Toast.LENGTH_SHORT).show();
-                Intent retry = PinActivity.getStartIntent(this, selectedShape.count);
-                retry.putExtra(PinActivity.EXTRA_PRACTICE_TARGET, PRACTICE_TARGET_PIN);
-                retry.putExtra(PinActivity.EXTRA_SHOW_GRID, true);
-                startActivityForResult(retry, REQUEST_PRACTICE_PIN);
+                launchPractice(true);
                 return;
             }
-            // 정답 → 축하 후 8번 그리기 진행
+            // Completion is committed only after the immutable practice drawing renders below.
             Bundle ok = new Bundle();
             ok.putString("result", "correct");
             ok.putLong("attempt", practiceAttempts);
+            ok.putString("tutorial_stage", TutorialProgress.PRACTICE.name().toLowerCase(Locale.ROOT));
             Analytics.log(this, Analytics.TUTORIAL_PRACTICE, ok);
-            Analytics.log(this, Analytics.TUTORIAL_COMPLETE);
-            Analytics.setTutorialDone(this, true);
-            justFinishedTutorial = true;
-
-            Toast.makeText(this, R.string.tutorial_practice_correct, Toast.LENGTH_SHORT).show();
-            pendingPinData = null;
-            // 튜토리얼 종료. 여기서 내리지 않으면 이후 일반 롱프레스마다
-            // 연습 PinActivity가 다시 뜨면서 "8번이 아니에요" 토스트가 계속 반복된다.
+            pendingTutorialCompletion = true;
             wasGuideMode = false;
-            // data는 이미 PIN=8이므로 그대로 아래 그리기 로직으로 진행
         }
 
         // 튜토리얼 첫 PinActivity 완료 → 말풍선 연습 PinActivity로 이동
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && wasGuideMode) {
-            pendingPinData = data;
-            Intent practiceIntent = PinActivity.getStartIntent(this, selectedShape.count);
-            practiceIntent.putExtra(PinActivity.EXTRA_PRACTICE_TARGET, PRACTICE_TARGET_PIN);
-            startActivityForResult(practiceIntent, REQUEST_PRACTICE_PIN);
+            mainPresenter.setTutorialProgress(TutorialProgress.PRACTICE);
+            launchPractice(false);
             return;
         }
 
@@ -371,67 +444,96 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
             return;
         }
 
+        if (requestCode != REQUEST_CODE && requestCode != REQUEST_PRACTICE_PIN) return;
+        int numPin = data.getIntExtra(PinActivity.PIN, -1);
+        if (numPin < 1 || numPin > selectedShape.count) return;
         fabricView.cleanPage();
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-        fabricView.cleanPage();
-
-        int numPin = data.getIntExtra(PinActivity.PIN, 1);
-
-        // ★ 핵심 활성화 이벤트: 여기까지 왔다는 건 실제로 마술 1회를 수행했다는 뜻이다.
-        // 첫 수행까지의 이탈과, 첫 수행 이후의 재수행이 이 앱 리텐션의 전부다.
-        int trickCount = mainPresenter.recordTrickPerformed();
-        Bundle trick = new Bundle();
-        trick.putLong("pin", numPin);
-        trick.putLong("lifetime_count", trickCount);
-        trick.putString("is_first", String.valueOf(trickCount == 1));
-        trick.putString("from_tutorial", String.valueOf(justFinishedTutorial));
-        if (selectedShape != null && selectedShape.name != null) {
-            trick.putString("pack_name", selectedShape.name);
-        }
-        Analytics.log(this, Analytics.TRICK_PERFORMED, trick);
-        Analytics.setTrickCount(this, trickCount);
-        justFinishedTutorial = false;
-
-        {
-            String jsonText = FileUtil.getJsonFromFile(this, selectedShape.fileName);
-
-            JsonObject assetJsonObject = new Gson().fromJson(jsonText, JsonObject.class);
-            JsonArray shapes = assetJsonObject.get("shapes").getAsJsonArray();
-            JsonArray actions = shapes.get(numPin - 1).getAsJsonArray();
-
-            List<JsonObject> jsonObjects = new ArrayList<>();
-            for (int i = 0; i < actions.size(); ++i) {
-                jsonObjects.add(actions.get(i).getAsJsonObject());
-            }
-            ;
-            for (JsonObject jsonObject : jsonObjects) {
-                switch (jsonObject.get("action").getAsString()) {
-                    case "down": {
-                        fabricView.actionDown(jsonObject.get("x").getAsFloat() * displayMetrics.widthPixels
-                                , jsonObject.get("y").getAsFloat() * displayMetrics.heightPixels);
-                        break;
-                    }
-
-                    case "up": {
-                        fabricView.actionUp(jsonObject.get("x").getAsFloat() * displayMetrics.widthPixels
-                                , jsonObject.get("y").getAsFloat() * displayMetrics.heightPixels);
-                        break;
-                    }
-
-                    case "move": {
-                        fabricView.actionMove(jsonObject.get("x1").getAsFloat() * displayMetrics.widthPixels
-                                , jsonObject.get("y1").getAsFloat() * displayMetrics.heightPixels,
-                                jsonObject.get("x2").getAsFloat() * displayMetrics.widthPixels,
-                                jsonObject.get("y2").getAsFloat() * displayMetrics.heightPixels);
-                        break;
+        boolean rendered = false;
+        try {
+            if (drawingPack >= 0) {
+                rendered = DrawingArtworkView.reveal(fabricView, drawingPack, numPin - 1);
+            } else {
+                // Preserve the original display-coordinate format for existing user drawings.
+                DisplayMetrics metrics = new DisplayMetrics();
+                ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+                String drawingJson = TUTORIAL_FILE.equals(selectedShape.fileName)
+                        ? FileUtil.getJsonFromRaw(this, R.raw.base_pattern)
+                        : FileUtil.getJsonFromFile(this, selectedShape.fileName);
+                JsonObject asset = new Gson().fromJson(drawingJson, JsonObject.class);
+                JsonArray actions = asset.getAsJsonArray("shapes").get(numPin - 1).getAsJsonArray();
+                boolean strokeStarted = false;
+                for (int i = 0; i < actions.size(); i++) {
+                    JsonObject action = actions.get(i).getAsJsonObject();
+                    switch (action.get("action").getAsString()) {
+                        case "down":
+                            fabricView.actionDown(action.get("x").getAsFloat()*metrics.widthPixels,
+                                    action.get("y").getAsFloat()*metrics.heightPixels);
+                            strokeStarted = true;
+                            break;
+                        case "up":
+                            if (strokeStarted) {
+                                fabricView.actionUp(action.get("x").getAsFloat()*metrics.widthPixels,
+                                        action.get("y").getAsFloat()*metrics.heightPixels);
+                                rendered = true;
+                            }
+                            break;
+                        case "move":
+                            if (strokeStarted) {
+                                fabricView.actionMove(action.get("x1").getAsFloat()*metrics.widthPixels,
+                                        action.get("y1").getAsFloat()*metrics.heightPixels,
+                                        action.get("x2").getAsFloat()*metrics.widthPixels,
+                                        action.get("y2").getAsFloat()*metrics.heightPixels);
+                                rendered = true;
+                            }
+                            break;
                     }
                 }
             }
+        } catch (RuntimeException invalidDrawing) {
+            rendered = false;
+            fabricView.cleanPage();
+            timber.log.Timber.w(invalidDrawing, "Drawing could not be rendered");
         }
+        if (rendered && pendingTutorialCompletion) {
+            mainPresenter.completeTutorial();
+            Analytics.log(this, Analytics.TUTORIAL_COMPLETE,
+                    "tutorial_stage", TutorialProgress.COMPLETED.name().toLowerCase(Locale.ROOT));
+            Analytics.setTutorialDone(this, true);
+            pendingTutorialCompletion = false;
+            guideStage = 0;
+            isTutorialMode = false;
+            updateCoach();
+            Toast.makeText(this, R.string.tutorial_practice_correct, Toast.LENGTH_SHORT).show();
+        } else if (rendered) {
+            recordSuccessfulReveal();
+        } else if (pendingTutorialCompletion) {
+            pendingTutorialCompletion = false;
+            mainPresenter.setTutorialProgress(TutorialProgress.PRACTICE);
+            guideStage = 2;
+            isTutorialMode = true;
+            updateCoach();
+        }
+    }
 
+    private void launchPractice(boolean showGrid) {
+        mainPresenter.setTutorialProgress(TutorialProgress.PRACTICE);
+        Intent practiceIntent = PinActivity.getStartIntent(this, 9);
+        practiceIntent.putExtra(PinActivity.EXTRA_PRACTICE_TARGET, PRACTICE_TARGET_PIN);
+        practiceIntent.putExtra(PinActivity.EXTRA_SHOW_GRID, showGrid);
+        startActivityForResult(practiceIntent, REQUEST_PRACTICE_PIN);
+    }
+
+    private void recordSuccessfulReveal() {
+        int trickCount = mainPresenter.recordTrickPerformed();
+        Bundle trick = new Bundle();
+        trick.putString("pack_kind", drawingPack >= 0 ? "built_in" : "custom");
+        trick.putString("entry_point", getIntent().getStringExtra(EXTRA_ENTRY_POINT) == null
+                ? "canvas" : getIntent().getStringExtra(EXTRA_ENTRY_POINT));
+        trick.putLong("choice_count", selectedShape.count);
+        Analytics.log(this, Analytics.TRICK_PERFORMED, trick);
+        Analytics.setTrickCount(this, trickCount);
+        NotificationPermissionManager.markEligible(this);
+        DrawingExperience.recordReveal(this, drawingPack >= 0 ? DrawingCatalog.id(drawingPack) : null);
     }
 
     @Override
@@ -466,8 +568,8 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     @Override
     public void setShapeFileName(ShapeInfo shapeInfo) {
         this.selectedShape = shapeInfo;
-        if (shapeInfo != null && shapeInfo.name != null) {
-            Analytics.log(this, Analytics.PACK_OPENED, "pack_name", shapeInfo.name);
+        if (shapeInfo != null) {
+            Analytics.log(this, Analytics.PACK_OPENED, "pack_kind", "custom");
         }
     }
 
@@ -479,5 +581,11 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra("shapeIndex", shapeIndex);
         return intent;
+    }
+
+    public static Intent getCustomPackIntent(Context context, String fileName, String entryPoint) {
+        return getStartIntent(context, 0)
+                .putExtra(EXTRA_CUSTOM_PACK_ID, fileName)
+                .putExtra(EXTRA_ENTRY_POINT, entryPoint);
     }
 }

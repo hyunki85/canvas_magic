@@ -56,13 +56,23 @@
     <string name="line_thickness">Толщина линии</string>
     <string name="opacity">Непрозрачность</string>
     <string name="recent_colors">Недавние цвета</string>
-    <string name="long_press_hint">💡 Удерживайте OK, чтобы включить режим авторисования!</string>
+    <string name="long_press_hint">Удерживайте «Применить», чтобы включить режим авторисования.</string>
     <string name="opponent_chose_number">Противник выбрал %1$d. Дважды нажмите на эту клетку</string>
     <string name="menu_subtitle">Простые трюки с холстом</string>
     <string name="menu_desc_edit">Создайте свой набор фигур</string>
-    <string name="menu_desc_share">Делитесь своими работами с друзьями</string>
+    <string name="menu_desc_share">Наборы рисунков от пользователей</string>
+    <string name="discover_shapes">Сообщество</string>
+    <string name="returning_user_kicker">Готовы снова удивить зрителей?</string>
+    <string name="continue_with_pack">Выступить с набором «%1$s»</string>
+    <string name="choose_another_pack">Выбрать другой набор</string>
+    <string name="notification_permission_title">Немного волшебства каждый день</string>
+    <string name="notification_permission_body">Иногда мы будем присылать идеи для практики и новости о наборах. Уведомления можно отключить в настройках телефона.</string>
+    <string name="notification_permission_action">Включить</string>
+    <string name="not_now">Не сейчас</string>
     <string name="rate_short">Оценить</string>
     <string name="undo">Отменить</string>
+    <string name="clear_canvas">Очистить холст</string>
+    <string name="eraser">Ластик</string>
     <string name="create">Создать</string>
     <string name="default_shape_set_name">Числа</string>
     <string name="terms_agree">Принять</string>
@@ -86,9 +96,9 @@
 
     <string name="reminder_channel_name">Напоминания</string>
     <string name="reminder_title_3day">Canvas Trick скучает по вам!</string>
-    <string name="reminder_body_3day">Нарисуйте сегодня что-нибудь удивительное!</string>
+    <string name="reminder_body_3day">Посмотрите свежие наборы сообщества и подготовьте новый фокус.</string>
     <string name="reminder_title_7day">Вас ждут новые шаблоны!</string>
-    <string name="reminder_body_7day">Давно не виделись. Посмотрите, что нового!</string>
+    <string name="reminder_body_7day">Загляните в сообщество и найдите новые фигуры для выступления.</string>
 
     <string name="cross_promo_badge">Рекомендуем</string>
     <string name="cross_promo_cta">Бесплатно</string>
@@ -96,7 +106,7 @@
     <string name="cross_promo_magic_number_flash_desc">Угадайте число с помощью вспышки и вибрации.</string>
     <string name="cross_promo_mind_reader_magic_title">Mind Reader Magic</string>
     <string name="cross_promo_mind_reader_magic_desc">Узнайте цвет, выбранный тайно.</string>
-    <string name="dynamic_menu_help_desc">Узнайте, как выполнить фокус</string>
+    <string name="dynamic_menu_help_desc">Как выполнить фокус</string>
     <string name="dynamic_menu_restart_tutorial_desc">Начать сначала</string>
     <string name="dynamic_menu_rate_desc">Поддержите нас оценкой</string>
     <string name="dynamic_menu_more_apps_desc">Больше приложений с фокусами</string>

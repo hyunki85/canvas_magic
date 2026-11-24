@@ -19,4 +19,6 @@ public interface ShareMvpView extends MvpView {
     void showError(Throwable error);
 
     void updateShape(ShapeOnline shapeOnline);
+
+    void openShapePreview(ShapeOnline shapeOnline);
 }

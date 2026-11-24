@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center">
 
-    <com.h2play.canvas_magic.util.FabricView
-        android:id="@+id/fabricView"
-        style="@style/small_fabric" />
+    <FrameLayout android:layout_width="match_parent" android:layout_height="100dp">
+        <com.h2play.canvas_magic.util.FabricView android:id="@+id/fabricView"
+            android:layout_width="match_parent" android:layout_height="match_parent" />
+        <TextView android:id="@+id/preview_empty"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:gravity="center" android:padding="8dp" android:textSize="12sp"
+            android:textColor="@color/text_secondary" android:text="@string/preview_empty_drawing"
+            android:visibility="gone" />
+    </FrameLayout>
 </com.google.android.material.card.MaterialCardView>
-

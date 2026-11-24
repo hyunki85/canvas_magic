@@ -52,7 +52,10 @@ public class ShapeAdapter extends RecyclerView.Adapter<ShapeAdapter.ShapeViewHol
     }
 
     public void setShapeOnlines(List<ShapeOnline> shapeOnlines) {
-        this.shapeOnlines = shapeOnlines;
+        if (shapeOnlines != null && shapeOnlines.size() <= lastSize) {
+            lastSize = 0;
+        }
+        this.shapeOnlines = shapeOnlines == null ? Collections.emptyList() : shapeOnlines;
     }
 
     public void setClickListener(ClickListener clickListener) {
@@ -75,9 +78,9 @@ public class ShapeAdapter extends RecyclerView.Adapter<ShapeAdapter.ShapeViewHol
     public void onBindViewHolder(ShapeViewHolder holder, int position) {
         ShapeOnline shapeOnline = shapeOnlines.get(position);
         holder.shapeOnline = shapeOnline;
-        holder.nameText.setText(String.format("%s", shapeOnline.name));
+        holder.nameText.setText(shapeOnline.name == null ? "" : shapeOnline.name);
         DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
-        holder.dateText.setText(format.format(shapeOnline.date));
+        holder.dateText.setText(shapeOnline.date == null ? "" : format.format(shapeOnline.date));
         holder.starText.setText(String.valueOf(shapeOnline.star));
 
         holder.starImageView.setSelected(shapeOnline.alreadyStar);
@@ -86,55 +89,29 @@ public class ShapeAdapter extends RecyclerView.Adapter<ShapeAdapter.ShapeViewHol
         holder.fabricView.post(new Runnable() {
             @Override
             public void run() {
-                drawShape(holder.fabricView, shapeOnline.json,0);
+                if (holder.shapeOnline != shapeOnline) return;
+                int page = com.h2play.canvas_magic.util.DrawingPreviewData.firstDrawable(
+                        shapeOnline.json, shapeOnline.count);
+                holder.itemView.findViewById(R.id.preview_empty).setVisibility(
+                        page < 0 ? View.VISIBLE : View.GONE);
+                drawShape(holder.fabricView, shapeOnline.json, page);
             }
         });
 
-        if((position == shapeOnlines.size() - 1) && lastSize != shapeOnlines.size()) {
-            lastSize =  shapeOnlines.size();
-            subject.onNext(new Object());
-        }
+        holder.itemView.post(() -> {
+            int currentPosition = holder.getBindingAdapterPosition();
+            if (currentPosition != RecyclerView.NO_POSITION
+                    && currentPosition == shapeOnlines.size() - 1
+                    && lastSize != shapeOnlines.size()) {
+                lastSize = shapeOnlines.size();
+                subject.onNext(new Object());
+            }
+        });
 
     }
 
-    public void drawShape(FabricView fabricView, String jsonText, int shapeIndex) {
-
-        fabricView.cleanPage();
-        fabricView.setColor(Color.BLACK);
-
-        JsonObject assetJsonObject = new Gson().fromJson(jsonText, JsonObject.class);
-        JsonArray shapes = assetJsonObject.get("shapes").getAsJsonArray();
-        JsonArray actions = shapes.get(shapeIndex).getAsJsonArray();
-
-        List<JsonObject> jsonObjects = new ArrayList<>();
-        for (int i = 0; i < actions.size(); ++i ) {
-            jsonObjects.add(actions.get(i).getAsJsonObject());
-        }
-        ;
-        for (JsonObject jsonObject :  jsonObjects) {
-            switch (jsonObject.get("action").getAsString()) {
-                case "down": {
-                    fabricView.actionDown(jsonObject.get("x").getAsFloat()*fabricView.getWidth()
-                            ,jsonObject.get("y").getAsFloat()*fabricView.getHeight());
-                    break;
-                }
-
-                case "up": {
-                    fabricView.actionUp(jsonObject.get("x").getAsFloat()*fabricView.getWidth()
-                            ,jsonObject.get("y").getAsFloat()*fabricView.getHeight());
-                    break;
-                }
-
-                case "move": {
-                    fabricView.actionMove(jsonObject.get("x1").getAsFloat()*fabricView.getWidth()
-                            ,jsonObject.get("y1").getAsFloat()*fabricView.getHeight(),
-                            jsonObject.get("x2").getAsFloat()*fabricView.getWidth(),
-                            jsonObject.get("y2").getAsFloat()*fabricView.getHeight());
-                    break;
-                }
-            }
-        }
-        fabricView.setInteractionMode(LOCKED_MODE);
+    public void drawShape(FabricView view, String json, int index) {
+        com.h2play.canvas_magic.util.DrawingPreviewRenderer.draw(view, json, index);
     }
 
     @Override
@@ -144,8 +121,9 @@ public class ShapeAdapter extends RecyclerView.Adapter<ShapeAdapter.ShapeViewHol
 
     public void updateItem(ShapeOnline shapeOnline) {
         int index = shapeOnlines.indexOf(shapeOnline);
+        if (index < 0) return;
         shapeOnlines.set(index,shapeOnline);
-        notifyDataSetChanged();
+        notifyItemChanged(index);
     }
 
     public interface ClickListener {

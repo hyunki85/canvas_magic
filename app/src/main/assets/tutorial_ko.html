@@ -1,42 +1,32 @@
 <!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Canvas Magic 튜토리얼</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 16px; line-height: 1.6; color: #222; }
-    h1 { font-size: 22px; margin: 0 0 12px; }
-    h2 { font-size: 18px; margin: 20px 0 8px; }
-    .card { background: #fff; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); padding: 16px; margin: 12px 0; }
-    .tip { background:#f1f8ff; border-left: 4px solid #4f90bc; padding: 12px; border-radius: 8px; }
-    ol { padding-left: 20px; }
-    li { margin: 6px 0; }
-    .kbd { display:inline-block; border:1px solid #ccc; border-bottom-width:2px; border-radius:6px; padding:2px 6px; font-weight:600; background:#fafafa; }
-    footer{ margin-top:24px; font-size:12px; color:#666; }
-  </style>
-</head>
-<body>
-  <h1>Canvas Magic 사용 튜토리얼</h1>
-  <div class="card">
-    <h2>마술 흐름</h2>
-    <ol>
-      <li>관객에게 1~N 사이의 숫자를 마음속으로 생각하게 합니다.</li>
-      <li>앱에서 색상을 선택한 뒤, 캔버스에 자연스럽게 선 몇 번 그리는 척 연출합니다.</li>
-      <li>색상 버튼을 <span class="kbd">길게 누르기</span>로 마술 모드를 시작합니다.</li>
-      <li>관객이 숫자를 말하면, 해당 숫자 페이지를 <b>더블탭</b>하여 선택합니다.</li>
-      <li>앱이 자동으로 해당 숫자에 맞는 드로잉을 재생합니다.</li>
-    </ol>
-  </div>
-  <div class="card">
-    <h2>팁</h2>
-    <ul>
-      <li>길게 누르기 전, 화면을 살짝 스크롤하거나 도형을 바꾸는 등 자연스러운 동작으로 시선을 분산시키세요.</li>
-      <li>더블탭은 화면 어딘 눌러도 되지만 실수 방지를 위해 화면 중앙 근처를 권장합니다.</li>
-      <li>조명이 어두운 곳에서는 화면 밝기를 높여 가시성을 확보하세요.</li>
-    </ul>
-  </div>
-  <div class="tip">메뉴 화면의 “튜토리얼 다시하기”를 누르면 가이드가 초기화됩니다.</div>
-  <footer>Canvas Magic 튜토리얼</footer>
-</body>
-</html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>캔버스 트릭 · 사용법</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;padding:20px;line-height:1.65;color:#25253e;background:#f5f7fa}
+h1{font-size:24px;margin:0 0 12px}h2{font-size:19px;margin:0 0 12px}h3{font-size:17px;margin:0 0 8px}
+section{background:white;border:1px solid #e4e7ec;border-radius:16px;padding:18px;margin:18px 0}
+p{margin:10px 0}ol,ul{padding-left:22px}li{margin:12px 0}
+.context{color:#6440b6;font-weight:600}table{border-collapse:collapse;table-layout:fixed;width:100%;margin:16px 0}
+td{border:1px solid #c9c5de;text-align:center;padding:12px 4px;overflow-wrap:anywhere}
+.columns td{height:100px;vertical-align:middle}small{display:block;color:#5d5d73}
+</style></head><body>
+<h1>사용법</h1><p>마술 방법은 하나예요. 세트를 바꾸면 나타나는 그림만 달라져요.</p><p id="context" class="context">숫자는 기본 세트 예시예요. 그림 세트는 아래 3열 안내를 확인하세요.</p>
+<section><h2>마술 순서</h2><ol><li>관객에게 선택한 세트에 있는 숫자나 그림 하나를 생각하게 하세요.</li><li>하단 팔레트를 눌러 색상과 선 두께를 고른 뒤 <b>적용</b>을 누르세요. 더 많은 색상은 <b>직접 선택</b>에서 고를 수 있어요.</li><li>자연스럽게 선을 그린 뒤 팔레트를 <b>길게 누르세요</b>. 검정 화면은 꺼진 것처럼 보이지만 터치를 기다리고 있어요.</li><li>관객이 고른 항목을 말하면, 아래 안내에 맞는 영역을 <b>빠르게 두 번 탭</b>하세요. 선택한 그림이 나타나요.</li></ol></section>
+<h2>검정 화면의 선택 영역</h2><div id="mapping">
+<section id="numbers"><h3>기본 숫자 세트 · 9칸</h3><p>화면을 가로 3칸, 세로 3칸으로 나눠 생각하세요. 예를 들어 8은 맨 아래 가운데예요.</p>
+<table aria-label="기본 숫자 세트 · 9칸"><tbody><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td>5</td><td>6</td></tr><tr><td>7</td><td>8</td><td>9</td></tr></tbody></table></section>
+<section id="provided"><h3>제공 그림 세트 · 3열</h3><p>왼쪽·가운데·오른쪽 영역은 화면 위부터 아래까지 이어져요. 숫자 세트의 9칸과 달라요.</p>
+<table class="columns" aria-label="제공 그림 세트 · 3열"><tbody><tr><td><small>1 · 왼쪽</small><b id="art-0">하트</b></td><td><small>2 · 가운데</small><b id="art-1">별</b></td><td><small>3 · 오른쪽</small><b id="art-2">꽃</b></td></tr></tbody></table></section>
+</div><p>직접 만든 세트는 ‘수정하기’에 보이는 그림 순서와 같아요. 가로 3칸이며, 6개는 2행, 12개는 4행, 15개는 5행이에요.</p>
+<section><h2>알아두기</h2><ul><li>적용하거나 색상창에서 나가면 설정이 저장돼요. 취소는 이번 변경만 되돌려요.</li><li>두 번 모두 같은 영역을 탭하세요. 실제 공연 중에는 격자나 안내가 보이지 않아요.</li></ul></section>
+<p>처음부터 배우려면 홈의 ‘다시 연습’을 누르세요. 연습은 기본 숫자 1–9 세트로 진행해요.</p>
+<script>
+const ids=["little_surprises","celebration","good_luck","night_sky"];
+const selected=ids.indexOf(new URLSearchParams(location.search).get("pack"));
+if(selected>=0){
+ const names=["하트·별·꽃","축하 그림","행운 그림","밤하늘 그림"], drawings=[["하트","별","꽃"],["케이크","풍선","선물"],["클로버","왕관","로켓"],["달","행성","혜성"]];
+ document.getElementById("context").textContent="선택한 세트: "+names[selected];
+ for(let i=0;i<3;i++)document.getElementById("art-"+i).textContent=drawings[selected][i];
+ document.getElementById("mapping").prepend(document.getElementById("provided"));
+}
+</script></body></html>

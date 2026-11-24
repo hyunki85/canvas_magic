@@ -2,7 +2,6 @@ package com.h2play.canvas_magic.features.share;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -26,13 +25,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorView.ErrorListener, ShapeAdapter.ClickListener {
+
+    private static final String EXTRA_INITIAL_TAB = "initial_tab";
+    private static final String EXTRA_DOCUMENT_ID = "document_id";
 
     @Inject
     SharePresenter menuPresenter;
@@ -53,9 +53,22 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
         return intent;
     }
 
+    public static Intent getRecentStartIntent(Context context) {
+        Intent intent = getStartIntent(context);
+        intent.putExtra(EXTRA_INITIAL_TAB, SharePresenter.SORT_TYPE.RECENT.ordinal());
+        return intent;
+    }
+
+    public static Intent getDocumentStartIntent(Context context, String documentId) {
+        return getStartIntent(context)
+                .putExtra(EXTRA_INITIAL_TAB, SharePresenter.SORT_TYPE.FEATURED.ordinal())
+                .putExtra(EXTRA_DOCUMENT_ID, documentId);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        com.h2play.canvas_magic.util.ScreenLayout.setup(this, R.string.discover_shapes);
 
         // Initialize views using findViewById instead of ButterKnife
         errorView = findViewById(R.id.view_error);
@@ -73,7 +86,16 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
         mPokemonRecycler.setLayoutManager(new LinearLayoutManager(this));
         mPokemonRecycler.setAdapter(shapeAdapter);
 
-        menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.FEATURED);
+        int initialTab = Math.max(0, Math.min(
+                getIntent().getIntExtra(EXTRA_INITIAL_TAB, SharePresenter.SORT_TYPE.FEATURED.ordinal()),
+                SharePresenter.SORT_TYPE.values().length - 1));
+        TabLayout.Tab selectedTab = tabLayout.getTabAt(initialTab);
+        if (selectedTab != null) {
+            tabLayout.selectTab(selectedTab);
+        }
+        menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.values()[initialTab]);
+        String documentId = getIntent().getStringExtra(EXTRA_DOCUMENT_ID);
+        if (documentId != null) menuPresenter.getShapeById(documentId);
 
         Disposable nextPageDisposable = shapeAdapter.getNextPage()
                 .subscribe(o -> {
@@ -128,7 +150,10 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
 
     @Override
     public void showShapes(List<ShapeOnline> shapeOnlines) {
-
+        errorView.setVisibility(View.GONE);
+        mPokemonRecycler.setVisibility(View.VISIBLE);
+        findViewById(R.id.community_empty).setVisibility(
+                shapeOnlines == null || shapeOnlines.isEmpty() ? View.VISIBLE : View.GONE);
         shapeAdapter.setShapeOnlines(shapeOnlines);
         shapeAdapter.notifyDataSetChanged();
 
@@ -136,21 +161,16 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
 
     @Override
     public void showShapeList(List<ShapeInfo> shapeInfos) {
+        if (shapeInfos == null || shapeInfos.isEmpty()) return;
 
-        Observable.fromIterable(shapeInfos)
-                .map( shapeInfo-> shapeInfo.name).toList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((strings, throwable) -> {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    final CharSequence[] cs = strings.toArray(new CharSequence[strings.size()]);
-                    builder.setTitle(R.string.shape_list_title)
-                            .setItems(cs, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    menuPresenter.upload(ShareActivity.this, which);
-                                }
-                            });
-                    builder.create().show();
-                });
+        CharSequence[] names = new CharSequence[shapeInfos.size()];
+        for (int index = 0; index < shapeInfos.size(); index++) {
+            names[index] = shapeInfos.get(index).name;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.shape_list_title)
+                .setItems(names, (dialog, which) -> menuPresenter.upload(ShareActivity.this, which))
+                .show();
     }
 
     @Override
@@ -158,20 +178,34 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
         com.h2play.canvas_magic.util.Analytics.log(this,
                 com.h2play.canvas_magic.util.Analytics.COMMUNITY_UPLOAD);
         Toast.makeText(this, getResources().getString(R.string.upload_complete), Toast.LENGTH_SHORT).show();
-        menuPresenter.resetArray();
-        tabLayout.selectTab(tabLayout.getTabAt(2),true);
-        menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.RECENT);
+        int recentIndex = SharePresenter.SORT_TYPE.RECENT.ordinal();
+        if (tabLayout.getSelectedTabPosition() != recentIndex) {
+            TabLayout.Tab recentTab = tabLayout.getTabAt(recentIndex);
+            if (recentTab != null) {
+                // 탭 리스너가 reset + 조회를 담당한다.
+                tabLayout.selectTab(recentTab, true);
+            }
+        } else {
+            menuPresenter.resetArray();
+            menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.RECENT);
+        }
     }
 
     @Override
     public void showProgress(boolean show) {
-
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        fabUpload.setEnabled(!show);
+        if (show) {
+            errorView.setVisibility(View.GONE);
+            findViewById(R.id.community_empty).setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void showError(Throwable error) {
+        progressBar.setVisibility(View.GONE);
         errorView.setVisibility(View.VISIBLE);
-        Timber.e(error, "There was an error retrieving the pokemon");
+        Timber.e(error, "There was an error retrieving community shapes");
     }
 
     @Override
@@ -179,9 +213,15 @@ public class ShareActivity extends BaseActivity implements ShareMvpView, ErrorVi
         shapeAdapter.updateItem(shapeOnline);
     }
 
+    @Override public void openShapePreview(ShapeOnline shapeOnline) {
+        startActivity(PreviewActivity.getStartIntent(this, shapeOnline));
+    }
+
     @Override
     public void onReloadData() {
-
+        errorView.setVisibility(View.GONE);
+        menuPresenter.resetArray();
+        menuPresenter.getShapeOnline(SharePresenter.SORT_TYPE.values()[tabLayout.getSelectedTabPosition()]);
     }
 
     @Override

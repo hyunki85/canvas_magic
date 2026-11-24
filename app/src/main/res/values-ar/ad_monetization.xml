@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_privacy_options">خيارات خصوصية الإعلانات</string>
+    <string name="ad_privacy_options_unavailable">تعذر تحميل خيارات الخصوصية. يرجى المحاولة مرة أخرى لاحقًا.</string>
+</resources>

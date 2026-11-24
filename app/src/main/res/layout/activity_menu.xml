@@ -74,45 +74,72 @@
                     android:layout_marginBottom="60dp" />
 
                 <LinearLayout
+                    android:id="@+id/hero_stack"
                     android:orientation="vertical"
                     android:gravity="center_horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center">
 
-                    <!-- App icon -->
-                    <ImageView
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
-                        android:src="@mipmap/ic_launcher"
-                        android:contentDescription="@string/app_name" />
-
-                    <!-- App title -->
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- 첫 방문에만 필요한 제품 소개. 재방문 시 공간을 차지하지 않도록 접는다. -->
+                    <LinearLayout
+                        android:id="@+id/hero_intro_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:text="@string/app_name"
-                        android:textColor="@android:color/white"
-                        android:textSize="26sp"
+                        android:animateLayoutChanges="true">
+
+                        <ImageView
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:src="@mipmap/ic_launcher"
+                            android:contentDescription="@string/app_name" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:text="@string/app_name"
+                            android:textColor="@android:color/white"
+                            android:textSize="26sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.03" />
+
+                        <TextView
+                            android:id="@+id/tv_subtitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="@string/menu_subtitle"
+                            android:textColor="#80FFFFFF"
+                            android:textSize="13sp"
+                            android:letterSpacing="0.04" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_returning_kicker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="start"
+                        android:text="@string/returning_user_kicker"
+                        android:textColor="#B8FFFFFF"
+                        android:textSize="14sp"
                         android:textStyle="bold"
-                        android:letterSpacing="0.03" />
+                        android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/tv_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="@string/menu_subtitle"
-                        android:textColor="#80FFFFFF"
-                        android:textSize="13sp"
-                        android:letterSpacing="0.04" />
+                    <TextView android:id="@+id/tv_active_pack"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:textSize="14sp" android:textColor="#CCFFFFFF"
+                        android:layout_marginBottom="8dp" android:visibility="gone" />
 
                     <!-- Hero CTA button with gradient -->
                     <FrameLayout
                         android:id="@+id/btn_start"
                         android:layout_width="match_parent"
-                        android:layout_height="64dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="64dp"
                         android:layout_marginTop="24dp"
                         android:clickable="true"
                         android:focusable="true"
@@ -125,9 +152,14 @@
 
                         <TextView
                             android:id="@+id/tv_start_label"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:gravity="center"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="16dp"
+                            android:maxLines="2"
+                            android:ellipsize="end"
                             android:text="@string/start_trick"
                             android:textColor="@android:color/white"
                             android:textSize="19sp"
@@ -138,8 +170,26 @@
                             android:drawableTint="@android:color/white" />
                     </FrameLayout>
 
+                    <TextView
+                        android:id="@+id/btn_choose_pack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:layout_marginTop="4dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:minWidth="120dp"
+                        android:paddingHorizontal="16dp"
+                        android:text="@string/choose_another_pack"
+                        android:textColor="#B8FFFFFF"
+                        android:textSize="13sp"
+                        android:visibility="gone" />
+
                 </LinearLayout>
             </FrameLayout>
+
 
             <!-- 핵심 기능 카드 2개 -->
             <LinearLayout
@@ -153,7 +203,8 @@
                 <FrameLayout
                     android:id="@+id/btn_channel"
                     android:layout_width="0dp"
-                    android:layout_height="130dp"
+                    android:layout_height="match_parent"
+                    android:minHeight="128dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="6dp"
                     android:clickable="true"
@@ -169,7 +220,8 @@
                         android:orientation="vertical"
                         android:gravity="center"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="128dp"
                         android:padding="16dp">
 
                         <ImageView
@@ -201,7 +253,8 @@
                 <FrameLayout
                     android:id="@+id/btn_share"
                     android:layout_width="0dp"
-                    android:layout_height="130dp"
+                    android:layout_height="match_parent"
+                    android:minHeight="128dp"
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
                     android:clickable="true"
@@ -217,20 +270,21 @@
                         android:orientation="vertical"
                         android:gravity="center"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="128dp"
                         android:padding="16dp">
 
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_marginBottom="10dp"
-                            android:src="@drawable/ic_share"
+                            android:src="@drawable/ic_palette_modern"
                             app:tint="#FFAB91" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/share"
+                            android:text="@string/discover_shapes"
                             android:textColor="@android:color/white"
                             android:textSize="17sp"
                             android:textStyle="bold" />
@@ -319,6 +373,16 @@
                     app:layout_rowWeight="1" />
             </androidx.gridlayout.widget.GridLayout>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ad_privacy_options"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/ad_privacy_options"
+                android:textAllCaps="false"
+                android:visibility="gone" />
+
             <!-- Hidden views for code compatibility -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_actions"
@@ -334,14 +398,13 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Ad view -->
-    <com.google.android.gms.ads.AdView
+    <!-- Standard anchored banner; performance and reveal screens never host it. -->
+    <FrameLayout
         android:id="@+id/adView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:minHeight="90dp"
-        app:adSize="SMART_BANNER"
-        app:adUnitId="ca-app-pub-9937617798998725/6628693119"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <!-- Hidden tv_title for code compatibility -->

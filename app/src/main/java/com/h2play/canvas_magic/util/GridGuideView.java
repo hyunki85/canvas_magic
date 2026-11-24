@@ -22,8 +22,10 @@ public class GridGuideView extends View {
     private int columns = 3;
 
     // 색상 및 스타일 설정
-    private int lineColor = Color.parseColor("#E0E0E0");
-    private int textColor = Color.parseColor("#FFEB3B"); // 노란색
+    private int lineColor = Color.parseColor("#343741");
+    private int textColor = Color.parseColor("#AEB4C2");
+    private int highlightedNumber = -1;
+    private final Paint highlightPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private float lineWidth = 2f;
 
     public GridGuideView(Context context) {
@@ -52,7 +54,8 @@ public class GridGuideView extends View {
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setColor(textColor);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD_ITALIC));
+        textPaint.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        highlightPaint.setColor(0xFF302644);
     }
 
     /**
@@ -61,6 +64,11 @@ public class GridGuideView extends View {
      */
     public void setGridCount(int count) {
         this.gridCount = count;
+        invalidate();
+    }
+
+    public void setHighlightedNumber(int number) {
+        highlightedNumber = number;
         invalidate();
     }
 
@@ -99,7 +107,7 @@ public class GridGuideView extends View {
 
         if (width == 0 || height == 0) return;
 
-        int rows = gridCount / columns;
+        int rows = Math.max(1, gridCount / columns);
         float cellWidth = (float) width / columns;
         float cellHeight = (float) height / rows;
 
@@ -119,6 +127,13 @@ public class GridGuideView extends View {
             Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
             float textY = centerY - (fontMetrics.ascent + fontMetrics.descent) / 2;
 
+            if (i + 1 == highlightedNumber) {
+                float inset = 12 * getResources().getDisplayMetrics().density;
+                canvas.drawRoundRect(col * cellWidth + inset, row * cellHeight + inset,
+                        (col + 1) * cellWidth - inset, (row + 1) * cellHeight - inset,
+                        inset, inset, highlightPaint);
+            }
+            textPaint.setColor(i + 1 == highlightedNumber ? Color.WHITE : textColor);
             // 숫자 그리기
             canvas.drawText(String.valueOf(i + 1), centerX, textY, textPaint);
         }

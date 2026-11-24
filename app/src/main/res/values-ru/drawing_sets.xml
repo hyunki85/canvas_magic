@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="drawing_pack_back">Назад</string>
+    <string name="drawing_pack_replay">Просмотр рисунков</string>
+    <string name="drawing_pack_start">Использовать этот набор</string>
+    <string name="drawing_pack_description">Три рисунка для того же фокуса. Меняются только картинки, а не способ выполнения.</string>
+    <string name="drawing_pack_instructions">Удерживайте кнопку цвета на холсте, чтобы открыть чёрный экран. Дважды коснитесь левой, средней или правой трети, чтобы показать нужный рисунок. Каждая область занимает всю высоту.</string>
+    <string name="drawing_pack_bundled_label">%1$s · Встроенный набор</string>
+    <string name="drawing_pack_position_label">%1$s\n%2$s</string>
+    <string-array name="drawing_pack_titles">
+        <item>Символы</item>
+        <item>Праздник</item>
+        <item>Удача</item>
+        <item>Ночное небо</item>
+    </string-array>
+    <string-array name="drawing_pack_art_names">
+        <item>Сердце</item>
+        <item>Звезда</item>
+        <item>Цветок</item>
+        <item>Торт</item>
+        <item>Шар</item>
+        <item>Подарок</item>
+        <item>Клевер</item>
+        <item>Корона</item>
+        <item>Ракета</item>
+        <item>Луна</item>
+        <item>Планета</item>
+        <item>Комета</item>
+    </string-array>
+    <string-array name="drawing_pack_positions">
+        <item>1 · Слева</item>
+        <item>2 · В центре</item>
+        <item>3 · Справа</item>
+    </string-array>
+</resources>

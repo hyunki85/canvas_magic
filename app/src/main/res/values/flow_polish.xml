@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Retained resource ID for the legacy DetailActivity; no second toolbar is rendered. -->
+    <item name="toolbar" type="id" />
+    <string name="my_drawing_sets">My drawing sets</string>
+    <string name="preview_drawing_set">Drawing preview</string>
+    <string name="drawing_help_title">How to use</string>
+    <string name="community_description">Drawing sets shared by other users. The trick works the same way.</string>
+    <string name="community_empty">No drawing sets in this tab yet. Try another tab.</string>
+    <string name="upload_drawing_set">Share a drawing set</string>
+    <string name="save_drawing_set">Save this drawing set</string>
+    <string name="add_drawing_set">Add a drawing set</string>
+    <string name="drawing_set_options">Drawing set options</string>
+    <string name="edit_drawing_number">Edit drawing %1$d</string>
+    <string name="preview_drawing_number">Drawing %1$d</string>
+    <string name="preview_empty_drawing">No drawing</string>
+    <string name="preview_empty_set">No drawings to preview in this set. Choose another set.</string>
+    <string name="active_drawing_set">Selected set: %1$s</string>
+    <string name="perform_now">Start trick</string>
+    <string name="preview_unavailable">Preview unavailable</string>
+    <string-array name="brush_color_names">
+        <item>Black</item>
+        <item>Red</item>
+        <item>Orange</item>
+        <item>Yellow</item>
+        <item>Green</item>
+        <item>Cyan</item>
+        <item>Blue</item>
+        <item>Purple</item>
+        <item>White</item>
+    </string-array>
+    <string name="custom_color_name">Custom color %1$s</string>
+    <string name="named_color_opacity">%1$s, opacity %2$d%%</string>
+    <string name="pack_picker_title">Choose drawings for this performance</string>
+    <string name="pack_picker_subtitle">The trick stays the same. Only the drawings that appear will change.</string>
+    <string name="pack_picker_start">Start with this drawing set</string>
+    <string name="pack_picker_included_count">Included drawings · %1$d choices</string>
+    <string name="pack_picker_mine_count">My drawings · %1$d choices</string>
+    <string name="pack_picker_selected_accessibility">%1$s, selected drawing set</string>
+    <string name="pack_picker_option_accessibility">%1$s, drawing set</string>
+    <string name="resume_practice">Continue practice</string>
+    <string name="notification_opt_in_title">Hear about genuinely new drawings?</string>
+    <string name="notification_opt_in_message">We will only notify you when a reviewed new drawing set is ready. No daily reminders.</string>
+    <string name="notification_opt_in_accept">Notify me</string>
+    <string name="notification_opt_in_later">Not now</string>
+    <string name="new_drawing_notification_title">A new drawing set is ready</string>
+    <string name="new_drawing_notification_body">Preview a reviewed set for your next performance.</string>
+</resources>

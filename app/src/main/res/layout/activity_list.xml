@@ -1,94 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/canvas_screen_background">
+    <include layout="@layout/view_screen_header" />
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent" android:layout_height="match_parent" android:padding="16dp">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:padding="16dp">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appCompatTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/make_title"
-            android:textSize="30dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_shape"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:drawableRight="@drawable/ic_drop_24"
-            android:maxWidth="200dp"
-            android:paddingLeft="32dp"
-            android:paddingTop="8dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="8dp"
-            android:text="@string/default_shape_set_name"
-            android:textSize="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/ib_more"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
-            android:padding="16dp"
-            android:src="@drawable/ic_more_24"
-            app:layout_constraintStart_toEndOf="@+id/btn_shape"
-            app:layout_constraintTop_toTopOf="@+id/btn_shape" />
-
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:backgroundTint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_plus_24" />
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_preview"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_shape" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.h2play.canvas_magic.features.common.ErrorView
-        android:id="@+id/view_error"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
-
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-</RelativeLayout>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btn_shape"
+                android:layout_width="0dp" android:layout_height="wrap_content" android:minHeight="48dp"
+                android:layout_marginEnd="8dp" android:text="@string/default_shape_set_name"
+                android:textSize="18sp" android:textAllCaps="false" android:maxLines="2"
+                android:ellipsize="end" app:icon="@drawable/ic_drop_24" app:iconGravity="end"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toStartOf="@id/ib_more"
+                app:layout_constraintTop_toTopOf="parent" />
+            <androidx.appcompat.widget.AppCompatImageButton android:id="@+id/ib_more"
+                android:layout_width="48dp" android:layout_height="48dp" android:padding="12dp"
+                android:src="@drawable/ic_more_24" android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/drawing_set_options"
+                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="@id/btn_shape" />
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_preview"
+                android:layout_width="0dp" android:layout_height="0dp"
+                android:clipToPadding="false" android:paddingBottom="88dp"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_shape"
+                app:layout_constraintBottom_toBottomOf="parent" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_add"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_margin="4dp" android:contentDescription="@string/add_drawing_set"
+                app:backgroundTint="@color/primary" app:tint="@color/white"
+                app:srcCompat="@drawable/ic_plus_24"
+                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.h2play.canvas_magic.features.common.ErrorView android:id="@+id/view_error"
+            android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" />
+        <ProgressBar android:id="@+id/progress" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_gravity="center" android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

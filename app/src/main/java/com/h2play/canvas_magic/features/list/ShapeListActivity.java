@@ -69,6 +69,7 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        com.h2play.canvas_magic.util.ScreenLayout.setup(this, R.string.my_drawing_sets);
         
         // Initialize views
         shapeButton = findViewById(R.id.btn_shape);
@@ -103,6 +104,7 @@ public class ShapeListActivity extends BaseActivity implements ShapeListMvpView,
 
             @Override
             public void onBindViewHolder(PreviewHolder holder, int position) {
+                holder.itemView.setContentDescription(getString(R.string.edit_drawing_number, position + 1));
                 holder.itemView.post(new Runnable() {
                     @Override
                     public void run() {

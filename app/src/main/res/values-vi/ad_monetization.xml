@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_privacy_options">Tùy chọn quyền riêng tư quảng cáo</string>
+    <string name="ad_privacy_options_unavailable">Không tải được tùy chọn quyền riêng tư. Vui lòng thử lại sau.</string>
+</resources>

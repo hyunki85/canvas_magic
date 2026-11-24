@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_privacy_options">광고 개인정보 설정</string>
+    <string name="ad_privacy_options_unavailable">개인정보 설정을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</string>
+</resources>

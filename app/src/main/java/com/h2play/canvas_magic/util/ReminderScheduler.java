@@ -1,38 +1,19 @@
 package com.h2play.canvas_magic.util;
 
+import android.app.NotificationManager;
 import android.content.Context;
-import android.content.SharedPreferences;
-
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
-import java.util.concurrent.TimeUnit;
-
-public class ReminderScheduler {
-
-    private static final String WORK_NAME = "canvas_reminder_work";
-
-    public static void schedule(Context context) {
-        PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(
-                ReminderWorker.class, 1, TimeUnit.DAYS)
-                .setInitialDelay(1, TimeUnit.DAYS)
-                .build();
-
-        WorkManager.getInstance(context)
-                .enqueueUniquePeriodicWork(WORK_NAME,
-                        ExistingPeriodicWorkPolicy.KEEP,
-                        request);
-    }
-
-    public static void recordVisit(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(
-                ReminderWorker.PREF_NAME, Context.MODE_PRIVATE);
-        long now = System.currentTimeMillis();
-
-        if (!prefs.contains(ReminderWorker.KEY_INSTALL_TIME)) {
-            prefs.edit().putLong(ReminderWorker.KEY_INSTALL_TIME, now).apply();
-        }
-        prefs.edit().putLong(ReminderWorker.KEY_LAST_VISIT, now).apply();
+/** Upgrade cleanup only. Merely not opening a magic tool is not a reason to send a notification. */
+public final class ReminderScheduler {
+    private ReminderScheduler() {}
+    public static void cancelRetiredReminders(Context context) {
+        WorkManager.getInstance(context).cancelUniqueWork("canvas_reminder_work");
+        NotificationManager notifications =
+                (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notifications == null) return;
+        notifications.cancel(601);
+        notifications.cancel(602);
+        for (int id = 610; id <= 613; id++) notifications.cancel(id);
     }
 }

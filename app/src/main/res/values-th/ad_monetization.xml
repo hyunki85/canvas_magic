@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_privacy_options">ตัวเลือกความเป็นส่วนตัวของโฆษณา</string>
+    <string name="ad_privacy_options_unavailable">โหลดตัวเลือกความเป็นส่วนตัวไม่ได้ โปรดลองอีกครั้งในภายหลัง</string>
+</resources>

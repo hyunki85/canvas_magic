@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_privacy_options">Confidentialité des annonces</string>
+    <string name="ad_privacy_options_unavailable">Impossible de charger les paramètres de confidentialité. Veuillez réessayer plus tard.</string>
+</resources>

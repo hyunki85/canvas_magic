@@ -6,6 +6,7 @@ import com.h2play.canvas_magic.data.DataManager;
 import com.h2play.canvas_magic.features.base.BasePresenter;
 import com.h2play.canvas_magic.injection.ConfigPersistent;
 import com.h2play.canvas_magic.util.FileUtil;
+import com.h2play.canvas_magic.util.ShapeSetValidator;
 
 import javax.inject.Inject;
 
@@ -26,6 +27,8 @@ public class PreviewPresenter extends BasePresenter<PreviewMvpView> {
     }
 
     public void addNewItem(Context context, String name, String json, int count) {
+
+        if (!ShapeSetValidator.isValidCommunitySet(json, count)) return;
 
         int index = dataManager.getNewFileIndex();
         String newFileName = String.format("file%d.txt",index);

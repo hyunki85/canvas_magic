@@ -16,11 +16,13 @@
 
 package com.h2play.canvas_magic.util;
 
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -28,6 +30,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,25 +45,32 @@ import com.h2play.canvas_magic.features.menu.MenuActivity;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final AtomicInteger notificationIdCounter = new AtomicInteger(521);
+    private static final String CHANNEL_ID = "canvas_new_drawings";
+    private static final String PREF_LAST_DELIVERY = "new_drawing_notification_last_delivery";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        String link = "";
+        if (!NotificationPermissionManager.isOptedIn(this)) return;
+        String link = remoteMessage.getData().get("link");
+        if (!isValidDrawingLink(link)) return;
+        long now = System.currentTimeMillis();
+        long lastDelivery = getSharedPreferences(ReminderWorker.PREF_NAME, MODE_PRIVATE)
+                .getLong(PREF_LAST_DELIVERY, 0L);
+        if (!NotificationOptInPolicy.canDeliver(lastDelivery, now)) return;
 
-        // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            link = remoteMessage.getData().get("link");
-        }
-
-        // Check if message contains a notification payload.
+        String title = remoteMessage.getData().get("title");
+        String body = remoteMessage.getData().get("body");
         if (remoteMessage.getNotification() != null) {
-            sendNotification(remoteMessage.getNotification().getTitle(),
-                    remoteMessage.getNotification().getBody(), link);
+            if (TextUtils.isEmpty(title)) title = remoteMessage.getNotification().getTitle();
+            if (TextUtils.isEmpty(body)) body = remoteMessage.getNotification().getBody();
         }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
+        if (TextUtils.isEmpty(title)) title = getString(R.string.new_drawing_notification_title);
+        if (TextUtils.isEmpty(body)) body = getString(R.string.new_drawing_notification_body);
+        if (sendNotification(title, body, link)) {
+            getSharedPreferences(ReminderWorker.PREF_NAME, MODE_PRIVATE).edit()
+                    .putLong(PREF_LAST_DELIVERY, now).apply();
+        }
     }
     // [END receive_message]
 
@@ -76,13 +86,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String token) {
 
         saveRegistrationToServer(token);
-        FirebaseMessaging.getInstance().subscribeToTopic("mymind")
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-
-                    }
-                });
+        TopicManager.updateTopics(this);
     }
     // [END on_new_token]
 
@@ -102,20 +106,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String title, String messageBody, String link) {
+    private boolean sendNotification(String title, String messageBody, String link) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+
+        int notificationId = notificationIdCounter.getAndIncrement();
         Intent intent = new Intent(this, MenuActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         if (!TextUtils.isEmpty(link)) {
             intent.putExtra("link", link);
         }
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT|PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, notificationId, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        String channelId = getString(R.string.app_name);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_magic)
                         .setContentTitle(title)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
@@ -127,12 +137,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "Mind Reading",
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    getString(R.string.reminder_channel_name),
                     NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(channel);
         }
 
-        notificationManager.notify(notificationIdCounter.getAndIncrement(), notificationBuilder.build());
+        notificationManager.notify(notificationId, notificationBuilder.build());
+        return true;
+    }
+
+    public static boolean isValidDrawingLink(String link) {
+        return CommunityDeepLink.isValid(link);
     }
 }

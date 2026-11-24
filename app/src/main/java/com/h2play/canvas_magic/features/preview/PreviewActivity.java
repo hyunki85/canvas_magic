@@ -40,6 +40,7 @@ import com.h2play.canvas_magic.features.share.ShapeAdapter;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
 import com.h2play.canvas_magic.util.FabricView;
 import com.h2play.canvas_magic.util.FileUtil;
+import com.h2play.canvas_magic.util.ShapeSetValidator;
 import com.h2play.canvas_magic.util.ViewUtil;
 
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        com.h2play.canvas_magic.util.ScreenLayout.setup(this, R.string.preview_drawing_set);
 
         // Initialize views
         titleTextView = findViewById(R.id.txt_title);
@@ -87,7 +89,13 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
 
         Dart.inject(this);
 
+        if (shapeOnline == null || !ShapeSetValidator.isValidCommunitySet(
+                shapeOnline.json, shapeOnline.count)) { finish(); return; }
         titleTextView.setText(shapeOnline.name);
+        boolean hasDrawings = com.h2play.canvas_magic.util.DrawingPreviewData.firstDrawable(
+                shapeOnline.json, shapeOnline.count) >= 0;
+        findViewById(R.id.preview_notice).setVisibility(hasDrawings ? View.GONE : View.VISIBLE);
+        fabSave.setVisibility(hasDrawings ? View.VISIBLE : View.GONE);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         int spacingInPixels = ViewUtil.dpToPx(16);
@@ -105,10 +113,15 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
 
             @Override
             public void onBindViewHolder(PreviewHolder holder, int position) {
+                holder.itemView.setContentDescription(getString(R.string.preview_drawing_number, position + 1));
+                holder.itemView.findViewById(R.id.preview_empty).setVisibility(
+                        com.h2play.canvas_magic.util.DrawingPreviewData.hasInk(shapeOnline.json, position)
+                                ? View.GONE : View.VISIBLE);
 
                 holder.itemView.post(new Runnable() {
                     @Override
                     public void run() {
+                        if (holder.getBindingAdapterPosition() != position) return;
                         drawShape(holder.fabricView, shapeOnline.json, position);
                     }
                 });
@@ -118,7 +131,7 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
 
             @Override
             public int getItemCount() {
-                return shapeOnline.count;
+                return com.h2play.canvas_magic.util.DrawingPreviewData.pageCount(shapeOnline.json, shapeOnline.count);
             }
         });
 
@@ -135,45 +148,9 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
         return intent;
     }
 
-    public void drawShape(FabricView fabricView, String jsonText, int shapeIndex) {
-        fabricView.cleanPage();
-        fabricView.setColor(Color.BLACK);
-
-        JsonObject assetJsonObject = new Gson().fromJson(jsonText, JsonObject.class);
-        JsonArray shapes = assetJsonObject.get("shapes").getAsJsonArray();
-        JsonArray actions = shapes.get(shapeIndex).getAsJsonArray();
-
-        List<JsonObject> jsonObjects = new ArrayList<>();
-        for (int i = 0; i < actions.size(); ++i) {
-            jsonObjects.add(actions.get(i).getAsJsonObject());
-        }
-        ;
-        for (JsonObject jsonObject : jsonObjects) {
-            switch (jsonObject.get("action").getAsString()) {
-                case "down": {
-                    fabricView.actionDown(jsonObject.get("x").getAsFloat() * fabricView.getWidth()
-                            , jsonObject.get("y").getAsFloat() * fabricView.getHeight());
-                    break;
-                }
-
-                case "up": {
-                    fabricView.actionUp(jsonObject.get("x").getAsFloat() * fabricView.getWidth()
-                            , jsonObject.get("y").getAsFloat() * fabricView.getHeight());
-                    break;
-                }
-
-                case "move": {
-                    fabricView.actionMove(jsonObject.get("x1").getAsFloat() * fabricView.getWidth()
-                            , jsonObject.get("y1").getAsFloat() * fabricView.getHeight(),
-                            jsonObject.get("x2").getAsFloat() * fabricView.getWidth(),
-                            jsonObject.get("y2").getAsFloat() * fabricView.getHeight());
-                    break;
-                }
-            }
-        }
-        fabricView.setInteractionMode(LOCKED_MODE);
+    public void drawShape(FabricView view, String json, int index) {
+        com.h2play.canvas_magic.util.DrawingPreviewRenderer.draw(view, json, index);
     }
-
 
     @Override
     public int getLayout() {
@@ -208,6 +185,9 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
 
     @Override
     public void onSaveComplete() {
+        com.h2play.canvas_magic.util.Analytics.log(this,
+                com.h2play.canvas_magic.util.Analytics.COMMUNITY_SAVE,
+                "pack_kind", "community");
         Toast.makeText(this, getResources().getString(R.string.save_complete), Toast.LENGTH_SHORT).show();
     }
 
@@ -217,6 +197,8 @@ public class PreviewActivity extends BaseActivity implements PreviewMvpView, Err
     }
 
     public void onSaveClick() {
+        if (shapeOnline == null || !ShapeSetValidator.isValidCommunitySet(
+                shapeOnline.json, shapeOnline.count)) return;
         final EditText et = new EditText(this);
         FrameLayout container = new FrameLayout(this);
 

@@ -30,10 +30,10 @@ android {
         applicationId "com.h2play.canvas_magic"
         minSdkVersion 25
         targetSdkVersion 36
-        testInstrumentationRunner "${applicationId}.runner.RxAndroidJUnitRunner"
-        versionCode 1002007
+        testInstrumentationRunner "${applicationId}.runner.CanvasMagicTestRunner"
+        versionCode 1002012
         // Major -> Millions, Minor -> Thousands, Bugfix -> Hundreds. E.g 1.3.72 == 1,003,072
-        versionName '1.2.7'
+        versionName '1.2.12'
 
         buildConfigField("String", "POKEAPI_API_URL",
                 "\"${PokeapiApiUrl}\"")
@@ -50,6 +50,8 @@ android {
     }
     buildTypes {
         debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
             minifyEnabled false
             multiDexEnabled true
         }
@@ -62,15 +64,6 @@ android {
         }
     }
 
-    sourceSets {
-        def commonTestDir = 'src/commonTest/java'
-        test {
-            java.srcDir commonTestDir
-        }
-        androidTest {
-            java.srcDir commonTestDir
-        }
-    }
     packagingOptions {
         resources {
             excludes += ['META-INF/services/javax.annotation.processing.Processor', 'LICENSE.txt', 'META-INF/license/LICENSE.base64.txt', 'META-INF/NOTICE.txt', 'META-INF/LICENSE.txt', 'META-INF/rxjava.properties']
@@ -86,20 +79,19 @@ android {
     testOptions {
         unitTests {
             returnDefaultValues = true
-            all {
-                jacoco {
-                    includeNoLocationClasses = true
-                }
-            }
         }
     }
     lint {
-        abortOnError false
+        abortOnError true
+        baseline file("lint-baseline.xml")
         checkAllWarnings true
+        // Timber 4.5.1 bundles a lint registry compiled against a retired lint API.
+        // Its runtime logging remains valid; only that third-party checker cannot load.
+        disable 'ObsoleteLintCustomCheck'
         explainIssues true
         lintConfig file("$projectDir/lint.xml")
         showAll true
-        textOutput file('stdout')
+        textOutput file("$buildDir/reports/lint/lint-results.txt")
         textReport true
         warningsAsErrors true
     }
@@ -143,6 +135,7 @@ dependencies {
     
     // Google Mobile Ads SDK (firebase-ads는 deprecated)
     implementation 'com.google.android.gms:play-services-ads:24.1.0'
+    implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
     
     annotationProcessor 'com.f2prateek.dart:dart-processor:2.0.2'
 
@@ -173,8 +166,11 @@ dependencies {
 //    releaseImplementation leakCannary
 //    testImplementation leakCannary
 
-    testImplementation unitTestLibs
-    androidTestImplementation androidTestsLibs
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test:core:1.6.1'
     implementation "androidx.constraintlayout:constraintlayout:2.2.1"
     
     // Firebase Firestore와 Auth (BoM이 버전 관리)

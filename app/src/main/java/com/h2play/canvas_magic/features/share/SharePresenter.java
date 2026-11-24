@@ -1,8 +1,6 @@
 package com.h2play.canvas_magic.features.share;
 
 import android.content.Context;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -13,17 +11,16 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.h2play.canvas_magic.data.DataManager;
 import com.h2play.canvas_magic.data.model.response.ShapeInfo;
 import com.h2play.canvas_magic.data.model.response.ShapeOnline;
 import com.h2play.canvas_magic.features.base.BasePresenter;
 import com.h2play.canvas_magic.injection.ConfigPersistent;
 import com.h2play.canvas_magic.util.FileUtil;
+import com.h2play.canvas_magic.util.ShapeSetValidator;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,8 +29,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import io.reactivex.Observable;
 
 @ConfigPersistent
 public class SharePresenter extends BasePresenter<ShareMvpView> {
@@ -87,29 +82,32 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (!isViewAttached()) return;
+                getView().showProgress(false);
 
                 if (task.isSuccessful()) {
                     QuerySnapshot snapshot = task.getResult();
+                    if (snapshot == null) {
+                        getView().showShapes(shapeOnlines);
+                        return;
+                    }
                     if (snapshot != null && !snapshot.isEmpty()) {
                         lastDocumentSnapshot = snapshot.getDocuments().get(snapshot.size() - 1);
                     }
 
-                    Observable<ShapeOnline> shapeOnlineObservable = Observable.fromIterable(snapshot)
-                            .map(queryDocumentSnapshot -> {
-                                ShapeOnline shape = queryDocumentSnapshot.toObject(ShapeOnline.class);
-                                shape.id = queryDocumentSnapshot.getId();
-                                if (dataManager.alreadyStarId(shape.id)) {
-                                    shape.alreadyStar = true;
-                                }
-                                return shape;
-                            });
-
-                    shapeOnlineObservable.toList()
-                            .subscribe(queryDocumentSnapshots -> {
-                                if (!isViewAttached()) return;
-                                shapeOnlines.addAll(queryDocumentSnapshots);
-                                getView().showShapes(shapeOnlines);
-                            });
+                    ArrayList<ShapeOnline> page = new ArrayList<>();
+                    for (DocumentSnapshot document : snapshot.getDocuments()) {
+                        ShapeOnline shape = document.toObject(ShapeOnline.class);
+                        if (shape == null || !ShapeSetValidator.isValidCommunitySet(shape.json, shape.count)) {
+                            continue;
+                        }
+                        shape.id = document.getId();
+                        shape.alreadyStar = dataManager.alreadyStarId(shape.id);
+                        page.add(shape);
+                    }
+                    shapeOnlines.addAll(page);
+                    getView().showShapes(shapeOnlines);
+                } else if (task.getException() != null) {
+                    getView().showError(task.getException());
                 }
             }
         });
@@ -139,44 +137,38 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
     public void upload(Context context, String name, String fileName, int count) {
 
         String jsonText = FileUtil.getJsonFromFile(context, fileName);
+        if (!ShapeSetValidator.isValidCommunitySet(jsonText, count)) {
+            if (isViewAttached()) getView().showError(
+                    new IllegalArgumentException("Invalid drawing set"));
+            return;
+        }
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        JsonObject assetJsonObject = new Gson().fromJson(jsonText, JsonObject.class);
-        JsonArray shapesJson = assetJsonObject.get("shapes").getAsJsonArray();
-        Gson gson = new Gson();
-        String firstShapeJson = gson.toJson(shapesJson.get(0));
-
-        CollectionReference shapes = db.collection("shapes2");
+        // 조회·좋아요·미리보기가 모두 사용하는 canonical 컬렉션에 완전한 세트를 저장한다.
+        // 과거의 shapes2/shapesInfo 분리 저장은 피드(shapes)와 연결되지 않아 업로드한
+        // 세트가 보이지 않았고, shapesInfo에는 첫 번째 도형만 있어 미리보기도 불가능했다.
         Map<String, Object> shapeMap = new HashMap<>();
         shapeMap.put("json", jsonText);
         shapeMap.put("count", count);
         shapeMap.put("name", name);
-        shapes.add(shapeMap).addOnCompleteListener(task -> {
-            // View가 detach되었으면 무시
+        shapeMap.put("star", 0);
+        shapeMap.put("featured", false);
+        shapeMap.put("language", Locale.getDefault().getLanguage());
+        shapeMap.put("date", new Date());
+        shapeMap.put("md5", getmd5hashfromstring(jsonText));
+        if (currentUser != null) {
+            shapeMap.put("user", currentUser.getUid());
+            shapeMap.put("user_name", currentUser.getUid());
+        }
+
+        getView().showProgress(true);
+        db.collection("shapes").add(shapeMap).addOnCompleteListener(task -> {
             if (!isViewAttached()) return;
-            
+            getView().showProgress(false);
             if (task.isSuccessful()) {
-                CollectionReference shapesInfo = db.collection("shapesInfo");
-                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                Map<String, Object> shapeInfoMap = new HashMap<>();
-                shapeInfoMap.put("user", currentUser.getUid());
-                shapeInfoMap.put("user_name", currentUser.getUid());
-                shapeInfoMap.put("shape_id", task.getResult().getId());
-                shapeInfoMap.put("name", name);
-                shapeInfoMap.put("star", 0);
-                shapeInfoMap.put("language", Locale.getDefault().getLanguage());
-                shapeInfoMap.put("date", new Date());
-                shapeInfoMap.put("json", firstShapeJson);
-                shapeInfoMap.put("md5", getmd5hashfromstring(jsonText));
-                shapesInfo.add(shapeInfoMap).addOnCompleteListener(task1 -> {
-                    // View가 detach되었으면 무시
-                    if (!isViewAttached()) return;
-                    
-                    if (task1.isSuccessful()) {
-                        getView().onShareComplete();
-                    }
-                });
-            } else {
-                Log.d("upload", "upload failed");
+                getView().onShareComplete();
+            } else if (task.getException() != null) {
+                getView().showError(task.getException());
             }
         });
     }
@@ -185,18 +177,43 @@ public class SharePresenter extends BasePresenter<ShareMvpView> {
         getView().showShapeList(dataManager.getShapeList());
     }
 
+    public void getShapeById(String documentId) {
+        if (!isViewAttached() || documentId == null
+                || !documentId.matches("[A-Za-z0-9_-]{1,128}")) return;
+        db.collection("shapes").document(documentId).get().addOnSuccessListener(document -> {
+            if (!isViewAttached() || !document.exists()) return;
+            ShapeOnline shape = document.toObject(ShapeOnline.class);
+            if (shape == null || !shape.featured
+                    || !ShapeSetValidator.isValidCommunitySet(shape.json, shape.count)) return;
+            shape.id = document.getId();
+            shape.alreadyStar = dataManager.alreadyStarId(shape.id);
+            getView().openShapePreview(shape);
+        });
+    }
+
     public void addLike(ShapeOnline shapeOnline) {
         if (!isViewAttached()) return;
         
         if(!shapeOnline.alreadyStar) {
             DocumentReference shapeRef = db.collection("shapes").document(shapeOnline.id);
-            shapeRef.update("star", shapeOnline.star +1);
-            dataManager.giveStarId(shapeOnline.id);
             shapeOnline.alreadyStar = true;
-            shapeOnline.star += 1;
             if (isViewAttached()) {
                 getView().updateShape(shapeOnline);
             }
+            shapeRef.update("star", FieldValue.increment(1))
+                    .addOnSuccessListener(ignored -> {
+                        dataManager.giveStarId(shapeOnline.id);
+                        shapeOnline.star += 1;
+                        if (isViewAttached()) {
+                            getView().updateShape(shapeOnline);
+                        }
+                    })
+                    .addOnFailureListener(error -> {
+                        shapeOnline.alreadyStar = false;
+                        if (isViewAttached()) {
+                            getView().updateShape(shapeOnline);
+                        }
+                    });
         }
 
     }

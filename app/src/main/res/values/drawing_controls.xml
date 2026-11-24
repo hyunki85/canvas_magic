@@ -1,0 +1,24 @@
+<resources>
+    <string name="pen_settings">Pen settings</string>
+    <string name="apply_brush">Apply</string>
+    <string name="custom_color">Custom</string>
+    <string name="color_drag_hint">Drag the handles to adjust hue, saturation and lightness.</string>
+    <string name="no_recent_colors">None yet</string>
+    <string name="color_swatch_label">Color %1$s</string>
+    <string name="coach_colors_title">1 / 3 · Make it yours</string>
+    <string name="coach_colors">Tap the palette below to choose a color and line width.</string>
+    <string name="coach_adjust">Choose a color and width, then tap Apply. Try a few strokes on the canvas.</string>
+    <string name="coach_hold_title">2 / 3 · The secret gesture</string>
+    <string name="coach_hold">Draw a little, then press and hold the palette below until the ring fills.</string>
+    <string name="tutorial_skip">Later</string>
+    <string name="tutorial_intro_title">A drawing that reads minds</string>
+    <string name="tutorial_intro_pick">Ask someone to think of a number from 1 to 9. Pretend to sketch it, then reveal their number on the canvas.</string>
+    <string name="tutorial_intro_tools">First, try the pen settings. Then learn the secret hold and practice revealing a number. These tips disappear during a real performance.</string>
+    <string name="tutorial_pin_instruction">The next screen only looks switched off. It is still listening.\n\nDouble-tap the area for a number to reveal its drawing. First, follow the highlighted guide. Then try number 8 yourself.</string>
+    <string name="tutorial_continue">Continue</string>
+    <string name="tutorial_start_practice">Try it</string>
+    <string name="tutorial_reveal_title">3 / 3 · Reveal the number</string>
+    <string name="tutorial_intro_progress">Getting started · %1$d / %2$d</string>
+    <string name="tutorial_finish">Done</string>
+    <string name="tutorial_pin_heading">The screen has a secret</string>
+</resources>

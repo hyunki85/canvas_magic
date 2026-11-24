@@ -47,7 +47,11 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void submit(List<MenuItemConfig> list) {
         items.clear();
-        if (list != null) items.addAll(list);
+        if (list != null) {
+            // Usage/help actions stay above recommendations, including after Remote Config refreshes.
+            for (MenuItemConfig item : list) if (item != null && !item.promo && item.span < 2) items.add(item);
+            for (MenuItemConfig item : list) if (item != null && (item.promo || item.span >= 2)) items.add(item);
+        }
         notifyDataSetChanged();
     }
 
@@ -136,46 +140,48 @@ public class DynamicMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         h.card.setCardBackgroundColor(bg);
         int content = ColorUtils.calculateLuminance(bg) < 0.5 ? Color.WHITE : Color.parseColor("#111111");
         h.title.setTextColor(content);
-        // Description
-        if (item.description != null && !item.description.isEmpty()) {
-            h.description.setText(resolveText(h.itemView.getContext(), item.description));
-            h.description.setVisibility(View.VISIBLE);
-        } else {
-            h.description.setVisibility(View.GONE);
-        }
+        h.description.setTextColor(content);
+        Glide.with(h.itemView).clear(h.image);
+        h.image.setTag(item);
+        CharSequence description = resolveText(h.itemView.getContext(), item.description);
+        h.description.setText(description);
+        h.description.setVisibility(description.length() == 0 ? View.GONE : View.VISIBLE);
+        int fallbackId = item.icon == null ? 0 : h.itemView.getResources()
+                .getIdentifier(item.icon, "drawable", h.itemView.getContext().getPackageName());
+        // Keep a bundled image visible while loading and when the network fails.
+        if (fallbackId == 0) fallbackId = R.drawable.ic_help;
+        final int fallback = fallbackId;
+        h.image.setImageResource(fallback);
+        h.image.setVisibility(View.VISIBLE);
 
-        boolean shown = false;
         if (item.imageUrl != null && !item.imageUrl.isEmpty()) {
             String url = item.imageUrl;
             try {
                 if (url.startsWith("gs://")) {
                     StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(url);
                     ref.getDownloadUrl().addOnSuccessListener(u -> {
-                        h.image.setVisibility(View.VISIBLE);
-                        Glide.with(h.itemView).load(u).centerCrop().into(h.image);
-                    }).addOnFailureListener(e -> h.image.setVisibility(View.GONE));
-                    shown = true;
-                } else if (url.startsWith("http")) {
-                    h.image.setVisibility(View.VISIBLE);
-                    Glide.with(h.itemView).load(url).centerCrop().into(h.image);
-                    shown = true;
+                        if (h.image.getTag() != item) return;
+                        Glide.with(h.itemView).load(u).placeholder(fallback).error(fallback)
+                                .fitCenter().into(h.image);
+                    }).addOnFailureListener(e -> {
+                        if (h.image.getTag() == item) h.image.setImageResource(fallback);
+                    });
+                } else if (url.startsWith("https://")) {
+                    Glide.with(h.itemView).load(url).placeholder(fallback).error(fallback)
+                            .fitCenter().into(h.image);
                 }
             } catch (Exception ignored) { }
         }
-        if (!shown) {
-            if (item.icon != null) {
-                int resId = h.itemView.getContext().getResources().getIdentifier(item.icon, "drawable", h.itemView.getContext().getPackageName());
-                if (resId != 0) {
-                    h.image.setImageResource(resId);
-                    h.image.setVisibility(View.VISIBLE);
-                    shown = true;
-                }
-            }
-        }
-        if (!shown) {
-            h.image.setVisibility(View.GONE);
-        }
         h.itemView.setOnClickListener(v -> listener.onItemClick(item));
+    }
+
+    @Override public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        if (holder instanceof PromoVH) {
+            PromoVH promo = (PromoVH) holder;
+            promo.image.setTag(null);
+            Glide.with(promo.itemView).clear(promo.image);
+        }
+        super.onViewRecycled(holder);
     }
 
     private int resolveBackgroundColor(MenuItemConfig item, int position) {

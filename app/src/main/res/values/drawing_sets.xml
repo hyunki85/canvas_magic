@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="drawing_pack_back">Back</string>
+    <string name="drawing_pack_replay">Preview drawings</string>
+    <string name="drawing_pack_start">Use this drawing set</string>
+    <string name="drawing_pack_description">Three drawings for the same trick. Only the pictures change, not how the trick works.</string>
+    <string name="drawing_pack_instructions">Hold the color button on the canvas to open the black screen. Double-tap the left, middle or right third to reveal the matching drawing. Each area spans the full height.</string>
+    <string name="drawing_pack_bundled_label">%1$s · Included set</string>
+    <string name="drawing_pack_position_label">%1$s\n%2$s</string>
+    <string-array name="drawing_pack_titles">
+        <item>Symbols</item>
+        <item>Celebration</item>
+        <item>Good luck</item>
+        <item>Night sky</item>
+    </string-array>
+    <string-array name="drawing_pack_art_names">
+        <item>Heart</item>
+        <item>Star</item>
+        <item>Flower</item>
+        <item>Cake</item>
+        <item>Balloon</item>
+        <item>Gift</item>
+        <item>Clover</item>
+        <item>Crown</item>
+        <item>Rocket</item>
+        <item>Moon</item>
+        <item>Planet</item>
+        <item>Comet</item>
+    </string-array>
+    <string-array name="drawing_pack_positions">
+        <item>1 · Left</item>
+        <item>2 · Middle</item>
+        <item>3 · Right</item>
+    </string-array>
+</resources>

@@ -5,4 +5,8 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!-- Debug points to the production Firebase project: never contaminate retention metrics. -->
+    <application>
+        <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
+    </application>
 </manifest>

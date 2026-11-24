@@ -46,6 +46,14 @@ public class PreferencesHelper {
         return preferences.getInt(key, -1);
     }
 
+    public void putLong(@Nonnull String key, long value) {
+        preferences.edit().putLong(key, value).apply();
+    }
+
+    public long getLong(@Nonnull String key) {
+        return preferences.getLong(key, 0L);
+    }
+
     public void clear() {
         preferences.edit().clear().apply();
     }

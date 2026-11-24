@@ -28,11 +28,19 @@
             app:strokeWidth="1dp"
             app:strokeColor="#E0E0E0">
 
+            <FrameLayout android:layout_width="88dp" android:layout_height="88dp">
             <com.h2play.canvas_magic.util.FabricView
                 android:id="@+id/fabricView1"
                 style="@style/small_fabric"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <TextView android:id="@+id/preview_empty"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:gravity="center" android:padding="8dp" android:textSize="12sp"
+                android:background="@color/canvas_screen_background"
+                android:textColor="@color/text_secondary" android:text="@string/preview_unavailable"
+                android:visibility="gone" />
+            </FrameLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -78,8 +86,8 @@
 
             <ImageView
                 android:id="@+id/img_like"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:padding="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/btn_star"
@@ -100,4 +108,3 @@
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
-

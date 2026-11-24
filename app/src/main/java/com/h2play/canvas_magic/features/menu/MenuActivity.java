@@ -1,66 +1,76 @@
 package com.h2play.canvas_magic.features.menu;
 
+import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.h2play.canvas_magic.BuildConfig;
-import com.h2play.canvas_magic.MvpStarterApplication;
 import com.h2play.canvas_magic.R;
-import com.h2play.canvas_magic.data.DataManager;
+import com.h2play.canvas_magic.data.model.PackRef;
+import com.h2play.canvas_magic.data.model.TutorialProgress;
 import com.h2play.canvas_magic.data.model.response.ShapeInfo;
 import com.h2play.canvas_magic.features.base.BaseActivity;
 import com.h2play.canvas_magic.features.common.ErrorView;
-import com.h2play.canvas_magic.features.help.HelpActivity;
 import com.h2play.canvas_magic.features.list.ShapeListActivity;
 import com.h2play.canvas_magic.features.main.MainActivity;
 import com.h2play.canvas_magic.features.share.ShareActivity;
 import com.h2play.canvas_magic.injection.component.ActivityComponent;
-import com.h2play.canvas_magic.util.AdDialog;
+import com.h2play.canvas_magic.util.ads.BannerAdController;
+import com.h2play.canvas_magic.util.ads.ExitAdController;
 import com.h2play.canvas_magic.util.Analytics;
+import com.h2play.canvas_magic.util.PromoImpressionTracker;
+import com.h2play.canvas_magic.util.HomeExperiencePreferences;
+import com.h2play.canvas_magic.util.NotificationPermissionManager;
 import com.h2play.canvas_magic.util.ReminderScheduler;
 import com.h2play.canvas_magic.util.TopicManager;
+import com.h2play.canvas_magic.util.CommunityDeepLink;
+import com.h2play.canvas_magic.util.DrawingExperience;
+import com.h2play.canvas_magic.util.DrawingCatalog;
+import com.h2play.canvas_magic.features.packs.DrawingPackActivity;
 import com.vorlonsoft.android.rate.AppRate;
 
 import com.h2play.canvas_magic.features.menu.config.MenuConfig;
 import com.h2play.canvas_magic.features.menu.config.MenuConfigLoader;
 import com.h2play.canvas_magic.features.menu.config.MenuItemConfig;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView.ErrorListener {
+
+    public static final String EXTRA_DESTINATION = "destination";
+    public static final String DESTINATION_COMMUNITY = "community";
+    public static final String DESTINATION_SHAPE_LIST = "shape_list";
+    public static final String DESTINATION_DRAWING_PACK = "drawing_pack";
+    private static final String STATE_SHOW_INTRO = "show_home_intro";
+    private static final String STATE_PROMO_IMPRESSIONS = "promo_impressions";
 
     @Inject
     MenuPresenter menuPresenter;
@@ -75,10 +85,17 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     private View imgRate;
     private View imgShare;
     private View btnShare;
-
+    private View heroSection;
+    private View heroIntroContent;
+    private View returningKicker;
+    private View choosePackButton;
+    private View[] sparkleViews;
+    private boolean returningUser;
+    private boolean introAnimationsStarted;
+    private boolean showHomeIntro;
     private FirebaseAuth mAuth;
-    private AdView adView;
-    private AdDialog mCustomDialog;
+    private ActivityResultLauncher<String> notificationPermissionLauncher;
+    private boolean notificationOptInShowing;
 
     // Dynamic menu
     private RecyclerView rvDynamicMenu;
@@ -86,7 +103,8 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     private DynamicMenuAdapter dynamicAdapter;
     private int activeMenuConfigVersion;
     private String activeMenuExperiment = "";
-    private final Set<String> impressedPromoKeys = new HashSet<>();
+    private final PromoImpressionTracker promoImpressions = new PromoImpressionTracker();
+    private boolean homeResumed;
 
     @Override
     public void onStart() {
@@ -112,6 +130,18 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            ArrayList<String> impressions = savedInstanceState.getStringArrayList(STATE_PROMO_IMPRESSIONS);
+            promoImpressions.restore(impressions);
+        }
+
+        notificationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(), granted -> {
+                    NotificationPermissionManager.setOptedIn(this, granted);
+                    TopicManager.updateTopics(this);
+                    Analytics.log(this, Analytics.NOTIFICATION_PERMISSION_RESULT,
+                            "result", granted ? "granted" : "denied");
+                });
 
         // Making sure Firebase is initialized before accessing FirebaseAuth
         if (!com.google.firebase.FirebaseApp.getApps(this).isEmpty()) {
@@ -131,9 +161,22 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         imgRate = findViewById(R.id.img_rate);
         imgShare = findViewById(R.id.img_share);
         btnShare = findViewById(R.id.btn_share);
+        heroSection = findViewById(R.id.hero_section);
+        heroIntroContent = findViewById(R.id.hero_intro_content);
+        returningKicker = findViewById(R.id.tv_returning_kicker);
+        choosePackButton = findViewById(R.id.btn_choose_pack);
+        sparkleViews = new View[] {
+                findViewById(R.id.sparkle1),
+                findViewById(R.id.sparkle2),
+                findViewById(R.id.sparkle3)
+        };
         Button btnRestartTutorial = findViewById(R.id.btn_restart_tutorial);
         rvDynamicMenu = findViewById(R.id.rv_dynamic_menu);
         scrollView = findViewById(R.id.scroll_view);
+        showHomeIntro = savedInstanceState == null
+                ? !HomeExperiencePreferences.hasSeenIntro(this)
+                : savedInstanceState.getBoolean(STATE_SHOW_INTRO, false);
+        HomeExperiencePreferences.markIntroSeen(this);
 
         btnChannel.setOnClickListener(v -> onChannelClick());
         btnHelp.setOnClickListener(v -> onHelpClick());
@@ -141,6 +184,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         imgRate.setOnClickListener(v -> onRateClick());
         imgShare.setOnClickListener(v -> onShareLinkClick());
         startButton.setOnClickListener(v -> onStartClick());
+        choosePackButton.setOnClickListener(v -> menuPresenter.getShapeList());
         btnShare.setOnClickListener(v -> onShareClick());
         btnRestartTutorial.setOnClickListener(v -> onRestartTutorialClick());
         scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
@@ -151,44 +195,14 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
         errorView.setErrorListener(this);
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
-        adView = new AdView(this);
-        adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
-        adView.setAdUnitId("ca-app-pub-9937617798998725/1754825717");
-        adView.loadAd(new AdRequest.Builder().build());
-
-        mCustomDialog = new AdDialog(this,
-                adView,
-                view -> mCustomDialog.dismiss(),
-                view -> {
-                    mCustomDialog.dismiss();
-                    finish();
-                });
-
+        new BannerAdController(this, findViewById(R.id.adView), BannerAdController.HOME,
+                findViewById(R.id.ad_privacy_options));
+        ExitAdController exitAd = new ExitAdController(this, ExitAdController.Placement.MENU);
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                mCustomDialog.show();
+            @Override public void handleOnBackPressed() {
+                exitAd.onBack(MenuActivity.this::finish);
             }
         });
-
-        Animation pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
-        startButton.startAnimation(pulseAnimation);
-
-        // Hero section fade-in
-        View heroSection = findViewById(R.id.hero_section);
-        if (heroSection != null) {
-            heroSection.setAlpha(0f);
-            heroSection.animate().alpha(1f).setDuration(600).setStartDelay(100).start();
-        }
-
-        // Sparkle floating animations
-        animateSparkle(findViewById(R.id.sparkle1), 3000, 8f);
-        animateSparkle(findViewById(R.id.sparkle2), 2500, -6f);
-        animateSparkle(findViewById(R.id.sparkle3), 3500, 7f);
 
         AppRate.with(this)
                 .setInstallDays((byte) 0)
@@ -196,17 +210,78 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
                 .setRemindInterval((byte) 1)
                 .setRemindLaunchesNumber((byte) 1)
                 .monitor();
-        AppRate.showRateDialogIfMeetsConditions(this);
+        // 실제 마술을 충분히 경험하기 전에는 평점 요청으로 흐름을 끊지 않는다.
+        if (menuPresenter.getTrickCount() >= 3) {
+            AppRate.showRateDialogIfMeetsConditions(this);
+        }
+
+        heroSection.post(() -> handleNavigationIntent(getIntent()));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        homeResumed = true;
+        rvDynamicMenu.post(this::trackVisiblePromoImpressions);
+        if (!menuPresenter.hasPersistedPackRef()) {
+            String legacyBuiltIn = DrawingExperience.lastPack(this);
+            if (DrawingCatalog.index(legacyBuiltIn) >= 0) {
+                menuPresenter.rememberBuiltInPack(legacyBuiltIn);
+            }
+        }
+        updateHomeForVisitState();
         tvStartLabel.setText(R.string.start_trick);
+        TextView activePack = findViewById(R.id.tv_active_pack);
+        activePack.setVisibility(View.GONE);
+        if (returningUser) {
+            PackRef ref = menuPresenter.getLastPackRef();
+            int builtIn = ref != null && ref.kind == PackRef.Kind.BUILT_IN
+                    ? DrawingCatalog.index(ref.id) : -1;
+            ShapeInfo lastShape = ref != null && ref.kind == PackRef.Kind.CUSTOM
+                    ? menuPresenter.getLastShape() : null;
+            if (builtIn >= 0) {
+                activePack.setText(getString(R.string.active_drawing_set,
+                        getResources().getStringArray(R.array.drawing_pack_titles)[builtIn]));
+            } else if (lastShape != null) {
+                activePack.setText(getString(R.string.active_drawing_set, lastShape.name));
+            }
+            if (builtIn >= 0 || lastShape != null) {
+                activePack.setVisibility(View.VISIBLE);
+                tvStartLabel.setText(R.string.perform_now);
+            }
+        }
         menuPresenter.checkNeedGuidE();
-
-        ReminderScheduler.recordVisit(this);
+        ReminderScheduler.cancelRetiredReminders(this);
         TopicManager.updateTopics(this);
+        heroSection.post(this::maybeShowNotificationOptIn);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(STATE_SHOW_INTRO, showHomeIntro);
+        outState.putStringArrayList(STATE_PROMO_IMPRESSIONS, promoImpressions.snapshot());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onPause() {
+        homeResumed = false;
+        super.onPause();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && rvDynamicMenu != null) {
+            rvDynamicMenu.post(this::trackVisiblePromoImpressions);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleNavigationIntent(intent);
     }
 
     @Override
@@ -245,8 +320,11 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         }
 
         Intent intent = new Intent(this, com.h2play.canvas_magic.features.web.WebViewActivity.class);
-        intent.putExtra("url", "file:///android_asset/" + tutorialAsset);
-        intent.putExtra("title", getString(R.string.start_tutorial));
+        PackRef active = menuPresenter.getLastPackRef();
+        String pack = active != null && active.kind == PackRef.Kind.BUILT_IN ? active.id : null;
+        String contextQuery = DrawingCatalog.index(pack) >= 0 ? "?pack=" + Uri.encode(pack) : "";
+        intent.putExtra("url", "file:///android_asset/" + tutorialAsset + contextQuery);
+        intent.putExtra("title", getString(R.string.drawing_help_title));
         startActivity(intent);
     }
 
@@ -269,7 +347,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name);
-            String shareMessage = "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID;
+            String shareMessage = "https://play.google.com/store/apps/details?id=" + "com.h2play.canvas_magic";
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
             startActivity(Intent.createChooser(shareIntent, getString(R.string.choose_share_app)));
         } catch (Exception e) {
@@ -278,18 +356,217 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     }
 
     public void onStartClick() {
+        if (menuPresenter.isGuideNeeded()) {
+            startTutorial();
+            return;
+        }
+        PackRef pack = menuPresenter.getLastPackRef();
+        if (returningUser && pack != null) {
+            Bundle params = new Bundle();
+            params.putString("action", "resume_pack");
+            params.putString("pack_kind", pack.kind == PackRef.Kind.BUILT_IN ? "built_in" : "custom");
+            Analytics.log(this, Analytics.MENU_ACTION, params);
+            startPack(pack, "home_resume");
+            return;
+        }
         menuPresenter.getShapeList();
+    }
+
+    private void startPack(PackRef pack, String entryPoint) {
+        if (pack.kind == PackRef.Kind.BUILT_IN) {
+            menuPresenter.rememberBuiltInPack(pack.id);
+            DrawingExperience.rememberPack(this, pack.id);
+            startActivity(MainActivity.getStartIntent(this, 0)
+                    .putExtra(DrawingExperience.EXTRA_PACK, pack.id)
+                    .putExtra(MainActivity.EXTRA_ENTRY_POINT, entryPoint));
+        } else {
+            menuPresenter.rememberCustomPack(pack.id);
+            DrawingExperience.rememberPack(this, null);
+            startActivity(MainActivity.getCustomPackIntent(this, pack.id, entryPoint));
+        }
+    }
+
+    private void updateHomeForVisitState() {
+        returningUser = menuPresenter.getTrickCount() > 0 && !menuPresenter.isGuideNeeded();
+        boolean expandedIntro = showHomeIntro && menuPresenter.getTrickCount() == 0;
+
+        heroIntroContent.setVisibility(expandedIntro ? View.VISIBLE : View.GONE);
+        returningKicker.setVisibility(expandedIntro ? View.GONE : View.VISIBLE);
+        ((TextView) returningKicker).setText(returningUser
+                ? R.string.returning_user_kicker : R.string.menu_subtitle);
+        choosePackButton.setVisibility(returningUser ? View.VISIBLE : View.GONE);
+
+        int verticalPadding = dpToPx(expandedIntro ? 40 : 16);
+        heroSection.setPadding(
+                heroSection.getPaddingLeft(),
+                verticalPadding,
+                heroSection.getPaddingRight(),
+                dpToPx(expandedIntro ? 28 : 8));
+
+        ViewGroup.MarginLayoutParams startParams =
+                (ViewGroup.MarginLayoutParams) startButton.getLayoutParams();
+        startParams.topMargin = dpToPx(expandedIntro ? 24 : 0);
+        startButton.setLayoutParams(startParams);
+
+        if (!expandedIntro) {
+            startButton.clearAnimation();
+            for (View sparkle : sparkleViews) {
+                sparkle.animate().cancel();
+                sparkle.setVisibility(View.GONE);
+            }
+            heroSection.setAlpha(1f);
+        } else {
+            for (View sparkle : sparkleViews) {
+                sparkle.setVisibility(View.VISIBLE);
+            }
+            playIntroAnimationsOnce();
+        }
+    }
+
+    private void maybeShowNotificationOptIn() {
+        if (isFinishing() || notificationOptInShowing
+                || !NotificationPermissionManager.shouldShowOptIn(this)) return;
+        notificationOptInShowing = true;
+        final boolean[] responseRecorded = {false};
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.notification_opt_in_title)
+                .setMessage(R.string.notification_opt_in_message)
+                .setPositiveButton(R.string.notification_opt_in_accept, (ignored, which) -> {
+                    responseRecorded[0] = true;
+                    NotificationPermissionManager.markPromptShown(this);
+                    Analytics.log(this, Analytics.NOTIFICATION_PERMISSION_PROMPT,
+                            "result", "accepted_soft_prompt");
+                    if (NotificationPermissionManager.hasSystemPermission(this)) {
+                        NotificationPermissionManager.setOptedIn(this, true);
+                        TopicManager.updateTopics(this);
+                        Analytics.log(this, Analytics.NOTIFICATION_PERMISSION_RESULT,
+                                "result", "granted");
+                    } else {
+                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                    }
+                })
+                .setNegativeButton(R.string.notification_opt_in_later, (ignored, which) -> {
+                    responseRecorded[0] = true;
+                    NotificationPermissionManager.markPromptShown(this);
+                    NotificationPermissionManager.setOptedIn(this, false);
+                    TopicManager.updateTopics(this);
+                    Analytics.log(this, Analytics.NOTIFICATION_PERMISSION_RESULT,
+                            "result", "later");
+                })
+                .create();
+        dialog.setOnCancelListener(ignored -> {
+            if (!responseRecorded[0]) {
+                responseRecorded[0] = true;
+                NotificationPermissionManager.markPromptShown(this);
+                NotificationPermissionManager.setOptedIn(this, false);
+                TopicManager.updateTopics(this);
+                Analytics.log(this, Analytics.NOTIFICATION_PERMISSION_RESULT,
+                        "result", "later");
+            }
+        });
+        dialog.setOnDismissListener(ignored -> notificationOptInShowing = false);
+        dialog.show();
+    }
+
+    private void playIntroAnimationsOnce() {
+        if (introAnimationsStarted) return;
+        introAnimationsStarted = true;
+
+        Animation pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
+        startButton.startAnimation(pulseAnimation);
+        heroSection.setAlpha(0f);
+        heroSection.animate().alpha(1f).setDuration(600).setStartDelay(100).start();
+        animateSparkle(sparkleViews[0], 3000, 8f);
+        animateSparkle(sparkleViews[1], 2500, -6f);
+        animateSparkle(sparkleViews[2], 3500, 7f);
+    }
+
+    private int dpToPx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
+    }
+
+    private void handleNavigationIntent(Intent intent) {
+        if (intent == null) return;
+
+        String destination = intent.getStringExtra(EXTRA_DESTINATION);
+        String link = intent.getStringExtra("link");
+        String drawingId = intent.getStringExtra(DrawingExperience.EXTRA_PACK);
+        intent.removeExtra(DrawingExperience.EXTRA_PACK);
+        intent.removeExtra(EXTRA_DESTINATION);
+        intent.removeExtra("link");
+
+        if ((DESTINATION_DRAWING_PACK.equals(destination) || "weekly_pack".equals(destination))
+                && DrawingCatalog.index(drawingId) >= 0) {
+            startActivity(DrawingPackActivity.intent(this, drawingId));
+            return;
+        }
+        if ("daily_practice".equals(destination) || isInternalLink(link, "daily_practice")) {
+            // Retired notification/deep links return to the normal home, with no prompt.
+            return;
+        }
+
+        String communityDocumentId = CommunityDeepLink.parseDocumentId(link);
+        if (communityDocumentId != null) {
+            Analytics.log(this, Analytics.NOTIFICATION_OPEN, "destination", "community_drawing");
+            startActivity(ShareActivity.getDocumentStartIntent(this, communityDocumentId));
+            return;
+        }
+
+        if (DESTINATION_COMMUNITY.equals(destination) || isInternalLink(link, "community", "share")) {
+            Analytics.log(this, Analytics.NOTIFICATION_OPEN, "destination", DESTINATION_COMMUNITY);
+            onShareClick();
+            return;
+        }
+        if (DESTINATION_SHAPE_LIST.equals(destination) || isInternalLink(link, "shapes", "shape_list")) {
+            Analytics.log(this, Analytics.NOTIFICATION_OPEN, "destination", DESTINATION_SHAPE_LIST);
+            onChannelClick();
+            return;
+        }
+
+        if (link != null) {
+            try {
+                Uri uri = Uri.parse(link);
+                if ("https".equalsIgnoreCase(uri.getScheme())) {
+                    Analytics.log(this, Analytics.NOTIFICATION_OPEN, "destination", "https");
+                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                }
+            } catch (Exception error) {
+                Timber.w(error, "Invalid notification link");
+            }
+        }
+    }
+
+    private boolean isInternalLink(String link, String... destinations) {
+        if (link == null || link.isEmpty()) return false;
+        for (String destination : destinations) {
+            if (destination.equalsIgnoreCase(link)) return true;
+        }
+
+        try {
+            Uri uri = Uri.parse(link);
+            String host = uri.getHost();
+            String path = uri.getLastPathSegment();
+            for (String destination : destinations) {
+                if (destination.equalsIgnoreCase(host) || destination.equalsIgnoreCase(path)) {
+                    return true;
+                }
+            }
+        } catch (Exception ignored) {
+            // malformed links are ignored
+        }
+        return false;
     }
 
     public void onShareClick() {
         Analytics.log(this, Analytics.COMMUNITY_OPEN);
-        Intent intent = ShareActivity.getStartIntent(MenuActivity.this);
+        Intent intent = ShareActivity.getRecentStartIntent(MenuActivity.this);
         startActivity(intent);
     }
 
     private void setupDynamicMenu() {
         boolean devMode = BuildConfig.DEBUG;
         MenuConfig cfg = MenuConfigLoader.loadFromRemoteConfig(this, devMode, remoteConfig -> {
+            if (isFinishing() || isDestroyed()) return;
             if (remoteConfig != null && remoteConfig.items != null && !remoteConfig.items.isEmpty()) {
                 renderDynamicMenu(remoteConfig);
             }
@@ -336,7 +613,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     }
 
     private void trackVisiblePromoImpressions() {
-        if (dynamicAdapter == null || rvDynamicMenu.getVisibility() != View.VISIBLE) {
+        if (!homeResumed || !hasWindowFocus() || dynamicAdapter == null || !rvDynamicMenu.isShown()) {
             return;
         }
         for (int index = 0; index < rvDynamicMenu.getChildCount(); index++) {
@@ -354,26 +631,28 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
             }
             long totalArea = (long) child.getWidth() * child.getHeight();
             long visibleArea = (long) visibleRect.width() * visibleRect.height();
-            if (totalArea <= 0 || visibleArea * 2 < totalArea) {
-                continue;
-            }
-
             String itemId = item.id == null || item.id.isEmpty()
                     ? "position_" + position
                     : item.id;
             String impressionKey = activeMenuConfigVersion + "|" + activeMenuExperiment + "|" + itemId;
-            if (impressedPromoKeys.add(impressionKey)) {
+            if (promoImpressions.recordIfVisible(impressionKey, homeResumed, hasWindowFocus(),
+                    visibleArea, totalArea)) {
                 logCrossPromoEvent(Analytics.CROSS_PROMO_IMPRESSION, item);
             }
         }
     }
 
     private void logCrossPromoEvent(String event, MenuItemConfig item) {
+        logCrossPromoEvent(event, item, null);
+    }
+
+    private void logCrossPromoEvent(String event, MenuItemConfig item, String openResult) {
         Bundle params = new Bundle();
         params.putString("placement", "home_menu");
         params.putLong("config_version", activeMenuConfigVersion);
         params.putString("experiment", activeMenuExperiment);
         params.putString("source_package", BuildConfig.APPLICATION_ID);
+        if (openResult != null) params.putString("open_result", openResult);
         if (item.id != null) {
             params.putString("item_id", item.id);
         }
@@ -388,16 +667,25 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
             }
         }
         Analytics.log(this, event, params);
+        if (BuildConfig.DEBUG) Timber.d("CrossPromo %s %s", event, params);
+    }
+
+    private void logPromoOpenResult(MenuItemConfig item, String result) {
+        if (item.promo || item.span >= 2) {
+            logCrossPromoEvent(Analytics.CROSS_PROMO_OPEN, item, result);
+        }
     }
 
     private void openConfiguredUrl(MenuItemConfig item) {
         if (item.payload == null || item.payload.isEmpty()) {
+            logPromoOpenResult(item, "missing_url");
             return;
         }
         Uri webUri;
         try {
             webUri = Uri.parse(item.payload);
         } catch (Exception error) {
+            logPromoOpenResult(item, "invalid_url");
             Timber.w(error, "Invalid configured url");
             return;
         }
@@ -405,17 +693,20 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         boolean promo = item.promo || item.span >= 2;
         if (promo) {
             if (!webUri.isHierarchical()) {
+                logPromoOpenResult(item, "invalid_url");
                 Timber.w("Blocked non-hierarchical cross-promo url: %s", item.payload);
                 return;
             }
             String targetPackage = webUri.getQueryParameter("id");
             boolean allowedPackage = "com.h2play.magicnf".equals(targetPackage)
                     || "com.h2play.remoteMagic".equals(targetPackage)
-                    || "com.todayscrossword.app".equals(targetPackage);
+                    || "com.todayscrossword.app".equals(targetPackage)
+                    || "com.h2play.chainlab".equals(targetPackage);
             boolean allowedUrl = "https".equalsIgnoreCase(webUri.getScheme())
                     && "play.google.com".equalsIgnoreCase(webUri.getHost())
                     && "/store/apps/details".equals(webUri.getPath());
             if (!allowedPackage || !allowedUrl) {
+                logPromoOpenResult(item, "blocked_destination");
                 Timber.w("Blocked invalid cross-promo target: %s", item.payload);
                 return;
             }
@@ -432,6 +723,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
             playStoreIntent.setPackage("com.android.vending");
             try {
                 startActivity(playStoreIntent);
+                logPromoOpenResult(item, "market_intent_started");
                 return;
             } catch (android.content.ActivityNotFoundException error) {
                 Timber.i(error, "Google Play app unavailable; falling back to HTTPS");
@@ -443,7 +735,9 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, webUri));
+            logPromoOpenResult(item, "web_intent_started");
         } catch (android.content.ActivityNotFoundException error) {
+            logPromoOpenResult(item, "no_handler");
             Timber.w(error, "No activity to handle url: %s", item.payload);
         }
     }
@@ -516,6 +810,12 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     @Override
     public void startTutorial() {
         Analytics.log(this, Analytics.TUTORIAL_START);
+        TutorialProgress progress = menuPresenter.getTutorialProgress();
+        if (progress != TutorialProgress.NOT_STARTED) {
+            startActivity(MainActivity.getStartIntent(this, 0)
+                    .putExtra(MainActivity.EXTRA_ENTRY_POINT, "tutorial_resume"));
+            return;
+        }
         Intent intent = com.h2play.canvas_magic.features.tutorial.TutorialDialogueActivity
                 .getStartIntent(this, com.h2play.canvas_magic.features.tutorial.TutorialDialogueActivity.PHASE_PRE_DRAW);
         startActivityForResult(intent, REQUEST_TUTORIAL_DIALOGUE);
@@ -526,10 +826,11 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TUTORIAL_DIALOGUE) {
             if (resultCode == RESULT_OK) {
+                menuPresenter.setTutorialProgress(TutorialProgress.DRAWING_GUIDE);
                 Intent intent = MainActivity.getStartIntent(this, 0);
                 startActivity(intent);
             } else {
-                // 튜토리얼 중간 이탈 시 가이드 해제하여 "시작하기" 상태로 복귀
+                // Keep NOT_STARTED so the next tap resumes the lesson.
                 menuPresenter.cancelTutorial();
             }
         }
@@ -537,23 +838,8 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     @Override
     public void showShapeList(List<ShapeInfo> shapeInfos) {
-        Observable.fromIterable(shapeInfos)
-                .map(shapeInfo -> shapeInfo.name).toList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((strings, throwable) -> {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    final CharSequence[] cs = strings.toArray(new CharSequence[0]);
-                    builder.setTitle(R.string.shape_list_title)
-                            .setItems(cs, (dialog, which) -> {
-                                Intent intent = MainActivity.getStartIntent(MenuActivity.this, which);
-                                startActivity(intent);
-                                DataManager dataManager = MvpStarterApplication.get(MenuActivity.this).getComponent().dataManager();
-                                if (!dataManager.needGuide()) {
-                                    finish();
-                                }
-                            });
-                    builder.create().show();
-                });
+        PackPickerBottomSheet.show(this, shapeInfos, menuPresenter.getLastPackRef(),
+                pack -> startPack(pack, "pack_picker"));
     }
 
     @Override
@@ -569,7 +855,9 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
 
     @Override
     public void showTutorial() {
-        tvStartLabel.setText(R.string.start_tutorial);
+        tvStartLabel.setText(menuPresenter.getTutorialProgress() == TutorialProgress.NOT_STARTED
+                ? R.string.start_tutorial : R.string.resume_practice);
+        findViewById(R.id.tv_active_pack).setVisibility(View.GONE);
     }
 
     @Override
@@ -578,7 +866,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     }
 
     private void animateSparkle(View v, long duration, float drift) {
-        if (v == null) return;
+        if (v == null || v.getVisibility() != View.VISIBLE) return;
         v.animate()
                 .translationYBy(drift)
                 .alpha(0.3f)
@@ -587,7 +875,11 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
                         .translationYBy(-drift)
                         .alpha(1f)
                         .setDuration(duration)
-                        .withEndAction(() -> animateSparkle(v, duration, drift))
+                        .withEndAction(() -> {
+                            if (v.getVisibility() == View.VISIBLE) {
+                                animateSparkle(v, duration, drift);
+                            }
+                        })
                         .start())
                 .start();
     }

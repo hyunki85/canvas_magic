@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_privacy_options">Opções de privacidade de anúncios</string>
+    <string name="ad_privacy_options_unavailable">Não foi possível carregar as opções de privacidade. Tente novamente mais tarde.</string>
+</resources>

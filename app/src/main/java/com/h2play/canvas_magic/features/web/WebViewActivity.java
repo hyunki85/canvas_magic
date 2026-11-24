@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
-import android.widget.Button;
 
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
@@ -19,21 +18,17 @@ public class WebViewActivity extends AppCompatActivity {
 
     private WebView webView;
     private TextView titleTextView;
-    private Button cancelButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
         Dart.inject(this);
+        com.h2play.canvas_magic.util.ScreenLayout.setup(this, R.string.drawing_help_title);
 
         // Initialize views using findViewById instead of ButterKnife
         webView = findViewById(R.id.webview);
-        titleTextView = findViewById(R.id.txt_title);
-        cancelButton = findViewById(R.id.btn_cancel);
-        
-        // Set click listener instead of using @OnClick
-        cancelButton.setOnClickListener(v -> onCancelClick());
+        titleTextView = findViewById(R.id.screen_title);
 
         webView.setWebViewClient(new MyCustomWebViewClient(this));
         webView.clearCache(true);

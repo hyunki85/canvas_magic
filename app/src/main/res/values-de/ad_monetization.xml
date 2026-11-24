@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_privacy_options">Datenschutzeinstellungen für Werbung</string>
+    <string name="ad_privacy_options_unavailable">Die Datenschutzeinstellungen konnten nicht geladen werden. Bitte versuche es später erneut.</string>
+</resources>

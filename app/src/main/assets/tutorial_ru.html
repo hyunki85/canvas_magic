@@ -1,42 +1,32 @@
 <!doctype html>
-<html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Обучение Canvas Magic</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 16px; line-height: 1.6; color: #222; }
-    h1 { font-size: 22px; margin: 0 0 12px; }
-    h2 { font-size: 18px; margin: 20px 0 8px; }
-    .card { background: #fff; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); padding: 16px; margin: 12px 0; }
-    .tip { background:#f1f8ff; border-left: 4px solid #4f90bc; padding: 12px; border-radius: 8px; }
-    ol { padding-left: 20px; }
-    li { margin: 6px 0; }
-    .kbd { display:inline-block; border:1px solid #ccc; border-bottom-width:2px; border-radius:6px; padding:2px 6px; font-weight:600; background:#fafafa; }
-    footer{ margin-top:24px; font-size:12px; color:#666; }
-  </style>
-</head>
-<body>
-  <h1>Обучение Canvas Magic</h1>
-  <div class="card">
-    <h2>Как работает фокус</h2>
-    <ol>
-      <li>Попросите зрителя загадать число от 1 до N.</li>
-      <li>Выберите цвет и сделайте вид, что небрежно рисуете несколько линий.</li>
-      <li><span class="kbd">Нажмите и удерживайте</span> кнопку цвета, чтобы запустить режим фокуса.</li>
-      <li>Когда зритель назовёт число, <b>дважды нажмите</b> на соответствующую ячейку.</li>
-      <li>Приложение автоматически покажет рисунок для этого числа.</li>
-    </ol>
-  </div>
-  <div class="card">
-    <h2>Советы</h2>
-    <ul>
-      <li>Перед долгим нажатием отвлеките зрителя естественным жестом, например прокруткой или сменой фигуры.</li>
-      <li>Дважды нажать можно в любом месте, но нажатие ближе к центру поможет избежать ошибок.</li>
-      <li>В тёмном помещении увеличьте яркость экрана.</li>
-    </ul>
-  </div>
-  <div class="tip">Нажмите «Перезапустить обучение» в меню, чтобы сбросить подсказки.</div>
-  <footer>Обучение Canvas Magic</footer>
-</body>
-</html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canvas Trick · Как пользоваться</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;padding:20px;line-height:1.65;color:#25253e;background:#f5f7fa}
+h1{font-size:24px;margin:0 0 12px}h2{font-size:19px;margin:0 0 12px}h3{font-size:17px;margin:0 0 8px}
+section{background:white;border:1px solid #e4e7ec;border-radius:16px;padding:18px;margin:18px 0}
+p{margin:10px 0}ol,ul{padding-left:22px}li{margin:12px 0}
+.context{color:#6440b6;font-weight:600}table{border-collapse:collapse;table-layout:fixed;width:100%;margin:16px 0}
+td{border:1px solid #c9c5de;text-align:center;padding:12px 4px;overflow-wrap:anywhere}
+.columns td{height:100px;vertical-align:middle}small{display:block;color:#5d5d73}
+</style></head><body>
+<h1>Как пользоваться</h1><p>Один фокус с разными рисунками. При смене набора меняется только появляющаяся картинка.</p><p id="context" class="context">Числа приведены как стандартный пример. Для готовых рисунков используйте схему из трёх столбцов ниже.</p>
+<section><h2>Порядок действий</h2><ol><li>Попросите зрителя задумать число или картинку из выбранного набора.</li><li>Нажмите на палитру, выберите цвет и толщину линии, затем нажмите <b>Применить</b>. Для других цветов откройте ручной выбор.</li><li>Нарисуйте несколько линий и <b>нажмите и удерживайте палитру</b>. Чёрный экран выглядит выключенным, но реагирует на касания.</li><li>Когда зритель назовёт свой выбор, <b>быстро коснитесь дважды</b> нужной области по схеме ниже. Появится соответствующий рисунок.</li></ol></section>
+<h2>Области чёрного экрана</h2><div id="mapping">
+<section id="numbers"><h3>Стандартные числа · 9 областей</h3><p>Представьте три столбца и три строки. Например, 8 находится внизу по центру.</p>
+<table aria-label="Стандартные числа · 9 областей"><tbody><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td>5</td><td>6</td></tr><tr><td>7</td><td>8</td><td>9</td></tr></tbody></table></section>
+<section id="provided"><h3>Готовые наборы · 3 столбца</h3><p>Левая, средняя и правая области занимают всю высоту экрана. Это не сетка из девяти чисел.</p>
+<table class="columns" aria-label="Готовые наборы · 3 столбца"><tbody><tr><td><small>1 · Слева</small><b id="art-0">Сердце</b></td><td><small>2 · В центре</small><b id="art-1">Звезда</b></td><td><small>3 · Справа</small><b id="art-2">Цветок</b></td></tr></tbody></table></section>
+</div><p>Ваши наборы используют порядок рисунков на экране редактирования. Всегда три столбца: 6 рисунков — 2 строки, 12 — 4 строки, 15 — 5 строк.</p>
+<section><h2>Полезно знать</h2><ul><li>Примените настройки или закройте панель цвета, чтобы сохранить их. Отмена сбрасывает только текущие изменения.</li><li>Оба касания должны попасть в одну область. Во время фокуса сетка и подсказки не видны.</li></ul></section>
+<p>Нажмите «Повторить» на главном экране, чтобы пройти обучение заново. В нём используется стандартный набор чисел 1–9.</p>
+<script>
+const ids=["little_surprises","celebration","good_luck","night_sky"];
+const selected=ids.indexOf(new URLSearchParams(location.search).get("pack"));
+if(selected>=0){
+ const names=["Символы","Праздник","Удача","Ночное небо"], drawings=[["Сердце","Звезда","Цветок"],["Торт","Шарик","Подарок"],["Клевер","Корона","Ракета"],["Луна","Планета","Комета"]];
+ document.getElementById("context").textContent="Выбранный набор: "+names[selected];
+ for(let i=0;i<3;i++)document.getElementById("art-"+i).textContent=drawings[selected][i];
+ document.getElementById("mapping").prepend(document.getElementById("provided"));
+}
+</script></body></html>

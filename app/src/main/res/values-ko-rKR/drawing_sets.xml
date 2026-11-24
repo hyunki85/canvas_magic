@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="drawing_pack_back">뒤로</string>
+    <string name="drawing_pack_replay">그림 미리보기</string>
+    <string name="drawing_pack_start">이 그림 세트 사용</string>
+    <string name="drawing_pack_description">기존 마술에 사용할 그림 3개예요. 마술 방법은 같고 나타나는 그림만 달라져요.</string>
+    <string name="drawing_pack_instructions">그림판의 색상 버튼을 길게 눌러 검은 화면으로 전환하세요. 왼쪽·가운데·오른쪽 영역을 두 번 탭하면 해당 그림이 나타나요. 각 영역은 화면 위부터 아래까지 이어져요.</string>
+    <string name="drawing_pack_bundled_label">%1$s · 제공 세트</string>
+    <string name="drawing_pack_position_label">%1$s\n%2$s</string>
+    <string-array name="drawing_pack_titles">
+        <item>하트·별·꽃</item>
+        <item>축하 그림</item>
+        <item>행운 그림</item>
+        <item>밤하늘 그림</item>
+    </string-array>
+    <string-array name="drawing_pack_art_names">
+        <item>하트</item>
+        <item>별</item>
+        <item>꽃</item>
+        <item>케이크</item>
+        <item>풍선</item>
+        <item>선물</item>
+        <item>클로버</item>
+        <item>왕관</item>
+        <item>로켓</item>
+        <item>달</item>
+        <item>행성</item>
+        <item>혜성</item>
+    </string-array>
+    <string-array name="drawing_pack_positions">
+        <item>1 · 왼쪽</item>
+        <item>2 · 가운데</item>
+        <item>3 · 오른쪽</item>
+    </string-array>
+</resources>

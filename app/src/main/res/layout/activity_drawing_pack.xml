@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/canvas_screen_background" android:fitsSystemWindows="true">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="20dp">
+        <com.google.android.material.button.MaterialButton android:id="@+id/drawing_pack_back" style="@style/CanvasTextAction"
+            android:text="@string/drawing_pack_back" />
+        <TextView android:id="@+id/drawing_pack_title" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" android:textSize="28sp" android:textStyle="bold" android:textColor="#242239" />
+        <TextView android:id="@+id/drawing_pack_tip" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" android:textSize="16sp" android:textColor="#59566F" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="24dp" android:orientation="horizontal" android:baselineAligned="false">
+            <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+                <com.h2play.canvas_magic.util.DrawingArtworkView android:id="@+id/drawing_pack_art_1"
+                    android:layout_width="match_parent" android:layout_height="110dp" />
+                <TextView android:id="@+id/drawing_pack_label_1" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:gravity="center" android:textSize="13sp" android:textColor="#59566F" android:padding="4dp" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+                <com.h2play.canvas_magic.util.DrawingArtworkView android:id="@+id/drawing_pack_art_2"
+                    android:layout_width="match_parent" android:layout_height="110dp" />
+                <TextView android:id="@+id/drawing_pack_label_2" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:gravity="center" android:textSize="13sp" android:textColor="#59566F" android:padding="4dp" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+                <com.h2play.canvas_magic.util.DrawingArtworkView android:id="@+id/drawing_pack_art_3"
+                    android:layout_width="match_parent" android:layout_height="110dp" />
+                <TextView android:id="@+id/drawing_pack_label_3" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:gravity="center" android:textSize="13sp" android:textColor="#59566F" android:padding="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+        <com.google.android.material.button.MaterialButton android:id="@+id/drawing_pack_replay" style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp"
+            android:text="@string/drawing_pack_replay" android:textAllCaps="false" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp"
+            android:text="@string/drawing_pack_instructions" android:textSize="15sp" android:textColor="#59566F" android:lineSpacingExtra="4dp" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/drawing_pack_start"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp"
+            android:minHeight="56dp" android:text="@string/drawing_pack_start" android:textAllCaps="false" app:cornerRadius="18dp" />
+    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

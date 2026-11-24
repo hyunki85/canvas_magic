@@ -30,17 +30,27 @@ public final class Analytics {
     // ---- 핵심 활성화 / 리텐션 ----
     public static final String TRICK_PERFORMED = "trick_performed";
     public static final String PACK_OPENED = "pack_opened";
+    public static final String PERFORMANCE_START = "performance_start";
+    public static final String SELECTION_OPEN = "selection_open";
+    public static final String SELECTION_SUCCESS = "selection_success";
+    public static final String SELECTION_ABORT = "selection_abort";
 
     // ---- 깊이 있는 사용 (콘텐츠 제작 / 커뮤니티) ----
     public static final String SHAPE_CREATED = "shape_created";
     public static final String COMMUNITY_OPEN = "community_open";
     public static final String COMMUNITY_UPLOAD = "community_upload";
+    public static final String COMMUNITY_SAVE = "community_save";
     public static final String MENU_ACTION = "menu_action";
+    public static final String NOTIFICATION_PERMISSION_PROMPT = "notification_permission_prompt";
+    public static final String NOTIFICATION_PERMISSION_RESULT = "notification_permission_result";
+    public static final String NOTIFICATION_OPEN = "notification_open";
 
     // ---- 자사 앱 교차 프로모션 ----
-    // impression은 promo 카드가 화면에 50% 이상 보일 때 세션당 설정/카드별 1회 기록한다.
+    // impression은 포커스가 있는 홈에서 카드가 50% 이상 보일 때 홈 인스턴스/설정/카드별 1회.
     public static final String CROSS_PROMO_IMPRESSION = "cross_promo_impression";
     public static final String CROSS_PROMO_CLICK = "cross_promo_click";
+    // Intent dispatch result; this does not prove a store page loaded or an app was installed.
+    public static final String CROSS_PROMO_OPEN = "cross_promo_open";
 
     // ---- 사용자 속성 ----
     private static final String PROP_TRICK_COUNT = "trick_count_bucket";

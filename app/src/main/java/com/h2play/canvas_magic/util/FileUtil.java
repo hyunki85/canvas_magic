@@ -16,6 +16,14 @@ import com.h2play.canvas_magic.R;
 
 public final class FileUtil {
 
+    public static String getJsonFromRaw(Context context, int rawResourceId) {
+        try (InputStream inputStream = context.getResources().openRawResource(rawResourceId)) {
+            return convertStreamToString(inputStream);
+        } catch (Exception error) {
+            return null;
+        }
+    }
+
 
     public static String getJsonFromFile(Context context, String fileName) {
         File fl = new File(context.getFilesDir(),fileName);
@@ -26,22 +34,7 @@ public final class FileUtil {
             fin.close();
             return ret;
         } catch (FileNotFoundException e) {
-            InputStream inputStream = context.getResources().openRawResource(R.raw.base_pattern);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-            try {
-                int i = inputStream.read();
-                while (i != -1) {
-                    byteArrayOutputStream.write(i);
-                    i = inputStream.read();
-                }
-
-                String jsonText = new String(byteArrayOutputStream.toByteArray());
-                inputStream.close();
-                return jsonText;
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
+            return getJsonFromRaw(context, R.raw.base_pattern);
 
 
         } catch (IOException e) {

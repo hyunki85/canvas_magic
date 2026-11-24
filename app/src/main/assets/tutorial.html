@@ -1,42 +1,32 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Canvas Magic Tutorial</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 16px; line-height: 1.6; color: #222; }
-    h1 { font-size: 22px; margin: 0 0 12px; }
-    h2 { font-size: 18px; margin: 20px 0 8px; }
-    .card { background: #fff; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); padding: 16px; margin: 12px 0; }
-    .tip { background:#f1f8ff; border-left: 4px solid #4f90bc; padding: 12px; border-radius: 8px; }
-    ol { padding-left: 20px; }
-    li { margin: 6px 0; }
-    .kbd { display:inline-block; border:1px solid #ccc; border-bottom-width:2px; border-radius:6px; padding:2px 6px; font-weight:600; background:#fafafa; }
-    footer{ margin-top:24px; font-size:12px; color:#666; }
-  </style>
-</head>
-<body>
-  <h1>Canvas Magic Tutorial</h1>
-  <div class="card">
-    <h2>How the trick works</h2>
-    <ol>
-      <li>Ask the audience to think of a number from 1 to N.</li>
-      <li>Choose a color, then casually pretend to draw a few lines on the canvas.</li>
-      <li><span class="kbd">Press and hold</span> the color button to start trick mode.</li>
-      <li>When the audience says their number, <b>double-tap</b> the matching number cell.</li>
-      <li>The app automatically plays the drawing for that number.</li>
-    </ol>
-  </div>
-  <div class="card">
-    <h2>Tips</h2>
-    <ul>
-      <li>Before pressing and holding, distract the audience with a natural gesture such as scrolling or changing shapes.</li>
-      <li>You can double-tap anywhere, but tapping near the center helps prevent mistakes.</li>
-      <li>Increase the screen brightness in dark rooms for better visibility.</li>
-    </ul>
-  </div>
-  <div class="tip">Tap “Restart Tutorial” on the menu to reset the guide.</div>
-  <footer>Canvas Magic tutorial</footer>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canvas Trick · How to use</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;padding:20px;line-height:1.65;color:#25253e;background:#f5f7fa}
+h1{font-size:24px;margin:0 0 12px}h2{font-size:19px;margin:0 0 12px}h3{font-size:17px;margin:0 0 8px}
+section{background:white;border:1px solid #e4e7ec;border-radius:16px;padding:18px;margin:18px 0}
+p{margin:10px 0}ol,ul{padding-left:22px}li{margin:12px 0}
+.context{color:#6440b6;font-weight:600}table{border-collapse:collapse;table-layout:fixed;width:100%;margin:16px 0}
+td{border:1px solid #c9c5de;text-align:center;padding:12px 4px;overflow-wrap:anywhere}
+.columns td{height:100px;vertical-align:middle}small{display:block;color:#5d5d73}
+</style></head><body>
+<h1>How to use</h1><p>One trick, different drawings. Changing the set only changes the picture that appears.</p><p id="context" class="context">Numbers are the default example. For included drawings, use the three-column guide below.</p>
+<section><h2>Perform the trick</h2><ol><li>Ask someone to think of a number or picture from the set you selected.</li><li>Tap the palette, choose a color and line width, then tap <b>Apply</b>. Tap <b>Custom</b> for more colors.</li><li>Sketch naturally, then <b>press and hold the palette</b>. The black screen looks switched off but is still listening for touches.</li><li>When they name their choice, <b>quickly double-tap</b> its area as shown below. The matching drawing appears.</li></ol></section>
+<h2>Areas on the black screen</h2><div id="mapping">
+<section id="numbers"><h3>Default numbers · 9 areas</h3><p>Imagine three columns and three rows. For example, 8 is at the bottom in the middle.</p>
+<table aria-label="Default numbers · 9 areas"><tbody><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td>5</td><td>6</td></tr><tr><td>7</td><td>8</td><td>9</td></tr></tbody></table></section>
+<section id="provided"><h3>Included drawing sets · 3 columns</h3><p>Left, middle and right each extend from the top to the bottom of the screen. This differs from the nine-area number set.</p>
+<table class="columns" aria-label="Included drawing sets · 3 columns"><tbody><tr><td><small>1 · Left</small><b id="art-0">Heart</b></td><td><small>2 · Middle</small><b id="art-1">Star</b></td><td><small>3 · Right</small><b id="art-2">Flower</b></td></tr></tbody></table></section>
+</div><p>Your own sets follow the order shown in Edit. There are three columns: 6 drawings use 2 rows, 12 use 4 rows and 15 use 5 rows.</p>
+<section><h2>Remember</h2><ul><li>Apply or leave the color panel to save your settings. Cancel only discards your current changes.</li><li>Both taps must land in the same area. Grids and tips stay hidden during a real performance.</li></ul></section>
+<p>Choose Practice Again on the home screen to learn from the beginning. Practice uses the default numbers 1–9.</p>
+<script>
+const ids=["little_surprises","celebration","good_luck","night_sky"];
+const selected=ids.indexOf(new URLSearchParams(location.search).get("pack"));
+if(selected>=0){
+ const names=["Symbols","Celebration","Good luck","Night sky"], drawings=[["Heart","Star","Flower"],["Cake","Balloon","Gift"],["Clover","Crown","Rocket"],["Moon","Planet","Comet"]];
+ document.getElementById("context").textContent="Selected set: "+names[selected];
+ for(let i=0;i<3;i++)document.getElementById("art-"+i).textContent=drawings[selected][i];
+ document.getElementById("mapping").prepend(document.getElementById("provided"));
+}
+</script></body></html>

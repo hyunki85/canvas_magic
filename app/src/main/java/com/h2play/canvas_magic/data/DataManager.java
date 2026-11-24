@@ -9,7 +9,10 @@ import javax.inject.Singleton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.h2play.canvas_magic.data.local.PreferencesHelper;
+import com.h2play.canvas_magic.data.model.PackRef;
+import com.h2play.canvas_magic.data.model.TutorialProgress;
 import com.h2play.canvas_magic.data.model.response.ShapeInfo;
+import com.h2play.canvas_magic.util.DrawingCatalog;
 
 /**
  * Created by shivam on 29/5/17.
@@ -22,6 +25,10 @@ public class DataManager {
     public static final String FILE_INDEX = "FILE_INDEX";
     public static final String NEED_GUIDE = "need_guide";
     public static final String TRICK_COUNT = "trick_count";
+    public static final String LAST_SHAPE_INDEX = "last_shape_index";
+    public static final String TUTORIAL_PROGRESS = "tutorial_progress_v2";
+    public static final String LAST_PACK_KIND = "last_pack_kind_v2";
+    public static final String LAST_PACK_ID = "last_pack_id_v2";
     private PreferencesHelper preferencesHelper;
 
     @Inject
@@ -109,8 +116,26 @@ public class DataManager {
         preferencesHelper.putBoolean("STAR_ID_" + id,true);
     }
 
+    public TutorialProgress getTutorialProgress() {
+        TutorialProgress stored = TutorialProgress.fromStored(
+                preferencesHelper.getString(TUTORIAL_PROGRESS));
+        if (stored != null) return stored;
+
+        TutorialProgress migrated = TutorialProgress.migrateLegacy(
+                preferencesHelper.getBoolean(NEED_GUIDE), getTrickCount());
+        setTutorialProgress(migrated);
+        return migrated;
+    }
+
+    public void setTutorialProgress(TutorialProgress progress) {
+        TutorialProgress safe = progress == null ? TutorialProgress.NOT_STARTED : progress;
+        preferencesHelper.putString(TUTORIAL_PROGRESS, safe.name());
+        // Keep the old key coherent for one compatibility release.
+        preferencesHelper.putBoolean(NEED_GUIDE, safe.isComplete());
+    }
+
     public boolean needGuide() {
-        return !preferencesHelper.getBoolean(NEED_GUIDE);
+        return !getTutorialProgress().isComplete();
     }
 
     /**
@@ -128,8 +153,83 @@ public class DataManager {
         return count < 0 ? 0 : count;
     }
 
+    /**
+     * 마지막으로 공연에 사용한 도형 세트를 기억한다.
+     * 세트가 삭제된 경우를 고려해 읽을 때마다 현재 목록 범위로 보정한다.
+     */
+    public void setLastShapeIndex(int index) {
+        List<ShapeInfo> shapes = getShapeList();
+        if (index >= 0 && index < shapes.size()) {
+            preferencesHelper.putInt(LAST_SHAPE_INDEX, index);
+            rememberPack(PackRef.custom(shapes.get(index).fileName));
+        }
+    }
+
+    public int getLastShapeIndex() {
+        List<ShapeInfo> shapeList = getShapeList();
+        if (shapeList.isEmpty()) {
+            return -1;
+        }
+        PackRef pack = getLastPackRef();
+        int stableIndex = pack == null ? -1 : pack.findCustomIndex(shapeList);
+        return stableIndex >= 0 ? stableIndex : defaultShapeIndex(shapeList);
+    }
+
+    public ShapeInfo getLastShape() {
+        int index = getLastShapeIndex();
+        return index < 0 ? null : getShapeList().get(index);
+    }
+
+    public ShapeInfo getShapeByFileName(String fileName) {
+        if (fileName == null) return null;
+        for (ShapeInfo shape : getShapeList()) {
+            if (shape != null && fileName.equals(shape.fileName)) return shape;
+        }
+        return null;
+    }
+
+    public boolean hasPersistedPackRef() {
+        return preferencesHelper.hasKey(LAST_PACK_KIND) && preferencesHelper.hasKey(LAST_PACK_ID);
+    }
+
+    public void rememberPack(PackRef pack) {
+        if (pack == null || pack.id.isEmpty()) return;
+        preferencesHelper.putString(LAST_PACK_KIND, pack.kind.name());
+        preferencesHelper.putString(LAST_PACK_ID, pack.id);
+    }
+
+    public PackRef getLastPackRef() {
+        List<ShapeInfo> shapes = getShapeList();
+        PackRef stored = PackRef.restore(preferencesHelper.getString(LAST_PACK_KIND),
+                preferencesHelper.getString(LAST_PACK_ID));
+        if (stored != null) {
+            if (stored.kind == PackRef.Kind.BUILT_IN && DrawingCatalog.index(stored.id) >= 0) {
+                return stored;
+            }
+            if (stored.kind == PackRef.Kind.CUSTOM && stored.findCustomIndex(shapes) >= 0) {
+                return stored;
+            }
+        }
+
+        if (shapes.isEmpty()) return null;
+        int legacyIndex = preferencesHelper.getInt(LAST_SHAPE_INDEX);
+        int fallbackIndex = legacyIndex >= 0 && legacyIndex < shapes.size()
+                ? legacyIndex : defaultShapeIndex(shapes);
+        PackRef fallback = PackRef.custom(shapes.get(fallbackIndex).fileName);
+        rememberPack(fallback);
+        preferencesHelper.putInt(LAST_SHAPE_INDEX, fallbackIndex);
+        return fallback;
+    }
+
+    private static int defaultShapeIndex(List<ShapeInfo> shapes) {
+        for (int index = 0; index < shapes.size(); index++) {
+            if (shapes.get(index) != null && "file.txt".equals(shapes.get(index).fileName)) return index;
+        }
+        return shapes.isEmpty() ? -1 : 0;
+    }
+
     public void setNoMoreGuide() {
-        preferencesHelper.putBoolean(NEED_GUIDE,true);
+        setTutorialProgress(TutorialProgress.COMPLETED);
     }
     
     /**
@@ -137,6 +237,6 @@ public class DataManager {
      * NEED_GUIDE 값을 false로 설정하여 needGuide() 메서드가 true를 반환하도록 함
      */
     public void enableGuide() {
-        preferencesHelper.putBoolean(NEED_GUIDE, false);
+        setTutorialProgress(TutorialProgress.NOT_STARTED);
     }
 }

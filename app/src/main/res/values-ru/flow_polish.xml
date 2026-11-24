@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="my_drawing_sets">Мои рисунки</string>
+    <string name="preview_drawing_set">Просмотр рисунков</string>
+    <string name="drawing_help_title">Как пользоваться</string>
+    <string name="community_description">Наборы рисунков от других пользователей. Способ выполнения фокуса тот же.</string>
+    <string name="community_empty">В этой вкладке пока нет наборов. Попробуйте другую вкладку.</string>
+    <string name="upload_drawing_set">Поделиться набором</string>
+    <string name="save_drawing_set">Сохранить этот набор</string>
+    <string name="add_drawing_set">Добавить набор</string>
+    <string name="drawing_set_options">Управление набором</string>
+    <string name="edit_drawing_number">Изменить рисунок %1$d</string>
+    <string name="preview_drawing_number">Рисунок %1$d</string>
+    <string name="preview_empty_drawing">Нет рисунка</string>
+    <string name="preview_empty_set">В этом наборе нет рисунков для просмотра. Выберите другой набор.</string>
+    <string name="active_drawing_set">Выбранный набор: %1$s</string>
+    <string name="perform_now">Начать фокус</string>
+    <string name="preview_unavailable">Нет предпросмотра</string>
+    <string-array name="brush_color_names">
+        <item>Чёрный</item>
+        <item>Красный</item>
+        <item>Оранжевый</item>
+        <item>Жёлтый</item>
+        <item>Зелёный</item>
+        <item>Голубой</item>
+        <item>Синий</item>
+        <item>Фиолетовый</item>
+        <item>Белый</item>
+    </string-array>
+    <string name="custom_color_name">Свой цвет %1$s</string>
+    <string name="named_color_opacity">%1$s, непрозрачность %2$d%%</string>
+    <string name="pack_picker_title">Выберите рисунки для выступления</string>
+    <string name="pack_picker_subtitle">Фокус остаётся тем же — меняются только рисунки.</string>
+    <string name="pack_picker_start">Начать с этим набором</string>
+    <string name="pack_picker_included_count">Готовые рисунки · вариантов: %1$d</string>
+    <string name="pack_picker_mine_count">Мои рисунки · вариантов: %1$d</string>
+    <string name="pack_picker_selected_accessibility">%1$s, выбранный набор рисунков</string>
+    <string name="pack_picker_option_accessibility">%1$s, набор рисунков</string>
+    <string name="resume_practice">Продолжить тренировку</string>
+    <string name="notification_opt_in_title">Сообщать о новых рисунках?</string>
+    <string name="notification_opt_in_message">Мы напишем только о проверенном новом наборе. Никаких ежедневных напоминаний.</string>
+    <string name="notification_opt_in_accept">Включить</string>
+    <string name="notification_opt_in_later">Не сейчас</string>
+    <string name="new_drawing_notification_title">Готов новый набор рисунков</string>
+    <string name="new_drawing_notification_body">Посмотрите проверенный набор для следующего выступления.</string>
+</resources>

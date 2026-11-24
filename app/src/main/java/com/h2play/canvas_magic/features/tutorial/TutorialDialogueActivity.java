@@ -1,16 +1,12 @@
 package com.h2play.canvas_magic.features.tutorial;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,15 +28,12 @@ public class TutorialDialogueActivity extends AppCompatActivity {
 
     private TextView tvDialogue;
     private TextView tvCharacterName;
-    private ImageView ivAvatar;
     private View tapIndicator;
     private GridLayout quizGrid;
 
     private String[] dialogues;
     private int currentStep = 0;
-    private boolean isTyping = false;
     private boolean isQuizMode = false;
-    private String currentFullText = "";
     private int currentPhase = PHASE_PRE_DRAW;
     private boolean finishedNormally = false;
     private final Handler typewriterHandler = new Handler(Looper.getMainLooper());
@@ -58,42 +51,33 @@ public class TutorialDialogueActivity extends AppCompatActivity {
 
         tvDialogue = findViewById(R.id.tv_dialogue);
         tvCharacterName = findViewById(R.id.tv_character_name);
-        ivAvatar = findViewById(R.id.iv_avatar);
         tapIndicator = findViewById(R.id.tap_indicator);
         quizGrid = findViewById(R.id.quiz_grid);
 
-        // 탭 인디케이터 깜빡임 애니메이션
-        ObjectAnimator blink = ObjectAnimator.ofFloat(tapIndicator, "alpha", 1f, 0.2f);
-        blink.setDuration(600);
-        blink.setRepeatMode(ValueAnimator.REVERSE);
-        blink.setRepeatCount(ValueAnimator.INFINITE);
-        blink.setInterpolator(new LinearInterpolator());
-        blink.start();
 
         currentPhase = getIntent().getIntExtra(EXTRA_PHASE, PHASE_PRE_DRAW);
         int phase = currentPhase;
+        ((TextView) findViewById(R.id.tutorial_heading)).setText(phase == PHASE_PRE_DRAW
+                ? R.string.tutorial_intro_title : R.string.tutorial_pin_heading);
         initDialogues(phase);
 
         if (phase == PHASE_QUIZ) {
             showQuiz();
         } else {
-            showStep(0);
-            findViewById(R.id.root_layout).setOnClickListener(v -> onTap());
+            showStep(savedInstanceState == null ? 0 : savedInstanceState.getInt("step", 0));
+            tapIndicator.setOnClickListener(v -> showStep(currentStep + 1));
         }
     }
 
     private void initDialogues(int phase) {
         if (phase == PHASE_PRE_DRAW) {
             dialogues = new String[]{
-                    getString(R.string.tutorial_vn_step1),
-                    getString(R.string.tutorial_vn_step2),
-                    getString(R.string.tutorial_vn_step3),
-                    getString(R.string.tutorial_vn_step4),
+                    getString(R.string.tutorial_intro_pick),
+                    getString(R.string.tutorial_intro_tools),
             };
         } else if (phase == PHASE_PRE_PIN) {
             dialogues = new String[]{
-                    getString(R.string.tutorial_vn_step5),
-                    getString(R.string.tutorial_vn_step6),
+                    getString(R.string.tutorial_pin_instruction),
             };
         } else if (phase == PHASE_PRACTICE) {
             dialogues = new String[]{
@@ -110,7 +94,7 @@ public class TutorialDialogueActivity extends AppCompatActivity {
 
         // 질문 표시
         String question = getString(R.string.tutorial_quiz_question);
-        startTypewriter(question);
+        showDialogue(question);
 
         // 숫자 그리드 표시
         quizGrid.setVisibility(View.VISIBLE);
@@ -170,7 +154,11 @@ public class TutorialDialogueActivity extends AppCompatActivity {
             return;
         }
         currentStep = step;
-        currentFullText = dialogues[step];
+        tvCharacterName.setText(currentPhase == PHASE_PRE_DRAW
+                ? getString(R.string.tutorial_intro_progress, step + 1, dialogues.length)
+                : getString(R.string.tutorial_reveal_title));
+        ((MaterialButton) tapIndicator).setText(step == dialogues.length - 1
+                ? R.string.tutorial_start_practice : R.string.tutorial_continue);
 
         // 대사 한 줄마다 기록해야 "몇 번째 문장에서 나갔는지"를 볼 수 있다
         Bundle b = new Bundle();
@@ -179,42 +167,17 @@ public class TutorialDialogueActivity extends AppCompatActivity {
         b.putLong("total_steps", dialogues.length);
         Analytics.log(this, Analytics.TUTORIAL_STEP, b);
 
-        startTypewriter(currentFullText);
+        showDialogue(dialogues[step]);
     }
 
-    private void startTypewriter(String text) {
-        isTyping = true;
-        if (!isQuizMode) tapIndicator.setVisibility(View.INVISIBLE);
-        tvDialogue.setText("");
-        currentFullText = text;
-        final int[] charIndex = {0};
-        typewriterHandler.removeCallbacksAndMessages(null);
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (charIndex[0] <= text.length()) {
-                    tvDialogue.setText(text.substring(0, charIndex[0]));
-                    charIndex[0]++;
-                    typewriterHandler.postDelayed(this, 40);
-                } else {
-                    isTyping = false;
-                    if (!isQuizMode) tapIndicator.setVisibility(View.VISIBLE);
-                }
-            }
-        };
-        typewriterHandler.post(runnable);
+    private void showDialogue(String text) {
+        tvDialogue.setText(text);
+        if (!isQuizMode) tapIndicator.setVisibility(View.VISIBLE);
     }
 
-    private void onTap() {
-        if (isQuizMode) return;
-        if (isTyping) {
-            typewriterHandler.removeCallbacksAndMessages(null);
-            tvDialogue.setText(currentFullText);
-            isTyping = false;
-            tapIndicator.setVisibility(View.VISIBLE);
-        } else {
-            showStep(currentStep + 1);
-        }
+    @Override protected void onSaveInstanceState(Bundle state) {
+        state.putInt("step", currentStep);
+        super.onSaveInstanceState(state);
     }
 
     private int dp(int dp) {
