@@ -4,10 +4,13 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.Nullable;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -55,6 +58,12 @@ import com.vorlonsoft.android.rate.AppRate;
 import com.h2play.canvas_magic.features.menu.config.MenuConfig;
 import com.h2play.canvas_magic.features.menu.config.MenuConfigLoader;
 import com.h2play.canvas_magic.features.menu.config.MenuItemConfig;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,6 +113,10 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     private int activeMenuConfigVersion;
     private String activeMenuExperiment = "";
     private final PromoImpressionTracker promoImpressions = new PromoImpressionTracker();
+    // 원격 설정 홈 배너(1.2.13+)
+    private View homeBanner;
+    private ImageView ivHomeBanner;
+    @Nullable private MenuItemConfig activeBanner;
     private boolean homeResumed;
 
     @Override
@@ -172,6 +185,9 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         };
         Button btnRestartTutorial = findViewById(R.id.btn_restart_tutorial);
         rvDynamicMenu = findViewById(R.id.rv_dynamic_menu);
+        homeBanner = findViewById(R.id.home_banner);
+        ivHomeBanner = findViewById(R.id.iv_home_banner);
+        homeBanner.setOnClickListener(v -> { if (activeBanner != null) handleDynamicAction(activeBanner); });
         scrollView = findViewById(R.id.scroll_view);
         showHomeIntro = savedInstanceState == null
                 ? !HomeExperiencePreferences.hasSeenIntro(this)
@@ -600,7 +616,15 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
                 }
             });
         }
-        dynamicAdapter.submit(cfg.items);
+        List<MenuItemConfig> menuItems = new ArrayList<>();
+        MenuItemConfig banner = null;
+        for (MenuItemConfig item : cfg.items) {
+            if (item == null) continue;
+            if (item.banner) { if (banner == null) banner = item; continue; }
+            menuItems.add(item);
+        }
+        bindHomeBanner(banner);
+        dynamicAdapter.submit(menuItems);
 
         // Hide fallback static views (grid/card) but keep hero start button
         View grid = findViewById(R.id.grid_actions);
@@ -613,6 +637,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     }
 
     private void trackVisiblePromoImpressions() {
+        trackBannerImpression();
         if (!homeResumed || !hasWindowFocus() || dynamicAdapter == null || !rvDynamicMenu.isShown()) {
             return;
         }
@@ -642,13 +667,87 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         }
     }
 
+    /** 원격 설정 banner:true 항목을 「연습해보기」 아래 가로 배너로. 없거나 그림을 못 받으면 숨긴다. */
+    private void bindHomeBanner(@Nullable MenuItemConfig banner) {
+        activeBanner = banner;
+        if (banner == null || banner.imageUrl == null || !banner.imageUrl.startsWith("https://")) {
+            activeBanner = null;
+            homeBanner.setVisibility(View.GONE);
+            Glide.with(this).clear(ivHomeBanner);
+            return;
+        }
+        float aspect = banner.aspect > 0.5f ? banner.aspect : 2.0f;
+        homeBanner.setContentDescription(banner.title);
+        // GONE인 채로 불러오면 Glide가 뷰 크기를 못 재서 영영 기다린다 → 자리만 잡고 안 보이게 둔 뒤 그림이 오면 보인다.
+        if (homeBanner.getVisibility() == View.GONE) homeBanner.setVisibility(View.INVISIBLE);
+        homeBanner.post(() -> {
+            int width = homeBanner.getWidth();
+            if (width > 0) {
+                ViewGroup.LayoutParams lp = ivHomeBanner.getLayoutParams();
+                lp.height = Math.round(width / aspect);
+                ivHomeBanner.setLayoutParams(lp);
+            }
+        });
+        final MenuItemConfig bound = banner;
+        Glide.with(this).load(banner.imageUrl).fitCenter()
+                .listener(new RequestListener<Drawable>() {
+                    @Override public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                          Target<Drawable> target, boolean isFirstResource) {
+                        if (activeBanner == bound) {
+                            activeBanner = null;
+                            homeBanner.setVisibility(View.GONE);
+                        }
+                        return false;
+                    }
+
+                    @Override public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target,
+                                                             DataSource dataSource, boolean isFirstResource) {
+                        if (activeBanner == bound) {
+                            homeBanner.setVisibility(View.VISIBLE);
+                            homeBanner.post(MenuActivity.this::trackBannerImpression);
+                        }
+                        return false;
+                    }
+                })
+                .into(ivHomeBanner);
+    }
+
+    private void trackBannerImpression() {
+        MenuItemConfig banner = activeBanner;
+        if (banner == null || !homeResumed || !hasWindowFocus() || !homeBanner.isShown()) {
+            return;
+        }
+        Rect visibleRect = new Rect();
+        if (!homeBanner.getGlobalVisibleRect(visibleRect)) {
+            return;
+        }
+        long totalArea = (long) homeBanner.getWidth() * homeBanner.getHeight();
+        long visibleArea = (long) visibleRect.width() * visibleRect.height();
+        String itemId = banner.id == null || banner.id.isEmpty() ? "home_banner" : banner.id;
+        String impressionKey = activeMenuConfigVersion + "|" + activeMenuExperiment + "|" + itemId;
+        if (promoImpressions.recordIfVisible(impressionKey, homeResumed, hasWindowFocus(), visibleArea, totalArea)) {
+            logCrossPromoEvent(Analytics.CROSS_PROMO_IMPRESSION, banner);
+        }
+    }
+
+    private static boolean isPromo(MenuItemConfig item) {
+        return item.promo || item.span >= 2 || item.banner;
+    }
+
+    /** 교차홍보 랜딩페이지로 열어도 되는 우리 도메인(https만). */
+    private static boolean isOwnLandingPage(Uri uri) {
+        if (uri == null || !"https".equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null) return false;
+        String host = uri.getHost().toLowerCase(java.util.Locale.ROOT);
+        return host.equals("mind.h2play.com") || host.equals("h2play.com") || host.equals("www.h2play.com");
+    }
+
     private void logCrossPromoEvent(String event, MenuItemConfig item) {
         logCrossPromoEvent(event, item, null);
     }
 
     private void logCrossPromoEvent(String event, MenuItemConfig item, String openResult) {
         Bundle params = new Bundle();
-        params.putString("placement", "home_menu");
+        params.putString("placement", item.banner ? "home_banner" : "home_menu");
         params.putLong("config_version", activeMenuConfigVersion);
         params.putString("experiment", activeMenuExperiment);
         params.putString("source_package", BuildConfig.APPLICATION_ID);
@@ -658,9 +757,12 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         }
         if (item.payload != null) {
             try {
-                String targetPackage = Uri.parse(item.payload).getQueryParameter("id");
+                Uri payloadUri = Uri.parse(item.payload);
+                String targetPackage = payloadUri.isHierarchical() ? payloadUri.getQueryParameter("id") : null;
                 if (targetPackage != null) {
                     params.putString("target_package", targetPackage);
+                } else if (isOwnLandingPage(payloadUri)) {
+                    params.putString("target_package", "landing:" + payloadUri.getHost() + payloadUri.getPath());
                 }
             } catch (Exception ignored) {
                 // 잘못된 원격 URL이어도 메뉴 렌더링/클릭을 막지 않는다.
@@ -671,7 +773,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
     }
 
     private void logPromoOpenResult(MenuItemConfig item, String result) {
-        if (item.promo || item.span >= 2) {
+        if (isPromo(item)) {
             logCrossPromoEvent(Analytics.CROSS_PROMO_OPEN, item, result);
         }
     }
@@ -690,7 +792,18 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
             return;
         }
 
-        boolean promo = item.promo || item.span >= 2;
+        boolean promo = isPromo(item);
+        if (promo && isOwnLandingPage(webUri)) {
+            // 1.2.13+: 우리 랜딩페이지(사용법 영상 · 스토어 버튼)는 브라우저로 연다.
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, webUri));
+                logPromoOpenResult(item, "landing_intent_started");
+            } catch (android.content.ActivityNotFoundException error) {
+                logPromoOpenResult(item, "no_handler");
+                Timber.w(error, "No activity to handle landing url: %s", item.payload);
+            }
+            return;
+        }
         if (promo) {
             if (!webUri.isHierarchical()) {
                 logPromoOpenResult(item, "invalid_url");
@@ -750,7 +863,7 @@ public class MenuActivity extends BaseActivity implements MenuMvpView, ErrorView
         mb.putString("action", action);
         if (item.id != null) mb.putString("item_id", item.id);
         Analytics.log(this, Analytics.MENU_ACTION, mb);
-        if (item.promo || item.span >= 2) {
+        if (isPromo(item)) {
             logCrossPromoEvent(Analytics.CROSS_PROMO_CLICK, item);
         }
 

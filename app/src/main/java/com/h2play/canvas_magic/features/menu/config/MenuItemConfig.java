@@ -33,6 +33,13 @@ public class MenuItemConfig {
      * 소형 카드 표시 여부. true면 낮은 높이의 가로형 카드로 렌더링됩니다.
      */
     public boolean small;
+    /**
+     * 홈 상단 큰 배너 여부(1.2.13+). true면 메뉴 그리드가 아니라 「연습해보기」 아래 가로 배너 자리에
+     * imageUrl 그림을 꽉 채워 보여 준다(첫 번째 하나만). 옛 버전에 보내지 않도록 원격 설정 조건(app.build)으로 나눈다.
+     */
+    public boolean banner;
+    /** 배너 가로:세로 비율(기본 2.0 = 2:1). */
+    public float aspect;
 
     // 빈 생성자 (Gson)
     public MenuItemConfig() {}

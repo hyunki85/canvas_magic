@@ -31,9 +31,9 @@ android {
         minSdkVersion 25
         targetSdkVersion 36
         testInstrumentationRunner "${applicationId}.runner.CanvasMagicTestRunner"
-        versionCode 1002012
+        versionCode 1002013
         // Major -> Millions, Minor -> Thousands, Bugfix -> Hundreds. E.g 1.3.72 == 1,003,072
-        versionName '1.2.12'
+        versionName '1.2.13'
 
         buildConfigField("String", "POKEAPI_API_URL",
                 "\"${PokeapiApiUrl}\"")
